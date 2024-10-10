@@ -101,12 +101,10 @@ endif
 ## Build app
 #################################################################
 
-#TODO: $(TB_CXX) in prerequisites only works partially
-$(board): $(OBJDIR)/V$(wrapper)__ALL.o $(VERILATOR_CXX)
-	echo $(TB_CXX)
+$(board): $(OBJDIR)/V$(wrapper)__ALL.o vdb__Dpi.h $(VERILATOR_CXX) $(TB_CXX)
 	@echo "--- Building $@"
 	$(CXX) $(CXXFLAGS) -std=$(CPPSTD) 			\
-	$(VERILATOR_INCLUDE) $^	$(TB_CXX)			\
+	$(VERILATOR_INCLUDE) $<	$(TB_CXX) $(VERILATOR_CXX)	\
 	-I./$(OBJDIR) 						\
 	$(addprefix -I, $(INCDIRS))				\
 	$(LDFLAGS) $(LDLIBS)					\
@@ -131,6 +129,10 @@ $(OBJDIR)/V%.mk: $(OBJDIR) $(RTL_VERILOG)
 	make -C $(@D) -f $(^F)
 
 
+vdb__Dpi.h:
+	@echo "#include \"V$(wrapper)__Dpi.h\"" > $(OBJDIR)/$@
+
+
 #################################################################
 ## Directories
 #################################################################
@@ -145,3 +147,4 @@ $(OBJDIR):
 #################################################################
 clean:
 	rm -rf $(OBJDIR)/*
+

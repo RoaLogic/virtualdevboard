@@ -43,9 +43,8 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-
 //include Dpi headers, required to link verilator model to C++
-#include "Vde10lite_verilator_wrapper__Dpi.h"
+#include "vdb__Dpi.h"
 
 //include logger functions
 #include "log.hpp"
