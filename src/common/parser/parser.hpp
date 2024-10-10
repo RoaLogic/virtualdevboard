@@ -93,9 +93,9 @@ namespace parser
             lexer_t* lexer;
 
             /**
-             * data
+             * data buffer
              */
-            data_t _data;
+            data_t dataBuffer;
 
         public:
             /**
@@ -112,7 +112,7 @@ namespace parser
              * @brief Method returning parsed data
              * @returns Parsed data
              */
-            virtual data_t& data() { return _data; }
+            virtual data_t& data() { return dataBuffer; }
     };
 }
 }

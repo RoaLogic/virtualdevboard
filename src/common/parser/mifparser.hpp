@@ -108,8 +108,6 @@ namespace parser
              * Vector holding the <address,data> pair
              */
             parseData_t parseData;
-            parseDataArray_t dataArray;
-
 
             /**
              * States for parser statemachine
@@ -314,7 +312,7 @@ namespace parser
                                     //create new <address,data> pair
                                     parseData.address = addressStart;
                                     parseData.data    = lexer->getNumber(); 
-                                    dataArray.push_back(parseData);
+                                    dataBuffer.push_back(parseData);
                                     addressStart++;
                                     addressRange--;
                                     break;
@@ -362,15 +360,6 @@ namespace parser
                     _ifs->close();
                 }
             }
-
-
-            /**
-             * @brief Parsed data
-             * @details Address/Data parsed from file
-             *
-             * @returns std::vector<long,long>
-             */
-            parseDataArray_t& data() { return dataArray; }
     };
 }
 }
