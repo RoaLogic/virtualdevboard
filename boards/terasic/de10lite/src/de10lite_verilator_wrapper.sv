@@ -44,10 +44,6 @@
 /////////////////////////////////////////////////////////////////////
 
 module de10lite_verilator_wrapper
-#(
-  parameter int OCRAM_SIZE    = 64, //in kB
-  parameter     INIT_FILE     = "../../bench/blinky_noirq.mif"
-)
 (
   //Clocks
   input         CLK_50,
@@ -80,9 +76,6 @@ module de10lite_verilator_wrapper
   //KEY[0] is used as async system reset
   input  [ 1:0] KEY,
 
-  //LED
-  output [ 9:0] LEDR,
-
   //SDRAM
   output        DRAM_CLK,
   output        DRAM_CKE,
@@ -114,24 +107,14 @@ module de10lite_verilator_wrapper
   //-------------------------------
   // Variables
   //
+  wire [9:0] ledr;
+
 
 
   //-------------------------------
   // Hookup DE10Lite Design
   //
-  de10lite #(
-  .OCRAM_SIZE        ( OCRAM_SIZE   ),
-  .INIT_FILE         ( INIT_FILE    ),
-
-  .Zicsr_ENA         ( 1'b1         ),
-  .Zicntr_ENA        ( 1'b1         ),
-  .Zmmul_ENA         ( 1'b1         ),
-  .Zba_ENA           ( 1'b1         ),
-  .Zbb_ENA           ( 1'b1         ),
-  .Zbs_ENA           ( 1'b1         ),
-
-  .TARGET_AREA       ( 1'b1         ),
-  .FAST_SHIFT        ( 1'b1         ))
+  de10lite
   de10lite_inst (
     //Clocks
     .CLK_50          ( CLK_50       ),
@@ -165,7 +148,7 @@ module de10lite_verilator_wrapper
     .KEY             ( KEY ),
 
     //LED
-    .LEDR            (),
+    .LEDR            ( ledr ),
 
     //SDRAM
     .DRAM_CLK        (),
@@ -188,6 +171,12 @@ module de10lite_verilator_wrapper
     .VGA_B           (),
     .VGA_HS          (),
     .VGA_VS          ());
+
+
+  //-------------------------------
+  // Hookup LEDs
+  //
+  vdbLED LED_inst [9:0] (.in(ledr));
 
 
 
