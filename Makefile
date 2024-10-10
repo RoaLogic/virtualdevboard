@@ -55,6 +55,7 @@ vendors=$(call list_vendors,boards)
 boards_list=$(foreach vendor,$(vendors),$(call list_directories,boards/$(vendor)))
 boards=$(filter-out boards $(vendors),$(subst /, ,$(boards_list)))
 
+
 #####################################################################
 ## Boards                
 #####################################################################
@@ -68,6 +69,16 @@ $(boards):
 
 $(boards)_clean: %_clean :
 	$(MAKE) -C "$(filter %/$*/, $(boards_list))build" clean
+
+
+#####################################################################
+## Demo
+#####################################################################
+.PHONY: demo
+
+demo:
+	echo "Building demo"
+	$(MAKE) de10lite filelist=demo/filelist.f
 
 
 #####################################################################
