@@ -120,7 +120,6 @@ int main(int argc, char** argv)
     //initialise altsyncram instance
     altsyncram_initialize(split_string[0], split_string[1]);
   }
-std::cout << "back in main\n";
 
   //Run the testbench
   de10lite->run();

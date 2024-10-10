@@ -43,17 +43,12 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-
 #include "altsyncram.hpp"
 #include "mifparser.hpp"
 
 
 using namespace RoaLogic;
 using namespace parser;
-
-//create altsyncram map
-//std::map<std::string,cAltsyncram> mapAltsyncram;
-
 
 //TODO: move into 'common' library file
 /**
@@ -177,7 +172,6 @@ int altsyncram_initializeFromMif(svScope scope, std::string fileName)
       altsyncram_setMemory(tuple.address, &svData);
     }
 
-std::cout << "returning to main\n";
     return 0;
 }
 
