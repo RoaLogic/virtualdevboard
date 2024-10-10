@@ -1,0 +1,147 @@
+#####################################################################
+##   ,------.                    ,--.                ,--.          ##
+##   |  .--. ' ,---.  ,--,--.    |  |    ,---. ,---. `--' ,---.    ##
+##   |  '--'.'| .-. |' ,-.  |    |  |   | .-. | .-. |,--.| .--'    ##
+##   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    ##
+##   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    ##
+##                                             `---'               ##
+##    Common Build Makefile for virtual development boards         ##
+##                                                                 ##
+#####################################################################
+##                                                                 ##
+##    Copyright (C) 2024 Roa Logic BV - www.roalogic.com           ##
+##    Copyright (C) 2024 richard.herveille@roalogic.com            ##
+##                                                                 ##
+##     Redistribution and use in source and binary forms, with     ##
+##   or without modification, are permitted provided that the      ##
+##   following conditions are met:                                 ##
+##   1. Redistributions of source code must retain the above       ##
+##      copyright notice, this list of conditions and the          ##
+##      following disclaimer.                                      ##
+##   2. Redistributions in binary form must reproduce the above    ##
+##      copyright notice, this list of conditions and the          ##
+##      following disclaimer in the documentation and/or other     ##
+##      materials provided with the distribution.                  ##
+##   3. Neither the name of the copyright holder nor the names     ##
+##      of its contributors may be used to endorse or promote      ##
+##      products derived from this software without specific       ##
+##      prior written permission.                                  ##
+##                                                                 ##
+##     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND      ##
+##   CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,   ##
+##   INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF      ##
+##   MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE      ##
+##   DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR         ##
+##   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,  ##
+##   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT  ##
+##   NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  ##
+##   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)      ##
+##   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN     ##
+##   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE     ##
+##   OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS       ##
+##   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  ##
+##                                                                 ##
+#####################################################################
+
+ROOT_DIR:=../../../../
+BOARDS_DIR:=$(ROOT_DIR)boards/
+SRC_DIR:=$(ROOT_DIR)src/
+
+include $(BOARDS_DIR)common/build/Makefile.include
+
+board:=$(call get_board)
+wrapper:=$(board)_verilator_wrapper
+
+#!! directly expanded variables for PWD
+ifeq ($(strip $(filelist)),)
+  RTL_VERILOG:=
+else
+  RTL_VERILOG:=$(call load_filelist, $(CALLING_FROM)/$(filelist))
+endif
+INCDIRS:=
+TB_CXX:=
+
+#include common source files
+#must be after RTL_VERILOG, INCDIRS, and TB_CXX definitions
+include $(SRC_DIR)common/Makefile.include
+
+
+#####################################################################
+## Verilator Environment
+#####################################################################
+
+#Object directory, design is verilated here
+OBJDIR:=obj_dir
+
+#Set VERILATOR_ROOT if not already set
+VERILATOR_ROOT ?= $(shell bash -c 'verilator -V | grep VERILATOR_ROOT | tail -1 | sed -e " s/^.*=\s*//"')
+VERILATOR_FLAGS ?= -Wall -Wno-PINCONNECTEMPTY
+VERILATE_FLAGS ?= -CFLAGS -DVL_NO_LEGACY -Wno-lint -structs-packed --trace 
+
+#These files need to be included in the compile
+VERILATOR_CXX     = $(addprefix $(VERILATOR_ROOT)/include/, verilated_threads.cpp verilated.cpp verilated_vcd_c.cpp verilated_dpi.cpp)
+VERILATOR_INCLUDE = $(addprefix -I, $(VERILATOR_ROOT)/include $(VERILATOR_ROOT)/include/vltstd)
+
+#CXX Variables
+CXX ?= g++
+#CXXFLAGS ?= -fcoroutines
+CPPSTD ?= c++20
+CPPLIB ?= stdc++
+
+LDLIBS = -lm -pthread
+
+ifdef PLI
+ifneq ($(PLI),"")
+  PLI_OPTS = -pli $(PLI)
+endif
+endif
+
+
+#################################################################
+## Build app
+#################################################################
+
+#TODO: $(TB_CXX) in prerequisites only works partially
+$(board): $(OBJDIR)/V$(wrapper)__ALL.o $(VERILATOR_CXX)
+	echo $(TB_CXX)
+	@echo "--- Building $@"
+	$(CXX) $(CXXFLAGS) -std=$(CPPSTD) 			\
+	$(VERILATOR_INCLUDE) $^	$(TB_CXX)			\
+	-I./$(OBJDIR) 						\
+	$(addprefix -I, $(INCDIRS))				\
+	$(LDFLAGS) $(LDLIBS)					\
+	-o $@
+
+
+#####################################################################
+## Rules
+#####################################################################
+
+$(OBJDIR)/V%.mk: $(OBJDIR) $(RTL_VERILOG)
+	@echo "--- Verilating $@"
+	verilator $(VERILATOR_FLAGS) $(VERILATE_FLAGS)		\
+	-Mdir $(@D) --cc $(RTL_VERILOG) --top-module $*		\
+	$(foreach d,$(DEFINES),+define+$d)			\
+	$(foreach d,$(INCDIRS),+incdir+$d)			\
+	$(foreach l,$(wildcard $(LIBDIRS)),-y $l)
+
+
+%__ALL.o: %.mk
+	echo "--- Building $(@F)"
+	make -C $(@D) -f $(^F)
+
+
+#################################################################
+## Directories
+#################################################################
+.PHONY:$(OBJDIR)
+	
+$(OBJDIR):
+	mkdir -p $@ log
+
+
+#################################################################
+## Clean
+#################################################################
+clean:
+	rm -rf $(OBJDIR)/*

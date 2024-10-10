@@ -1,0 +1,3 @@
+[submodule "src/common/submodules/Verilator-simulation"]
+	path = src/common/submodules/Verilator-simulation
+	url = https://github.com/RoaLogic/Verilator-simulation.git
