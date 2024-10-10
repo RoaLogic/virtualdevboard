@@ -117,8 +117,6 @@ sCoRoutineHandler<bool> cDE10Lite::Reset()
  */
 int cDE10Lite::run()
 {
-std::cout << "DE10Lite::run()\n";
-
     //Reset core
     sCoRoutineHandler reset = Reset();
 
