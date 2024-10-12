@@ -107,6 +107,7 @@ module de10lite_verilator_wrapper
   //-------------------------------
   // Variables
   //
+  genvar n;
   wire [9:0] ledr;
 
 
@@ -176,8 +177,21 @@ module de10lite_verilator_wrapper
   //-------------------------------
   // Hookup LEDs
   //
-  vdbLED LED_inst [9:0] (.in(ledr));
+  //assign an ID per LED
+generate
+  for (n=0; n < 10; n++)
+  begin: gen_vdbLED
+      vdbLED #(n) LED_inst (.in(ledr[n]));
+  end
+endgenerate
 
+  //-------------------------------
+  // Hookup 7-Segment display
+  //
+
+  //-------------------------------
+  // Hookup VGA
+  //
 
 
 endmodule : de10lite_verilator_wrapper
