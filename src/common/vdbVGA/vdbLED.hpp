@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    TerAsic DE10-Lite Demo for VirtualDevBoard                   //
+//    Virtual Devboard LED Verilator C++ header file               //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,129 +43,11 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-module de10lite
-(
-  //Clocks
-  input  wire         CLK_50,
-  input  wire         CLK2_50,
-  input  wire         CLOCK_ADC_10,
 
-  //Arduino
-  output              ARDUINO_RESET_N,
-  inout        [15:0] ARDUINO_IO,
+//include Dpi headers, required to link verilator model to C++
+#include "vdb__Dpi.h"
 
-  //Accelerometer
-  output              G_SENSOR_SCLK,
-  output              G_SENSOR_CS_N,
-  output              G_SENSOR_SDO,
-  input               G_SENSOR_SDI,
-  input        [ 2:1] G_SENSOR_INT,
+#include "log.hpp"
 
-  //GPIO
-  inout        [35:0] GPIO,
-
-  //7-Segment display
-  output logic [ 7:0] HEX0,
-                      HEX1,
-                      HEX2,
-                      HEX3,
-                      HEX4,
-                      HEX5,
-
-  //Key
-  //KEY[0] is used as async system reset
-  input  wire  [ 1:0] KEY,
-
-  //LED
-  output logic [ 9:0] LEDR,
-
-  //SDRAM
-  output              DRAM_CLK,
-  output              DRAM_CKE,
-  output              DRAM_CS_N,
-  output              DRAM_RAS_N,
-  output              DRAM_CAS_N,
-  output              DRAM_WE_N,
-  output       [ 1:0] DRAM_BA,
-  output       [12:0] DRAM_ADDR,
-  output              DRAM_UDQM,
-  inout        [15:0] DRAM_DQ,
-
-  //Switches
-  input        [ 9:0] SW,
-
-  //VGA
-  output       [ 3:0] VGA_R,
-                      VGA_G,
-                      VGA_B,
-  output              VGA_HS,
-  output              VGA_VS
-);
-  //-------------------------------
-  // Key[0] is used as async active low reset
-  //
-  wire rst_n;
-  assign rst_n = KEY[0];
-
-
-  //-------------------------------
-  // 2.5Hz trigger for LEDs
-  //
-  logic [24:0] ena2p5_cnt;
-  logic        ena2p5;
-
-  always @(posedge CLK_50, negedge rst_n)
-    if      (!rst_n  ) ena2p5_cnt <= 25'd20_000;
-    else if ( ena2p5 ) ena2p5_cnt <= 25'd20_000;
-    else               ena2p5_cnt <= ena2p5_cnt -'h1;
-
-  assign ena2p5 = ~|ena2p5_cnt;
-
-
-  //-------------------------------
-  // LEDs
-  // Simply toggle the LEDs
-  //
-  always @(posedge CLK_50, negedge rst_n)
-    if      (!rst_n ) LEDR <= 'h0;
-    else if ( ena2p5) LEDR <= LEDR + 9'h1;
-
-
-  //-------------------------------
-  // VGA Demo
-  //
-  // VGA requires a 25.2MHz clock
-  // This is close enough
-  logic ck25;
-  always @(posedge CLK_50, negedge rst_n)
-    if (!rst_n) ck25 <= 1'b0;
-    else        ck25 <= ~ck25;
-
-  vga_demo #(
-    .HWIDTH ( 640    ),
-    .VWIDTH ( 480    ))
-  vga_inst (
-    .rst_n  ( rst_n  ),
-    .clk    ( ck25   ),
-    .VGA_R  ( VGA_R  ),
-    .VGA_G  ( VGA_G  ),
-    .VGA_B  ( VGA_B  ),
-    .VGA_HS ( VGA_HS ),
-    .VGA_VS ( VGA_VS ));
-
-
-  //-------------------------------
-  // TODO
-  // Dummy altsyncram to make DPI bindings happy
-  //
-  wire [7:0] top_mem_q;
-  altsyncram #(
-    .numwords_a (1),
-    .width_a    (8))
-  top_mem (
-    .clock0 (CLK_50),
-    .data_a ( top_mem_q ),
-    .q_a    ( top_mem_q )
-  );
-
-endmodule : de10lite
+void vdbLedOn();
+void vdbLedOff();
