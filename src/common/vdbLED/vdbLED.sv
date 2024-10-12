@@ -44,6 +44,10 @@
 /////////////////////////////////////////////////////////////////////
 
 module vdbLED
+#(
+  //ID helps the C++ GUI code to identify the LED
+  parameter int ID=1
+)
 (
   input in
 );
@@ -51,13 +55,13 @@ module vdbLED
   //-----------------------
   // DPI Functions
   //
-  import "DPI-C" context function void vdbLedOn();
-  import "DPI-C" context function void vdbLedOff();
+  import "DPI-C" context function void vdbLedOn(int id);
+  import "DPI-C" context function void vdbLedOff(int id);
 
 
   //-----------------------
   // Module body
   //
-  always @(posedge in) vdbLedOn();
-  always @(negedge in) vdbLedOff();
+  always @(posedge in) vdbLedOn(ID);
+  always @(negedge in) vdbLedOff(ID);
 endmodule

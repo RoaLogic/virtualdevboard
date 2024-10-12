@@ -49,5 +49,5 @@
 
 #include "log.hpp"
 
-void vdbLedOn();
-void vdbLedOff();
+void vdbLedOn(int id);
+void vdbLedOff(int id);

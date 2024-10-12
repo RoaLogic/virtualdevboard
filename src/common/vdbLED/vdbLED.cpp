@@ -50,7 +50,7 @@
  * @details This function gets called when the LED turns on
  * 
  */
-void vdbLedOn()
+void vdbLedOn(int id)
 {
     //get instance scope
     svScope scope = svGetScope();
@@ -59,7 +59,7 @@ void vdbLedOn()
     const char* scopeName = svGetNameFromScope(scope);
 
     //report progress
-    INFO << "LED(" << scopeName << ") On\n";
+    INFO << "LED(" << scopeName << ") with ID:" << id << " On\n";
 }
 
 /**
@@ -67,7 +67,7 @@ void vdbLedOn()
  * @details This function gets called when the LED turns off
  * 
  */
-void vdbLedOff()
+void vdbLedOff(int id)
 {
     //get instance scope
     svScope scope = svGetScope();
@@ -76,7 +76,7 @@ void vdbLedOff()
     const char* scopeName = svGetNameFromScope(scope);
 
     //report progress
-    INFO << "LED(" << scopeName << ") Off\n";
+    INFO << "LED(" << scopeName << ") with ID:" << id << " Off\n";
 }
 
 
