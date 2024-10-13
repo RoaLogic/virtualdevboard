@@ -180,10 +180,10 @@ cMainFrame::cMainFrame() :
                                          wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT),
                                          0, wxLEFT, cLeftPanelOffset);
     
-    _startButton  = new wxButton(this, cStartButtonID, wxT("Start"));
-    _stopButton   = new wxButton(this, cStopButtonID , wxT("Stop"));
-    _pauseButton  = new wxButton(this, cPauseButtonID, wxT("Pause"));
-    _resumeButton = new wxButton(this, cResumeButtonID, wxT("Resume"));
+    _startButton  = new wxButton(_leftPanel, cStartButtonID, wxT("Start"));
+    _stopButton   = new wxButton(_leftPanel, cStopButtonID , wxT("Stop"));
+    _pauseButton  = new wxButton(_leftPanel, cPauseButtonID, wxT("Pause"));
+    _resumeButton = new wxButton(_leftPanel, cResumeButtonID, wxT("Resume"));
 
     leftPanelSizer->Add(_startButton,  0, wxLEFT, cLeftPanelOffset);
     leftPanelSizer->Add(_stopButton,   0, wxLEFT, cLeftPanelOffset);
@@ -201,7 +201,7 @@ cMainFrame::cMainFrame() :
 
     for (size_t i = 0; i < cNumLeds; i++)
     {
-        cVirtualLed* newLed = new cVirtualLed(this, i, _rightPanel, wxPoint( (50*i) , 0), 50 , 'g');
+        cVirtualLed* newLed = new cVirtualLed(_mySplitterWindow, i, _rightPanel, wxPoint( (50*i) , 0), 50 , 'g');
         ledInstances.push_back(newLed);
         rightPanelSizer->Add(newLed, 0, wxLEFT, 100);
     }
