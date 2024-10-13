@@ -56,7 +56,7 @@ INCDIRS +=$(PWD)lexer										\
           $(PWD)submodules/Verilator-simulation/testbench					\
           $(PWD)submodules/Verilator-simulation/common						\
           $(PWD)submodules/Verilator-simulation/common/programOptions				\
-	  $(PWD)vdbLED/vdbLED
+	  $(PWD)vdbLED
 
 RTL_VERILOG +=$(PWD)vdbLED/vdbLED.sv
 
