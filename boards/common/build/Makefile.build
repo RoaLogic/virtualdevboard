@@ -74,7 +74,7 @@ include $(SRC_DIR)common/Makefile.include
 OBJDIR:=obj_dir
 
 #Set VERILATOR_ROOT if not already set
-VERILATOR_ROOT ?= $(shell bash -c 'verilator -V | grep VERILATOR_ROOT | tail -1 | sed -e " s/^.*=\s*//"')
+VERILATOR_ROOT ?= $(shell bash -c 'verilator -V | grep VERILATOR_ROOT | head -1 | sed -e " s/^.*=\s*//"')
 VERILATOR_FLAGS ?= -Wall -Wno-PINCONNECTEMPTY
 VERILATE_FLAGS ?= -CFLAGS -DVL_NO_LEGACY -Wno-lint -structs-packed --trace 
 
@@ -85,10 +85,13 @@ VERILATOR_INCLUDE = $(addprefix -I, $(VERILATOR_ROOT)/include $(VERILATOR_ROOT)/
 #CXX Variables
 CXX ?= g++
 #CXXFLAGS ?= -fcoroutines
+CXXFLAGS += $(shell wx-config --cxxflags)
+
 CPPSTD ?= c++20
 CPPLIB ?= stdc++
 
 LDLIBS = -lm -pthread
+LDFLAGS += $(shell wx-config --libs)
 
 ifdef PLI
 ifneq ($(PLI),"")
