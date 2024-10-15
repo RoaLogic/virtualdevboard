@@ -103,8 +103,6 @@ class cMainFrame : public wxFrame
     void onButtonStop(wxCommandEvent& event);
     void onButtonPause(wxCommandEvent& event);
     void onButtonResume(wxCommandEvent& event);
-    void onStart(wxCommandEvent& event);
-    void onStop(wxCommandEvent& event);
 };
 
 wxBEGIN_EVENT_TABLE(cMainFrame, wxFrame)
@@ -114,8 +112,6 @@ wxBEGIN_EVENT_TABLE(cMainFrame, wxFrame)
     EVT_BUTTON(cStopButtonID, cMainFrame::onButtonStop)
     EVT_BUTTON(cPauseButtonID, cMainFrame::onButtonPause)
     EVT_BUTTON(cResumeButtonID, cMainFrame::onButtonResume)
-    EVT_COMMAND(wxID_ANY, wxEVT_DE10_Start, cMainFrame::onStart)
-    EVT_COMMAND(wxID_ANY, wxEVT_DE10_Stop , cMainFrame::onStop)
 
 wxEND_EVENT_TABLE()
 
@@ -249,14 +245,4 @@ void cMainFrame::onButtonResume(wxCommandEvent& event)
 {
     cDE10LiteThread::eDE10Message msg = cDE10LiteThread::eDE10Message::Resume;
     _de10ThreadMessageQueue.Post(msg);
-}
-
-void cMainFrame::onStart(wxCommandEvent& event)
-{
-    SetStatusText(wxT("Verilator started"));
-}
-
-void cMainFrame::onStop(wxCommandEvent& event)
-{
-    SetStatusText(wxT("Verilator stopped"));
 }

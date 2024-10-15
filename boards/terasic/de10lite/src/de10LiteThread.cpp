@@ -49,11 +49,6 @@
 using namespace RoaLogic;
 using namespace common;
 
-wxDEFINE_EVENT(wxEVT_DE10_Start, wxCommandEvent);
-wxDEFINE_EVENT(wxEVT_DE10_Stop, wxCommandEvent);
-wxDEFINE_EVENT(wxEVT_DE10_Pause, wxCommandEvent);
-wxDEFINE_EVENT(wxEVT_DE10_Resume, wxCommandEvent);
-
 cDE10LiteThread::cDE10LiteThread(wxEvtHandler* parent, wxMessageQueue<eDE10Message>& eventQueue) :
     wxThread(wxTHREAD_JOINABLE),
     cDE10Lite(std::unique_ptr<VerilatedContext>(new VerilatedContext).get(), false),
@@ -61,12 +56,11 @@ cDE10LiteThread::cDE10LiteThread(wxEvtHandler* parent, wxMessageQueue<eDE10Messa
     _eventQueue(eventQueue)
 {
     
-    
 }
 
 cDE10LiteThread::~cDE10LiteThread()
 {
-
+    Exit();
 }
 
 /**
@@ -78,8 +72,6 @@ void* cDE10LiteThread::Entry()
 {
     sCoRoutineHandler reset = cDE10Lite::Reset();
     bool started = false;
-    wxCommandEvent startEvent(wxEVT_DE10_Start);
-    wxCommandEvent stopEvent(wxEVT_DE10_Stop);
 
     cLog::getInstance()->init(_logLevel, "");
     INFO << "Started log with level: " << _logLevel << "\n";
@@ -93,11 +85,11 @@ void* cDE10LiteThread::Entry()
         if(_myState == eDE10State::running)
         {
             run(1000);
-            wxPostEvent(_parent, wxCommandEvent{wxEVT_DE10_Start});
+            wxLogStatus("Verilator started");
         }
         else
         {
-            wxPostEvent(_parent, wxCommandEvent{wxEVT_DE10_Stop});
+            wxLogStatus("Verilator stopped");
         }
     }
 

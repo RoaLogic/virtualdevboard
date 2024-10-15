@@ -123,7 +123,7 @@ void cVirtualLed::SendLedEvent(int ledID, bool state)
         eventData->on = state;
 
         #ifdef DBG_VDB_LED
-        INFO << "Received led " << eventData->id << " state: " << eventData->on << "\n";
+        INFO << "Received led " << eventData->id << " state: " << eventData->on << " Thread: " <<  wxThread::GetCurrentId() << "\n";
         #endif
 
         testEvent.SetClientObject(eventData);
@@ -151,7 +151,7 @@ void cVirtualLed::OnLedEvent(wxCommandEvent& event)
             ref.ledReference->SetStatus(eventData->on);
 
             #ifdef DBG_VDB_LED
-            INFO << "Processed led " << eventData->id << " state: " << eventData->on << "\n";
+            INFO << "Processed led " << eventData->id << " state: " << eventData->on << " Thread: " << wxThread::GetCurrentId() <<"\n";
             #endif
         }
     }

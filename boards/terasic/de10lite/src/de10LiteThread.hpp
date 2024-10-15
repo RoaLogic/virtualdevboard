@@ -52,11 +52,6 @@
 #ifndef DE10LITE_THREAD_HPP
 #define DE10LITE_THREAD_HPP
 
-wxDECLARE_EVENT(wxEVT_DE10_Start, wxCommandEvent);
-wxDECLARE_EVENT(wxEVT_DE10_Stop, wxCommandEvent);
-wxDECLARE_EVENT(wxEVT_DE10_Pause, wxCommandEvent);
-wxDECLARE_EVENT(wxEVT_DE10_Resume, wxCommandEvent);
-
 /**
  * @class cDE10LiteThread
  * @author Bjorn Schouteten
