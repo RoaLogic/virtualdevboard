@@ -108,8 +108,13 @@ module de10lite_verilator_wrapper
   // Variables
   //
   genvar n;
+
   wire [9:0] ledr;
 
+  wire       vga_pixel_clk;
+  wire [3:0] vga_r,vga_g,vga_b;
+  wire       vga_hsync;
+  wire       vga_vsync;
 
 
   //-------------------------------
@@ -167,11 +172,11 @@ module de10lite_verilator_wrapper
     .SW              (),
 
     //VGA
-    .VGA_R           (),
-    .VGA_G           (),
-    .VGA_B           (),
-    .VGA_HS          (),
-    .VGA_VS          ());
+    .VGA_R           ( vga_r     ),
+    .VGA_G           ( vga_g     ),
+    .VGA_B           ( vga_b     ),
+    .VGA_HS          ( vga_hsync ),
+    .VGA_VS          ( vga_vsync ));
 
 
   //-------------------------------
@@ -190,8 +195,15 @@ endgenerate
   //
 
   //-------------------------------
-  // Hookup VGA
+  // Hookup VGA Monitor
   //
-
+  vdbVGAMonitor
+  vgaMonitor_inst (
+    .pixel_clk ( vga_pixel_clk ),
+    .r         ( vga_r         ),
+    .g         ( vga_g         ),
+    .b         ( vga_b         ),
+    .hsync     ( vga_hsync     ),
+    .vsync     ( vga_vsync     )); 
 
 endmodule : de10lite_verilator_wrapper

@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    Virtual Devboard LED Verilator C++ header file               //
+//    Virtual Devboard VGA Monitor Verilator C++ wrapper           //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,11 +43,39 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
+#include "vdbLED.hpp"
 
-//include Dpi headers, required to link verilator model to C++
-#include "vdb__Dpi.h"
+/**
+ * @brief VGA Monitor HSYNC DPI-C callback
+ * @details This function gets called when the VGA Monitor detects an HSYNC
+ * 
+ */
+void vdbVGAMonitorHSYNC(int id)
+{
+    //get instance scope
+    svScope scope = svGetScope();
 
-#include "log.hpp"
+    //get hierarchical name
+    const char* scopeName = svGetNameFromScope(scope);
 
-void vdbLedOn();
-void vdbLedOff();
+    //report progress
+    INFO << "VGA Monitor(" << scopeName << ") HSYNC\n";
+}
+
+/**
+ * @brief VGA Monitor VSYNC DPI-C callback
+ * @details This function gets called when the VGA Monitor detects a VSYNC
+ * 
+ */
+void vdbVGAMonitorVSYNC(int id)
+{
+    //get instance scope
+    svScope scope = svGetScope();
+
+    //get hierarchical name
+    const char* scopeName = svGetNameFromScope(scope);
+
+    //report progress
+    INFO << "VGA Monitor(" << scopeName << ") VSYNC\n";
+}
+

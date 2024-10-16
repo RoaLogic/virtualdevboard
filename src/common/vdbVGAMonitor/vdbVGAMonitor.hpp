@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    Virtual Devboard Verilog wrapper for VGA                     //
+//    Virtual Devboard VGA Monitor Verilator C++ header file       //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,21 +43,9 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-module vdbLED
-(
-  input in
-);
 
-  //-----------------------
-  // DPI Functions
-  //
-  import "DPI-C" context function void vdbLedOn();
-  import "DPI-C" context function void vdbLedOff();
+//include Dpi headers, required to link verilator model to C++
+#include "vdb__Dpi.h"
 
+#include "log.hpp"
 
-  //-----------------------
-  // Module body
-  //
-  always @(posedge in) vdbLedOn();
-  always @(negedge in) vdbLedOff();
-endmodule
