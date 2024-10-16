@@ -49,14 +49,17 @@ PWD := $(dir $(lastword $(MAKEFILE_LIST)))
 TB_CXX  +=$(PWD)submodules/Verilator-simulation/common/uniqueid.cpp				\
           $(PWD)submodules/Verilator-simulation/common/log.cpp					\
           $(PWD)submodules/Verilator-simulation/common/programOptions/programOptions.cpp	\
-	  $(PWD)vdbLED/vdbLED.cpp
+	  $(PWD)vdbLED/vdbLED.cpp								\
+	  $(PWD)vdbVGAMonitor/vdbVGAMonitor.cpp
 
 INCDIRS +=$(PWD)lexer										\
           $(PWD)parser										\
           $(PWD)submodules/Verilator-simulation/testbench					\
           $(PWD)submodules/Verilator-simulation/common						\
           $(PWD)submodules/Verilator-simulation/common/programOptions				\
-	  $(PWD)vdbLED
+	  $(PWD)vdbLED										\
+	  $(PWD)vdbVGAMonitor
 
-RTL_VERILOG +=$(PWD)vdbLED/vdbLED.sv
+RTL_VERILOG +=$(PWD)vdbLED/vdbLED.sv								\
+	      $(PWD)vdbVGAMonitor/vdbVGAMonitor.sv
 
