@@ -45,7 +45,9 @@
 
 module vdbLED
 #(
-  //ID helps the C++ GUI code to identify the LED
+  /** vdbLED instance ID
+   *  This helps the C++ GUI code to identify the LED instance
+   */
   parameter int ID=1
 )
 (
