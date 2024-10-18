@@ -64,14 +64,6 @@ module de10lite_verilator_wrapper
   //GPIO
   inout  [35:0] GPIO,
 
-  //7-Segment display
-  output [ 7:0] HEX0,
-                HEX1,
-                HEX2,
-                HEX3,
-                HEX4,
-                HEX5,
-
   //Key
   //KEY[0] is used as async system reset
   input  [ 1:0] KEY,
@@ -89,14 +81,7 @@ module de10lite_verilator_wrapper
   inout  [15:0] DRAM_DQ,
 
   //Switches
-  input  [ 9:0] SW,
-
-  //VGA
-  output [ 3:0] VGA_R,
-                VGA_G,
-                VGA_B,
-  output        VGA_HS,
-  output        VGA_VS
+  input  [ 9:0] SW
 );
 
   //-------------------------------
@@ -110,6 +95,8 @@ module de10lite_verilator_wrapper
   genvar n;
 
   wire [9:0] ledr;
+
+  wire [7:0] hex [6];
 
   wire       vga_pixel_clk;
   wire [3:0] vga_r,vga_g,vga_b;
@@ -142,12 +129,12 @@ module de10lite_verilator_wrapper
     .GPIO            (),
 
     //7-Segment display
-    .HEX0            (),
-    .HEX1            (),
-    .HEX2            (),
-    .HEX3            (),
-    .HEX4            (),
-    .HEX5            (),
+    .HEX0            ( hex[0] ),
+    .HEX1            ( hex[1] ),
+    .HEX2            ( hex[2] ),
+    .HEX3            ( hex[3] ),
+    .HEX4            ( hex[4] ),
+    .HEX5            ( hex[5] ),
 
     //Key
     //KEY[0] is used as async system reset
@@ -169,7 +156,7 @@ module de10lite_verilator_wrapper
     .DRAM_DQ         (),
 
     //Switches
-    .SW              (),
+    .SW              ( SW        ),
 
     //VGA
     .VGA_R           ( vga_r     ),
@@ -182,7 +169,7 @@ module de10lite_verilator_wrapper
   //-------------------------------
   // Hookup LEDs
   //
-  //assign an ID per LED
+  // assign an ID per LED
 generate
   for (n=0; n < 10; n++)
   begin: gen_vdbLED
@@ -190,9 +177,18 @@ generate
   end
 endgenerate
 
+
   //-------------------------------
   // Hookup 7-Segment display
   //
+  // assign an ID per 7-segment display
+generate
+  for (n=0; n < 6; n++)
+  begin: gen_vdb7SegmentDisplay
+      vdb7SegmentDisplay #(n) hex_inst (.in(hex[n]));
+  end
+endgenerate
+
 
   //-------------------------------
   // Hookup VGA Monitor

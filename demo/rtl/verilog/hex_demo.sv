@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    TerAsic DE10-Lite Demo for VirtualDevBoard                   //
+//    TerAsic DE10-Lite Demo for VirtualDevBoard - HEX             //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,143 +43,134 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-module de10lite
+/** 7-Segment clock HH.MM.SS demo
+ *
+ * 7-segment mapping
+ *
+ *   ---           in[0]
+ *  |   |    in[5]       in[1]
+ *   ---           in[6]
+ *  |   |    in[4]       in[2]
+ *   ---  *        in[3]       in[7]
+ *
+ *
+ *  examples
+ *
+ *      |
+ *
+ *      |
+ *        in=8'b00000110=8'h06
+ *
+ *   --- 
+ *      |
+ *   ---
+ *  |
+ *   ---  in=8'b01011011=8'h5b
+ *
+ *   ---
+ *      |
+ *   ---
+ *      |
+ *   ---  in=8'b01001111=8'h4f
+ */
+
+module hex_demo
 (
+  input  wire       rst_ni,
   //Clocks
-  input  wire         CLK_50,
-  input  wire         CLK2_50,
-  input  wire         CLOCK_ADC_10,
+  input  wire       CLK_50,  //50MHz clock
 
-  //Arduino
-  output              ARDUINO_RESET_N,
-  inout        [15:0] ARDUINO_IO,
-
-  //Accelerometer
-  output              G_SENSOR_SCLK,
-  output              G_SENSOR_CS_N,
-  output              G_SENSOR_SDO,
-  input               G_SENSOR_SDI,
-  input        [ 2:1] G_SENSOR_INT,
-
-  //GPIO
-  inout        [35:0] GPIO,
-
-  //7-Segment display
-  output logic [ 7:0] HEX0,
-                      HEX1,
-                      HEX2,
-                      HEX3,
-                      HEX4,
-                      HEX5,
-
-  //Key
-  //KEY[0] is used as async system reset
-  input  wire  [ 1:0] KEY,
-
-  //LED
-  output logic [ 9:0] LEDR,
-
-  //SDRAM
-  output              DRAM_CLK,
-  output              DRAM_CKE,
-  output              DRAM_CS_N,
-  output              DRAM_RAS_N,
-  output              DRAM_CAS_N,
-  output              DRAM_WE_N,
-  output       [ 1:0] DRAM_BA,
-  output       [12:0] DRAM_ADDR,
-  output              DRAM_UDQM,
-  inout        [15:0] DRAM_DQ,
-
-  //Switches
-  input        [ 9:0] SW,
-
-  //VGA
-  output       [ 3:0] VGA_R,
-                      VGA_G,
-                      VGA_B,
-  output              VGA_HS,
-  output              VGA_VS
+  //7-segment displays
+  output reg [ 7:0] HEX0,
+                    HEX1,
+                    HEX2,
+                    HEX3,
+                    HEX4,
+                    HEX5
 );
   //-------------------------------
-  // Key[0] is used as async active low reset
+  // constants
   //
-  wire rst_n;
-  assign rst_n = KEY[0];
+  localparam int HZ          = 26'd50_000; //_000 -1; //50 million ticks per second 
+  localparam int SEC_PER_DAY = 60*60*24; 
+
+  //-------------------------------
+  // Functions
+  //
+  function automatic [7:0] hex2_7segment (input [3:0] hex);
+    case (hex)
+      4'd0 : hex2_7segment = 8'b00111111;
+      4'd1 : hex2_7segment = 8'b00000110;
+      4'd2 : hex2_7segment = 8'b01011011;
+      4'd3 : hex2_7segment = 8'b01001111;
+      4'd4 : hex2_7segment = 8'b01100110;
+      4'd5 : hex2_7segment = 8'b01101101;
+      4'd6 : hex2_7segment = 8'b01111101;
+      4'd7 : hex2_7segment = 8'b00000111;
+      4'd8 : hex2_7segment = 8'b01111111;
+      4'd9 : hex2_7segment = 8'b01101111;
+      4'd10: hex2_7segment = 8'b01110111;
+      4'd11: hex2_7segment = 8'b01111100;
+      4'd12: hex2_7segment = 8'b00111001;
+      4'd13: hex2_7segment = 8'b01011110;
+      4'd14: hex2_7segment = 8'b01111001;
+      4'd15: hex2_7segment = 8'b01110001;
+    endcase
+  endfunction
+
+  //-------------------------------
+  // Variables
+  //
+  logic [25:0] ena_1sec_cnt;
+  logic        ckena_1sec;
+
+  logic [ 7:0] seconds;
+  logic [ 7:0] minutes;
+  logic [ 7:0] hours;
 
 
   //-------------------------------
-  // 2.5Hz trigger for LEDs
+  // clock body
   //
-  logic [24:0] ena2p5_cnt;
-  logic        ena2p5;
+  assign ckena_1sec = ~|ena_1sec_cnt;
 
-  always @(posedge CLK_50, negedge rst_n)
-    if      (!rst_n  ) ena2p5_cnt <= 25'd20_000; //actually 20_000_000
-    else if ( ena2p5 ) ena2p5_cnt <= 25'd20_000; //actually 20_000_000
-    else               ena2p5_cnt <= ena2p5_cnt -'h1;
+  always @(posedge CLK_50, negedge rst_ni)
+    if      (!rst_ni    ) ena_1sec_cnt <= HZ;
+    else if ( ckena_1sec) ena_1sec_cnt <= HZ;
+    else                  ena_1sec_cnt <= ena_1sec_cnt -1;
 
-  assign ena2p5 = ~|ena2p5_cnt;
-
-
-  //-------------------------------
-  // LEDs
-  // Simply toggle the LEDs
-  //
-  always @(posedge CLK_50, negedge rst_n)
-    if      (!rst_n ) LEDR <= 'h0;
-    else if ( ena2p5) LEDR <= LEDR + 9'h1;
-
-  //-------------------------------
-  // 7-segment display (HEX) demo
-  //
-  //
-  hex_demo
-  hex_inst (
-    .rst_ni ( rst_n  ),
-    .CLK_50 ( CLK_50 ),
-    .HEX0   ( HEX0   ),
-    .HEX1   ( HEX1   ),
-    .HEX2   ( HEX2   ),
-    .HEX3   ( HEX3   ),
-    .HEX4   ( HEX4   ),
-    .HEX5   ( HEX5   ));
-
-  //-------------------------------
-  // VGA Demo
-  //
-  // VGA requires a 25.2MHz clock
-  // This is close enough
-  logic ck25;
-  always @(posedge CLK_50, negedge rst_n)
-    if (!rst_n) ck25 <= 1'b0;
-    else        ck25 <= ~ck25;
-
-  vga_demo #(
-    .HWIDTH ( 640    ),
-    .VWIDTH ( 480    ))
-  vga_inst (
-    .rst_n  ( rst_n  ),
-    .clk    ( ck25   ),
-    .VGA_R  ( VGA_R  ),
-    .VGA_G  ( VGA_G  ),
-    .VGA_B  ( VGA_B  ),
-    .VGA_HS ( VGA_HS ),
-    .VGA_VS ( VGA_VS ));
+  always @(posedge CLK_50, negedge rst_ni)
+    if      (!rst_ni    ) seconds <= 'h0;
+    else if ( ckena_1sec)
+      if (seconds == 59)  seconds <= 'h0;
+      else                seconds <= seconds +'h1;
 
 
-  //-------------------------------
-  // TODO
-  // Dummy altsyncram to make DPI bindings happy
-  //
-  wire [7:0] top_mem_q;
-  altsyncram #(
-    .numwords_a (1),
-    .width_a    (8))
-  top_mem (
-    .clock0 (CLK_50),
-    .data_a ( top_mem_q ),
-    .q_a    ( top_mem_q )
-  );
+  always @(posedge CLK_50, negedge rst_ni)
+    if      (!rst_ni    ) minutes <= 'h0;
+    else if ( ckena_1sec   &&
+              seconds == 59)
+      if (minutes == 59)  minutes <= 'h0;
+      else                minutes <= minutes +'h1;
 
-endmodule : de10lite
+
+  always @(posedge CLK_50, negedge rst_ni)
+    if      (!rst_ni    ) hours <= 'h0;
+    else if ( ckena_1sec    &&
+              seconds == 59 &&
+              minutes == 59 )
+      if (hours   == 23)  hours <= 'h0;
+      else                hours <= hours +'h1;
+
+
+  //BCD
+  always @(posedge CLK_50)
+    begin
+        HEX0 <= hex2_7segment(seconds[3:0]);
+        HEX1 <= hex2_7segment(seconds[7:4]);
+        HEX2 <= hex2_7segment(minutes[3:0]);
+        HEX3 <= hex2_7segment(minutes[7:4]);
+        HEX4 <= hex2_7segment(hours  [3:0]);
+        HEX5 <= hex2_7segment(hours  [7:4]);
+    end
+endmodule : hex_demo

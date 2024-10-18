@@ -50,7 +50,8 @@ TB_CXX  +=$(PWD)submodules/Verilator-simulation/common/uniqueid.cpp				\
           $(PWD)submodules/Verilator-simulation/common/log.cpp					\
           $(PWD)submodules/Verilator-simulation/common/programOptions/programOptions.cpp	\
 	  $(PWD)vdbLED/vdbLED.cpp								\
-	  $(PWD)vdbVGAMonitor/vdbVGAMonitor.cpp
+	  $(PWD)vdbVGAMonitor/vdbVGAMonitor.cpp							\
+	  $(PWD)vdb7SegmentDisplay/vdb7SegmentDisplay.cpp
 
 INCDIRS +=$(PWD)lexer										\
           $(PWD)parser										\
@@ -58,8 +59,11 @@ INCDIRS +=$(PWD)lexer										\
           $(PWD)submodules/Verilator-simulation/common						\
           $(PWD)submodules/Verilator-simulation/common/programOptions				\
 	  $(PWD)vdbLED										\
-	  $(PWD)vdbVGAMonitor
+	  $(PWD)vdbVGAMonitor									\
+	  $(PWD)7SegmentDisplay
 
 RTL_VERILOG +=$(PWD)vdbLED/vdbLED.sv								\
-	      $(PWD)vdbVGAMonitor/vdbVGAMonitor.sv
+	      $(PWD)vdbVGAMonitor/vdbVGAMonitor.sv						\
+	      $(PWD)vdb7SegmentDisplay/vdb7SegmentDisplay.sv
+
 
