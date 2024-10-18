@@ -146,6 +146,7 @@ module vga_demo
   //update direction on vsync
   logic vsync_dly;
   logic update_circle_pos;
+  logic draw_circle;
 
   always @(posedge clk)
     vsync_dly <= VGA_VS;
