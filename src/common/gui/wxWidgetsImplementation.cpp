@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    DE10-Lite Verilator C++ wrapper                              //
+//    WX widgets GUI implementation                                //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,135 +43,52 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#include <de10lite.hpp>
+#include "wxWidgetsImplementation.hpp"
 
-using namespace RoaLogic;
-using namespace common;
-using namespace testbench::clock::units;
-using namespace testbench::tasks;
+DECLARE_APP(cVirtualDemoBoard)
+IMPLEMENT_APP_NO_MAIN(cVirtualDemoBoard)
 
-
-/**
- * @brief Constructor
- * @details Creates class and assigns all signals/ports
- */
-cDE10Lite::cDE10Lite(VerilatedContext* context, bool traceActive, cGuiInterface* aGUI) :
-  cTestBench<Vde10lite_verilator_wrapper>(context, traceActive),
-  key(_core->KEY),
-  _myGUI(aGUI)
+cVirtualDemoBoard::cVirtualDemoBoard()
 {
-    if(aGUI)
-    {
-        aGUI->registerObserver(this);
-    }
-
-    /*
-      define clocks
-     */
-    clk_50  = addClock(_core->CLK_50, 20.0_ns);
-    clk2_50 = addClock(_core->CLK2_50, 20.0_ns);
-    clk_adc_10 = addClock(_core->CLOCK_ADC_10, 100.0_ns);
-
-    /*
-      KEY
-     */
-    key = 0x3;        //KEY has pull-up
+    wxApp::SetInstance(this);
 }
 
-
-/**
- * @brief Destructor
- */
-cDE10Lite::~cDE10Lite()
+cVirtualDemoBoard::~cVirtualDemoBoard()
 {
+    notifyObserver(eEvent::close);
 }
 
-
-/**
- * @brief Generate reset
- * @details This is a coroutine function that generates the main reset
- *
- * @return The coroutine handle for this function
- */
-sCoRoutineHandler<bool> cDE10Lite::Reset()
+bool cVirtualDemoBoard::OnInit()
 {
-    INFO << "Resetting FPGA\n";
+    _mainFrame = new cMainFrame(this);
+    _mainFrame->Show(true);
 
-    //KEY[0] is used as asynchronous active low signal
-
-    //wait a while
-    for (uint8_t i=0; i<5; i++)
-    {
-        waitPosEdge(clk_50);
-    }
-
-
-    INFO << "Assert reset\n";
-    bitClr8(key,0);
-    waitPosEdge(clk_50);
-
-    INFO << "Negate reset\n";
-    bitSet8(key,0);
-
-    co_return true;    
+    return true;
 }
 
-
-/**
- * @brief Run testbench
- *
- */
-int cDE10Lite::run()
+void cVirtualDemoBoard::init(int argc, char** argv)
 {
-    if(_myGUI)
-    {
-        _myGUI->addVirtualLED(8);
-    }
-
-    //Reset core
-    sCoRoutineHandler reset = Reset();
-
-    long tick_cnt = 0;
-
-    //Run testbench
-    while(!finished())
-    {
-        if(_myState == eSystemState::running)
-        {
-            tick();
-        }
-    }
-
-    INFO << "Simulation ended\n";
-
-    return 0;
+    wxEntry(argc, argv);
 }
 
-void cDE10Lite::notify(eEvent aEvent, void* data)
+void cVirtualDemoBoard::addVirtualLED(size_t numLeds)
 {
-    switch(aEvent)
-    {
-        case eEvent::close:
-            finish();
-        break;
+    wxCommandEvent statusEvent{wxEVT_ADD_LED};
+    sAddLedEvent* const eventData{ new sAddLedEvent};
 
-        case eEvent::stateChange:
-            switch (_myState)
-            {
-            case eSystemState::paused :
-                [[fallthrough]];
-            case eSystemState::idle :
-                _myState = eSystemState::running;
-                break;
-            case eSystemState::running:
-                [[fallthrough]];
-            default:
-                _myState = eSystemState::paused;
-                break;
-            }            
-        break;
+    eventData->numLeds = numLeds;
 
-        default:
-            break;
-    }
+    statusEvent.SetClientObject(eventData);
+    wxPostEvent(_mainFrame, statusEvent);
 }
+
+// void cVirtualDemoBoard::setCurrentStatus(eSystemState state)
+// {
+//     wxCommandEvent statusEvent{wxEVT_STATUS};
+//     sSystemStateEvent* const eventData{ new sSystemStateEvent};
+
+//     eventData->state = state;
+
+//     statusEvent.SetClientObject(eventData);
+//     wxPostEvent(_mainFrame, statusEvent);
+// }

@@ -46,9 +46,7 @@
 PWD         := $(dir $(lastword $(MAKEFILE_LIST)))
 
 TB_CXX      += $(PWD)de10lite.cpp
-TB_CXX      += $(PWD)GUIMain.cpp
-TB_CXX      += $(PWD)de10LiteThread.cpp
-#	       $(PWD)main.cpp
+TB_CXX      += $(PWD)main.cpp
 
 RTL_VERILOG += $(PWD)de10lite_verilator_wrapper.sv
 

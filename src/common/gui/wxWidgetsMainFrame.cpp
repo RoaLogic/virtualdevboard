@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    DE10-Lite Verilator GUI main C++ file                        //
+//    WX widgets main frame implementation                         //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,110 +43,14 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#include <wx/wx.h>
-#include <wx/splitter.h>
+#include "wxWidgetsMainFrame.hpp"
 
-#include "de10LiteThread.hpp"
+wxDEFINE_EVENT(wxEVT_STATUS, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_ADD_LED, wxCommandEvent);
 
-#include "vdbLED.hpp"
-
-class cVirtualDemoBoard : public wxApp
-{
-    private:
-    cDE10LiteThread* de10Thread;
-
-    public:
-    ~cVirtualDemoBoard();
-
-    bool OnInit() override;
-};
-
-wxIMPLEMENT_APP(cVirtualDemoBoard);
-
-class cMainFrame : public wxFrame
-{
-    private:
-    static const int cLeftPanelOffset = 10;
-    static const int cMinWidthSize    = 750;
-    static const int cMinHeightSize   = 600;
-    static const int cStartButtonID   = 100;
-    static const int cStopButtonID    = 101;
-    static const int cPauseButtonID   = 102;
-    static const int cResumeButtonID  = 103;
-
-    static const int cNumLeds = 8;
-    
-    wxSplitterWindow* _mySplitterWindow = new wxSplitterWindow{this, wxID_ANY};
-    wxPanel* _leftPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
-    wxPanel* _rightPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
-
-    wxButton* _startButton;
-    wxButton* _stopButton;
-    wxButton* _pauseButton;
-    wxButton* _resumeButton;
-
-    //Led* testLed;
-    std::vector<cVirtualLed*> ledInstances;
-
-    wxDECLARE_EVENT_TABLE();
-
-    public:
-    wxMessageQueue<cDE10LiteThread::eDE10Message> _de10ThreadMessageQueue;
-
-    cMainFrame();
-
-    void OnExit(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
-
-    void onButtonStart(wxCommandEvent& event);
-    void onButtonStop(wxCommandEvent& event);
-    void onButtonPause(wxCommandEvent& event);
-    void onButtonResume(wxCommandEvent& event);
-};
-
-wxBEGIN_EVENT_TABLE(cMainFrame, wxFrame)
-    EVT_MENU(wxID_ABOUT, cMainFrame::OnAbout)
-    EVT_MENU(wxID_EXIT, cMainFrame::OnExit)
-    EVT_BUTTON(cStartButtonID, cMainFrame::onButtonStart)
-    EVT_BUTTON(cStopButtonID, cMainFrame::onButtonStop)
-    EVT_BUTTON(cPauseButtonID, cMainFrame::onButtonPause)
-    EVT_BUTTON(cResumeButtonID, cMainFrame::onButtonResume)
-
-wxEND_EVENT_TABLE()
-
-bool cVirtualDemoBoard::OnInit()
-{
-    cMainFrame* frame = new cMainFrame();
-    frame->Show(true);
-
-    // Create the new thread and couple it with the main frame of the application
-    de10Thread = new cDE10LiteThread(frame, frame->_de10ThreadMessageQueue);
-
-    if(de10Thread->Create() != wxTHREAD_NO_ERROR)
-    {
-        wxMessageBox(wxT("Couldn't create the DE10 board"));
-        return false;
-    }
-
-    if(de10Thread->Run() != wxTHREAD_NO_ERROR)
-    {
-        wxMessageBox(wxT("Couldn't run the DE10 board"));
-        return false;
-    }
-
-    return true;
-}
-
-cVirtualDemoBoard::~cVirtualDemoBoard()
-{
-    de10Thread->Delete();
-    de10Thread->Wait();
-    delete de10Thread;
-}
-
-cMainFrame::cMainFrame() :
-    wxFrame(nullptr, wxID_ANY, "Virtual DE10 demo board")
+cMainFrame::cMainFrame(cSubject* aSubject) :
+    wxFrame(nullptr, wxID_ANY, "Virtual DE10 demo board"),
+    _subject(aSubject)
 {
     /**********************************
      * Setup the top menu and the status bar
@@ -162,6 +66,8 @@ cMainFrame::cMainFrame() :
     wxMenuBar* menuBar = new wxMenuBar;
     menuBar->Append(menuFile, "&File");
     menuBar->Append(menuHelp, "&help");
+    Bind(wxEVT_MENU, &cMainFrame::OnExit, this, wxID_EXIT);
+    Bind(wxEVT_MENU, &cMainFrame::OnAbout, this, wxID_ABOUT);
 
     SetMenuBar(menuBar);
 
@@ -177,14 +83,26 @@ cMainFrame::cMainFrame() :
                                          0, wxLEFT, cLeftPanelOffset);
     
     _startButton  = new wxButton(_leftPanel, cStartButtonID, wxT("Start"));
-    _stopButton   = new wxButton(_leftPanel, cStopButtonID , wxT("Stop"));
-    _pauseButton  = new wxButton(_leftPanel, cPauseButtonID, wxT("Pause"));
-    _resumeButton = new wxButton(_leftPanel, cResumeButtonID, wxT("Resume"));
+    _startButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonStart, this);
+    // _stopButton   = new wxButton(_leftPanel, wxID_ANY , wxT("Stop"));
+    // _pauseButton  = new wxButton(_leftPanel, wxID_ANY, wxT("Pause"));
+    // //_resumeButton = new wxButton(_leftPanel, cResumeButtonID, wxT("Resume"));
 
     leftPanelSizer->Add(_startButton,  0, wxLEFT, cLeftPanelOffset);
-    leftPanelSizer->Add(_stopButton,   0, wxLEFT, cLeftPanelOffset);
-    leftPanelSizer->Add(_pauseButton,  0, wxLEFT, cLeftPanelOffset);
-    leftPanelSizer->Add(_resumeButton, 0, wxLEFT, cLeftPanelOffset);
+    // leftPanelSizer->Add(_stopButton,   0, wxLEFT, cLeftPanelOffset);
+    // leftPanelSizer->Add(_pauseButton,  0, wxLEFT, cLeftPanelOffset);
+    // //leftPanelSizer->Add(_resumeButton, 0, wxLEFT, cLeftPanelOffset);
+
+    // // Bind the functions for starting and pausing verilator to the verilator thread
+    // // Both the Start and resume button have the same functionality
+    // function<void (wxCommandEvent&)> startHandler(bind(&cDE10LiteThread::OnStart, de10Thread, std::placeholders::_1));
+    // _startButton->Bind(wxEVT_BUTTON, startHandler, wxID_ANY, wxID_ANY, de10Thread);
+
+    // // function<void (wxCommandEvent&)> resumeHandler(bind(&cDE10LiteThread::OnStart, &(*de10Thread), std::placeholders::_1));
+    // // _resumeButton->Bind(wxEVT_BUTTON, resumeHandler);
+
+    // function<void (wxCommandEvent&)> pauseHandler(bind(&cDE10LiteThread::OnPauze, de10Thread, std::placeholders::_1));
+    // _pauseButton->Bind(wxEVT_BUTTON, pauseHandler, wxID_ANY, wxID_ANY, de10Thread);
 
     _leftPanel->SetSizer(leftPanelSizer);
 
@@ -193,28 +111,22 @@ cMainFrame::cMainFrame() :
      * Right panel
      ********************************/
 
-    wxBoxSizer* rightPanelSizer = new wxBoxSizer(wxHORIZONTAL);
-
-    for (size_t i = 0; i < cNumLeds; i++)
-    {
-        cVirtualLed* newLed = new cVirtualLed(_mySplitterWindow, i, _rightPanel, wxPoint( (50*i) , 0), 50 , 'g');
-        ledInstances.push_back(newLed);
-        rightPanelSizer->Add(newLed, 0, wxLEFT, 100);
-    }
-
     /*********************************
      * Main screen setup
      ********************************/
-
     _mySplitterWindow->SplitVertically(_leftPanel, _rightPanel, 120);
     wxBoxSizer* topSizer = new wxBoxSizer(wxHORIZONTAL);
     topSizer->Add(_mySplitterWindow, 1, wxEXPAND);
     SetSizerAndFit(topSizer);
     SetMinSize(wxSize(cMinWidthSize, cMinHeightSize));
+
+    //Bind(wxEVT_STATUS, &cMainFrame::onStatusChange, this, wxID_ANY);
+    Bind(wxEVT_ADD_LED, &cMainFrame::onAddLed, this, wxID_ANY);
 }
 
 void cMainFrame::OnExit(wxCommandEvent& event)
 {
+    _subject->notifyObserver(eEvent::close);
     Close(true);
 }
 
@@ -225,24 +137,49 @@ void cMainFrame::OnAbout(wxCommandEvent& event)
 
 void cMainFrame::onButtonStart(wxCommandEvent& event)
 {
-    cDE10LiteThread::eDE10Message msg = cDE10LiteThread::eDE10Message::Start;
-    _de10ThreadMessageQueue.Post(msg);
+    _subject->notifyObserver(eEvent::stateChange);
+
+    if(_startButton->GetLabel() == wxT("Start"))
+    {
+        _startButton->SetLabel("Pause");
+    }
+    else if(_startButton->GetLabel() == wxT("Pause"))
+    {
+        _startButton->SetLabel("Resume");
+    }
+    else if(_startButton->GetLabel() == wxT("Resume"))
+    {
+        _startButton->SetLabel("Pause");
+    }
 }
 
-void cMainFrame::onButtonStop(wxCommandEvent& event)
+void cMainFrame::onAddLed(wxCommandEvent& event)
 {
-    cDE10LiteThread::eDE10Message msg = cDE10LiteThread::eDE10Message::Stop;
-    _de10ThreadMessageQueue.Post(msg);
+    sAddLedEvent* eventData = reinterpret_cast<sAddLedEvent*>(event.GetClientObject());
+
+    if(eventData)
+    {
+        wxBoxSizer* rightPanelSizer = new wxBoxSizer(wxHORIZONTAL);
+
+        for (size_t i = 0; i < eventData->numLeds; i++)
+        {
+            cVirtualLed* newLed = new cVirtualLed(_mySplitterWindow, i, _rightPanel, wxPoint( (50*i) , 0), 50 , 'g');
+            ledInstances.push_back(newLed);
+            rightPanelSizer->Add(newLed, 0, wxLEFT, 100);
+            _mySplitterWindow->SplitVertically(_leftPanel, _rightPanel, 120);
+        }
+
+        Refresh();
+    }
 }
 
-void cMainFrame::onButtonPause(wxCommandEvent& event)
-{
-    cDE10LiteThread::eDE10Message msg = cDE10LiteThread::eDE10Message::Pause;
-    _de10ThreadMessageQueue.Post(msg);
-}
-
-void cMainFrame::onButtonResume(wxCommandEvent& event)
-{
-    cDE10LiteThread::eDE10Message msg = cDE10LiteThread::eDE10Message::Resume;
-    _de10ThreadMessageQueue.Post(msg);
-}
+// void cMainFrame::onStatusChange(wxCommandEvent& event)
+// {
+//     sSystemStateEvent* eventData = reinterpret_cast<sSystemStateEvent*>(event.GetClientObject());
+    
+//     if(eventData->state == eSystemState::running)
+//     {
+//         SetStatusText("Started verilator");
+//         _startButton->SetLabel("Pause");
+//     }
+// }

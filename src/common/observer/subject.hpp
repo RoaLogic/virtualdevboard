@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    DE10-Lite Verilator Thread C++ header file                   //
+//    Subject implementation header file                           //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,64 +43,50 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#include <wx/wx.h>
-#include <wx/msgqueue.h>
+#ifndef SUBJECT_HPP
+#define SUBJECT_HPP
 
-#include "de10lite.hpp"
+#include "observer.hpp"
+#include <vector>
+#include <cstdint>
 
-#ifndef DE10LITE_THREAD_HPP
-#define DE10LITE_THREAD_HPP
+namespace RoaLogic {
+namespace observer {
 
-/**
- * @class cDE10LiteThread
- * @author Bjorn Schouteten
- * @brief Thread implementation for the de10Lite class
- * @version 0.1
- * @date 13-oct-2024
- *
- * @details This class is a threaded implemenation for the de10Lite wrapper class.
- * 
- * It inherits the cDE10Lite class, which is used in the command line implemenation.
- * All functions shall be inherited, it will only override the run() function. It is now
- * controlable from the GUI to start, stop or continue the verilated design.
- * 
- * @attention Make sure that the verilated instance is running in a seperate thread,
- *            class internally this is properly handled.
- */
-class cDE10LiteThread : public wxThread, public cDE10Lite
-{
-    public:
-    enum eDE10Message
+    /**
+     * @class cSubject
+     * @author Bjorn Schouteten
+     * @brief Subject definition
+     * @version 0.1
+     * @date 19-okt-2024
+     *
+     * @details This class is the subject definition of the observer pattern.
+     * 
+     * A class shall derive from this class and all the functionality is at that 
+     * point included. A observer can register or remove itself through the 
+     * corresponding functions.
+     * 
+     * When an event occurs, the notifyObserver shall be called with the event type.
+     * Optionally data can be passed with this function.
+     * 
+     */
+    class cSubject
     {
-        Start,
-        Stop,
-        Pause,
-        Resume,
-        Reset
+        protected:
+        std::vector<cObserver*> _observers;
+        
+        public:
+        static const uint8_t _cMaxObservers = 10;
+
+        cSubject(void);
+        ~cSubject(void);
+
+        bool registerObserver(cObserver* aObserver);
+        bool removeObserver(cObserver* aObserver);
+
+        void notifyObserver(eEvent aEvent, void* data = nullptr);
     };
 
-    private:
-    wxEvtHandler* _parent;
-    wxMessageQueue<eDE10Message>& _eventQueue;
-    int _logLevel = 2;
+}}
 
-    enum eDE10State
-    {
-        running,
-        paused,
-        stopped,
-    }_myState;
-
-    public:
-    cDE10LiteThread(wxEvtHandler* parent, wxMessageQueue<eDE10Message>& eventQueue);
-    ~cDE10LiteThread();
-
-    virtual void* Entry() override;
-    virtual void OnExit() override;
-
-	void processEventQueue();
-    int run(size_t numClocks);
-};
-
-#endif // DE10LITE_THREAD_HPP
+#endif //SUBJECT_HPP

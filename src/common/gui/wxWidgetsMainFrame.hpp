@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    DE10-Lite Verilator C++ wrapper                              //
+//    WX widgets main frame definition                             //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,135 +43,90 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#include <de10lite.hpp>
+#ifndef WXWIDGETS_MAIN_FRAME_HPP
+#define WXWIDGETS_MAIN_FRAME_HPP
 
-using namespace RoaLogic;
-using namespace common;
-using namespace testbench::clock::units;
-using namespace testbench::tasks;
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+#include <wx/splitter.h>
 
+#include "eventDefinition.hpp"
+#include "subject.hpp"
 
-/**
- * @brief Constructor
- * @details Creates class and assigns all signals/ports
- */
-cDE10Lite::cDE10Lite(VerilatedContext* context, bool traceActive, cGuiInterface* aGUI) :
-  cTestBench<Vde10lite_verilator_wrapper>(context, traceActive),
-  key(_core->KEY),
-  _myGUI(aGUI)
+#include "vdbLED.hpp"
+
+using namespace RoaLogic::observer;
+
+wxDECLARE_EVENT(wxEVT_STATUS, wxCommandEvent);
+wxDECLARE_EVENT(wxEVT_ADD_LED, wxCommandEvent);
+
+struct sSystemStateEvent : public wxClientData
 {
-    if(aGUI)
-    {
-        aGUI->registerObserver(this);
-    }
+    eSystemState state;
+};
 
-    /*
-      define clocks
-     */
-    clk_50  = addClock(_core->CLK_50, 20.0_ns);
-    clk2_50 = addClock(_core->CLK2_50, 20.0_ns);
-    clk_adc_10 = addClock(_core->CLOCK_ADC_10, 100.0_ns);
-
-    /*
-      KEY
-     */
-    key = 0x3;        //KEY has pull-up
-}
-
-
-/**
- * @brief Destructor
- */
-cDE10Lite::~cDE10Lite()
+struct sAddLedEvent : public wxClientData
 {
-}
-
+    size_t numLeds;
+};
 
 /**
- * @brief Generate reset
- * @details This is a coroutine function that generates the main reset
+ * @class cMainFrame
+ * @author Bjorn Schouteten
+ * @brief Main frame
+ * @version 0.1
+ * @date 19-okt-2024
  *
- * @return The coroutine handle for this function
+ * @details This class is the definition of the main frame for the virtual demo board
+ * 
+ * This class sets and controls the main frame. From the main frame events are handled
+ * to any interested observer, however the subject itself is the virtual demo board.
+ * This class shall only handle events coming through the wxWidgets event handling.
+ * 
  */
-sCoRoutineHandler<bool> cDE10Lite::Reset()
+class cMainFrame : public wxFrame
 {
-    INFO << "Resetting FPGA\n";
+    private:
+    static const int cLeftPanelOffset = 10;
+    static const int cMinWidthSize    = 750;
+    static const int cMinHeightSize   = 600;
+    static const int cStartButtonID   = 100;
+    // static const int cStopButtonID    = 101;
+    // static const int cPauseButtonID   = 102;
+    // static const int cResumeButtonID  = 103;
 
-    //KEY[0] is used as asynchronous active low signal
+    cSubject* _subject;
+    
+    wxSplitterWindow* _mySplitterWindow = new wxSplitterWindow{this, wxID_ANY};
+    wxPanel* _leftPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
+    wxPanel* _rightPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
 
-    //wait a while
-    for (uint8_t i=0; i<5; i++)
+    wxButton* _startButton;
+    // wxButton* _stopButton;
+    // wxButton* _pauseButton;
+    //wxButton* _resumeButton;
+
+    std::vector<cVirtualLed*> ledInstances;
+
+    public:
+    cMainFrame(cSubject* aSubject);
+    ~cMainFrame()
     {
-        waitPosEdge(clk_50);
-    }
+
+    };
+
+    void OnExit(wxCommandEvent& event);
+    void OnAbout(wxCommandEvent& event);
+
+    void onButtonStart(wxCommandEvent& event);
+    // void onButtonStop(wxCommandEvent& event);
+    // void onButtonPause(wxCommandEvent& event);
+    // void onButtonResume(wxCommandEvent& event);
+
+    //void onStatusChange(wxCommandEvent& event);
+
+    void onAddLed(wxCommandEvent& event);
+};
 
 
-    INFO << "Assert reset\n";
-    bitClr8(key,0);
-    waitPosEdge(clk_50);
-
-    INFO << "Negate reset\n";
-    bitSet8(key,0);
-
-    co_return true;    
-}
-
-
-/**
- * @brief Run testbench
- *
- */
-int cDE10Lite::run()
-{
-    if(_myGUI)
-    {
-        _myGUI->addVirtualLED(8);
-    }
-
-    //Reset core
-    sCoRoutineHandler reset = Reset();
-
-    long tick_cnt = 0;
-
-    //Run testbench
-    while(!finished())
-    {
-        if(_myState == eSystemState::running)
-        {
-            tick();
-        }
-    }
-
-    INFO << "Simulation ended\n";
-
-    return 0;
-}
-
-void cDE10Lite::notify(eEvent aEvent, void* data)
-{
-    switch(aEvent)
-    {
-        case eEvent::close:
-            finish();
-        break;
-
-        case eEvent::stateChange:
-            switch (_myState)
-            {
-            case eSystemState::paused :
-                [[fallthrough]];
-            case eSystemState::idle :
-                _myState = eSystemState::running;
-                break;
-            case eSystemState::running:
-                [[fallthrough]];
-            default:
-                _myState = eSystemState::paused;
-                break;
-            }            
-        break;
-
-        default:
-            break;
-    }
-}
+#endif

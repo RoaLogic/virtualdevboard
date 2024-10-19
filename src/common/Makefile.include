@@ -49,12 +49,17 @@ PWD := $(dir $(lastword $(MAKEFILE_LIST)))
 TB_CXX  +=$(PWD)submodules/Verilator-simulation/common/uniqueid.cpp				\
           $(PWD)submodules/Verilator-simulation/common/log.cpp					\
           $(PWD)submodules/Verilator-simulation/common/programOptions/programOptions.cpp	\
+		  $(PWD)observer/subject.cpp \
+		  $(PWD)gui/wxWidgetsImplementation.cpp \
+		  $(PWD)gui/wxWidgetsMainFrame.cpp \
 	  $(PWD)vdbLED/vdbLED.cpp								\
 	  $(PWD)vdbVGAMonitor/vdbVGAMonitor.cpp							\
 	  $(PWD)vdb7SegmentDisplay/vdb7SegmentDisplay.cpp
 
 INCDIRS +=$(PWD)lexer										\
           $(PWD)parser										\
+		  $(PWD)observer 									\
+		  $(PWD)gui											\
           $(PWD)submodules/Verilator-simulation/testbench					\
           $(PWD)submodules/Verilator-simulation/common						\
           $(PWD)submodules/Verilator-simulation/common/programOptions				\

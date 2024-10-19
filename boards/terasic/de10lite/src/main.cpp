@@ -48,6 +48,7 @@
 #include <noValueOption.hpp>
 #include <valueOption.hpp>
 
+#include "wxWidgetsImplementation.hpp"
 
 //Setup namespaces
 using namespace RoaLogic;
@@ -71,7 +72,6 @@ cValueOption<std::string> optInitFile  ("",  "initfile", "Initialisation file fo
 int setupProgramOptions(int argc, char** argv);
 void setupLogger(void);
 
-
 //Main routine
 int main(int argc, char** argv)
 {
@@ -93,10 +93,15 @@ int main(int argc, char** argv)
   std::unique_ptr<VerilatedContext> contextp(new VerilatedContext);
 
   //parse Verilator options
-  contextp->commandArgs(argc,argv);
+  contextp->commandArgs(argc, argv);
+
+  // Create GUI and start it on different thread
+  cVirtualDemoBoard* demoBoard = new cVirtualDemoBoard;
+  std::thread threadGUI(&cVirtualDemoBoard::init, demoBoard, argc, argv);
+  this_thread::sleep_for(chrono::seconds(1));// Give the GUI time to start, it has to be active before we can sent events to it
 
   //create testbench
-  cDE10Lite* de10lite = new cDE10Lite(contextp.get(), enableTrace);
+  cDE10Lite* de10lite = new cDE10Lite(contextp.get(), enableTrace, demoBoard);
 
   //Open waveform dump file if enabled
   if (enableTrace)
@@ -123,6 +128,12 @@ int main(int argc, char** argv)
 
   //Run the testbench
   de10lite->run();
+
+  // Close GUI
+  if(threadGUI.joinable())
+  {
+    threadGUI.join();
+  }
 
   //close testbench
   delete de10lite;

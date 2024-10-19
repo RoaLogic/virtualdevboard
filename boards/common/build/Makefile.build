@@ -86,6 +86,7 @@ VERILATOR_INCLUDE = $(addprefix -I, $(VERILATOR_ROOT)/include $(VERILATOR_ROOT)/
 CXX ?= g++
 #CXXFLAGS ?= -fcoroutines
 CXXFLAGS += $(shell wx-config --cxxflags)
+CXXFLAGS += -g
 
 CPPSTD ?= c++20
 CPPLIB ?= stdc++

@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    DE10-Lite Verilator C++ wrapper                              //
+//    WX widgets GUI definition                                    //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,135 +43,53 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#include <de10lite.hpp>
+#ifndef WXWIDGETS_GUI_HPP
+#define WXWIDGETS_GUI_HPP
 
-using namespace RoaLogic;
-using namespace common;
-using namespace testbench::clock::units;
-using namespace testbench::tasks;
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+#include <wx/splitter.h>
 
+#include "gui_interface.hpp"
+#include "wxWidgetsMainFrame.hpp"
 
-/**
- * @brief Constructor
- * @details Creates class and assigns all signals/ports
- */
-cDE10Lite::cDE10Lite(VerilatedContext* context, bool traceActive, cGuiInterface* aGUI) :
-  cTestBench<Vde10lite_verilator_wrapper>(context, traceActive),
-  key(_core->KEY),
-  _myGUI(aGUI)
-{
-    if(aGUI)
-    {
-        aGUI->registerObserver(this);
-    }
-
-    /*
-      define clocks
-     */
-    clk_50  = addClock(_core->CLK_50, 20.0_ns);
-    clk2_50 = addClock(_core->CLK2_50, 20.0_ns);
-    clk_adc_10 = addClock(_core->CLOCK_ADC_10, 100.0_ns);
-
-    /*
-      KEY
-     */
-    key = 0x3;        //KEY has pull-up
-}
-
+using namespace RoaLogic::observer;
+using namespace RoaLogic::GUI;
 
 /**
- * @brief Destructor
- */
-cDE10Lite::~cDE10Lite()
-{
-}
-
-
-/**
- * @brief Generate reset
- * @details This is a coroutine function that generates the main reset
+ * @class cVirtualDemoBoard
+ * @author Bjorn Schouteten
+ * @brief WX widgets virtual demo board implementation
+ * @version 0.1
+ * @date 19-okt-2024
  *
- * @return The coroutine handle for this function
+ * @details This class is a GUI implementation for the virtual demo board
+ * 
+ * It is specificly coupled with wxWidgets and shall only use wxWidget elements.
+ * 
+ * to communicate with the verilated design it inherits from the cGuiInterface, 
+ * since this interface is a subject we can notify events. 
+ * 
+ * @attention The virtual functions coming from the cGuiInterface are all run
+ * within the verilator context, so we must make sure that we don't change any 
+ * GUI elements.
+ * 
  */
-sCoRoutineHandler<bool> cDE10Lite::Reset()
+class cVirtualDemoBoard : public wxApp, public cGuiInterface
 {
-    INFO << "Resetting FPGA\n";
+    private:
+    bool OnInit() override;
+    cMainFrame* _mainFrame;
 
-    //KEY[0] is used as asynchronous active low signal
+    public:
+    cVirtualDemoBoard();
+    ~cVirtualDemoBoard();
+    void init(int argc, char** argv);
 
-    //wait a while
-    for (uint8_t i=0; i<5; i++)
-    {
-        waitPosEdge(clk_50);
-    }
-
-
-    INFO << "Assert reset\n";
-    bitClr8(key,0);
-    waitPosEdge(clk_50);
-
-    INFO << "Negate reset\n";
-    bitSet8(key,0);
-
-    co_return true;    
-}
+    void addVirtualLED(size_t numLeds);
+    //void setCurrentStatus(eSystemState state);
+};
 
 
-/**
- * @brief Run testbench
- *
- */
-int cDE10Lite::run()
-{
-    if(_myGUI)
-    {
-        _myGUI->addVirtualLED(8);
-    }
 
-    //Reset core
-    sCoRoutineHandler reset = Reset();
-
-    long tick_cnt = 0;
-
-    //Run testbench
-    while(!finished())
-    {
-        if(_myState == eSystemState::running)
-        {
-            tick();
-        }
-    }
-
-    INFO << "Simulation ended\n";
-
-    return 0;
-}
-
-void cDE10Lite::notify(eEvent aEvent, void* data)
-{
-    switch(aEvent)
-    {
-        case eEvent::close:
-            finish();
-        break;
-
-        case eEvent::stateChange:
-            switch (_myState)
-            {
-            case eSystemState::paused :
-                [[fallthrough]];
-            case eSystemState::idle :
-                _myState = eSystemState::running;
-                break;
-            case eSystemState::running:
-                [[fallthrough]];
-            default:
-                _myState = eSystemState::paused;
-                break;
-            }            
-        break;
-
-        default:
-            break;
-    }
-}
+#endif

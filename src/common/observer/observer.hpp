@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    DE10-Lite Verilator Thread C++ source file                   //
+//    Observer implementation header file                          //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,115 +43,38 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#include "de10LiteThread.hpp"
-#include <log.hpp>
+#ifndef OBSERVER_HPP
+#define OBSERVER_HPP
 
-using namespace RoaLogic;
-using namespace common;
+#include "eventDefinition.hpp"
 
-cDE10LiteThread::cDE10LiteThread(wxEvtHandler* parent, wxMessageQueue<eDE10Message>& eventQueue) :
-    wxThread(wxTHREAD_JOINABLE),
-    cDE10Lite(std::unique_ptr<VerilatedContext>(new VerilatedContext).get(), false),
-    _parent(parent),
-    _eventQueue(eventQueue)
-{
-    
-}
+namespace RoaLogic {
+namespace observer {
 
-cDE10LiteThread::~cDE10LiteThread()
-{
-    Exit();
-}
-
-/**
- * @brief This is the thread entry function
- * 
- * @return void* 
- */
-void* cDE10LiteThread::Entry()
-{
-    sCoRoutineHandler reset = cDE10Lite::Reset();
-    bool started = false;
-
-    cLog::getInstance()->init(_logLevel, "");
-    INFO << "Started log with level: " << _logLevel << "\n";
-
-    // Thread keeps running untill Delete() is called
-    // When Delete is called(), the OnExit function is called
-    while (!TestDestroy())
-    {  
-        processEventQueue();
-
-        if(_myState == eDE10State::running)
-        {
-            run(1000);
-            wxLogStatus("Verilator started");
-        }
-        else
-        {
-            wxLogStatus("Verilator stopped");
-        }
-    }
-
-    //close log
-    cLog::getInstance()->close();
-
-    return 0;
-}
-
-int cDE10LiteThread::run(size_t numClocks)
-{
-    size_t tickCount = 0;
-
-    while (tickCount++ < numClocks)
+    /**
+     * @class cObserver
+     * @author Bjorn Schouteten
+     * @brief Observer implementation
+     * @version 0.1
+     * @date 19-okt-2024
+     *
+     * @details This class is the observer implementation of the observer pattern.
+     * 
+     * A class shall derive from this class and implement the notify() function, it 
+     * then subscribes itself to a subject. When the subject now has a event it will
+     * call the notify function and the event can be processed in any way.
+     * 
+     * @attention This function will always run in the thread context of the calling
+     * thread. So changing variables of another thread must be made thread safe within
+     * the notify() function implementation.
+     * 
+     */
+    class cObserver
     {
-        tick();
-    }
+        public: 
+        virtual void notify(eEvent aEvent, void* data) = 0;
+    };
 
-    if(finished())
-    {
-        _myState = eDE10State::stopped;
-        INFO << "Simulation ended\n";
-    }
+}}
 
-    return 0;
-}
-
-void cDE10LiteThread::OnExit()
-{
-    finish();
-}
-
-void cDE10LiteThread::processEventQueue()
-{
-    eDE10Message message;
-
-    // Check to see if we have an event
-    if (_eventQueue.ReceiveTimeout(0, message) == wxMSGQUEUE_NO_ERROR )
-    {
-        switch (message)
-        {
-        case eDE10Message::Resume:
-            [[fallthrough]]
-        case eDE10Message::Start:
-            _myState = eDE10State::running;
-            break;
-
-        case eDE10Message::Stop:
-            _myState = eDE10State::stopped;
-            break;
-
-        case eDE10Message::Pause:
-            _myState = eDE10State::paused;
-            break;
-
-        case eDE10Message::Reset:
-            
-            break;
-
-        default:
-            INFO << "Unknown event message received \n";
-            break;
-        }
-    }
-}
+#endif // OBERSERVER_HPP

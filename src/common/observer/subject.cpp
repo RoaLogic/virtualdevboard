@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    DE10-Lite Verilator C++ wrapper                              //
+//    Subject implementation source file                           //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,135 +43,119 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#include <de10lite.hpp>
+#include "subject.hpp"
+#include <cstring>
 
-using namespace RoaLogic;
-using namespace common;
-using namespace testbench::clock::units;
-using namespace testbench::tasks;
+namespace RoaLogic {
+namespace observer {
 
-
-/**
- * @brief Constructor
- * @details Creates class and assigns all signals/ports
- */
-cDE10Lite::cDE10Lite(VerilatedContext* context, bool traceActive, cGuiInterface* aGUI) :
-  cTestBench<Vde10lite_verilator_wrapper>(context, traceActive),
-  key(_core->KEY),
-  _myGUI(aGUI)
-{
-    if(aGUI)
-    {
-        aGUI->registerObserver(this);
-    }
-
-    /*
-      define clocks
+    /**
+     * @brief Construct a new Subject object
+     * 
      */
-    clk_50  = addClock(_core->CLK_50, 20.0_ns);
-    clk2_50 = addClock(_core->CLK2_50, 20.0_ns);
-    clk_adc_10 = addClock(_core->CLOCK_ADC_10, 100.0_ns);
+    cSubject::cSubject()
+    {
 
-    /*
-      KEY
+    }
+
+    /**
+     * @brief Destroy the Subject object
      */
-    key = 0x3;        //KEY has pull-up
-}
-
-
-/**
- * @brief Destructor
- */
-cDE10Lite::~cDE10Lite()
-{
-}
-
-
-/**
- * @brief Generate reset
- * @details This is a coroutine function that generates the main reset
- *
- * @return The coroutine handle for this function
- */
-sCoRoutineHandler<bool> cDE10Lite::Reset()
-{
-    INFO << "Resetting FPGA\n";
-
-    //KEY[0] is used as asynchronous active low signal
-
-    //wait a while
-    for (uint8_t i=0; i<5; i++)
+    cSubject::~cSubject()
     {
-        waitPosEdge(clk_50);
+
     }
 
-
-    INFO << "Assert reset\n";
-    bitClr8(key,0);
-    waitPosEdge(clk_50);
-
-    INFO << "Negate reset\n";
-    bitSet8(key,0);
-
-    co_return true;    
-}
-
-
-/**
- * @brief Run testbench
- *
- */
-int cDE10Lite::run()
-{
-    if(_myGUI)
+    /**
+     * @brief register an observer
+     * 
+     * @details Register an observer for this subject
+     *          Loops to the array and checks if any free spot is available
+     * 
+     * @param aObserver     The reference to the observer
+     * 
+     * @return false             To many observers registered or observer is already registered
+     * @return true              Succesfully registered
+     */
+    bool cSubject::registerObserver(cObserver* aObserver)
     {
-        _myGUI->addVirtualLED(8);
-    }
+        bool result = false;
+        bool found = false;
 
-    //Reset core
-    sCoRoutineHandler reset = Reset();
-
-    long tick_cnt = 0;
-
-    //Run testbench
-    while(!finished())
-    {
-        if(_myState == eSystemState::running)
+        if(aObserver)
         {
-            tick();
+            if(_observers.size() < _cMaxObservers)
+            {
+                for(auto observer : _observers)
+                {
+                    if(aObserver == observer)
+                    {
+                        found = true;
+                    }
+                }
+
+                if (!found)
+                {
+                    _observers.push_back(aObserver);
+                    result = true;
+                }
+            }            
+        }
+
+        return result;
+    }
+
+    /**
+     * @brief Remove observer from array
+     * 
+     * @details Remove the given observer from the list
+     *          Function goes through every registered element on the list 
+     *          when it finds the corresponding observer the entry is set to zero
+     * 
+     * @param[in] aObserver     The observer to remove
+     * 
+     * @return false        The given observer is not registered
+     * @return true         Observer removed succesfully
+     */
+    bool cSubject::removeObserver(cObserver* aObserver)
+    {
+        bool result = false;
+        uint32_t iterator = 0;
+
+        if(aObserver)
+        {
+            for(auto observer : _observers)
+            {
+                if(aObserver == observer)
+                {
+                    // Found the right observer, remove it and break out of the for loop
+                    _observers.erase(_observers.begin() + iterator);
+                    result = true;
+                    break;
+                }
+
+                iterator++;
+            }
+        }  
+        
+        return result;
+    }
+
+    /**
+     * @brief update function
+     * 
+     * @details update function for the event type
+     *          Called when an event occurs, travesers through the list and calls every registerd update function
+     * 
+     * @param[in] aEvent The event what has occured
+     * @param[in] data   A pointer to the data belonging to the event, when no data this shall be a nullptr
+     */
+    void cSubject::notifyObserver(eEvent aEvent, void* data)
+    {
+        for(auto observer : _observers)
+        {
+            observer->notify(aEvent, data);
         }
     }
 
-    INFO << "Simulation ended\n";
-
-    return 0;
-}
-
-void cDE10Lite::notify(eEvent aEvent, void* data)
-{
-    switch(aEvent)
-    {
-        case eEvent::close:
-            finish();
-        break;
-
-        case eEvent::stateChange:
-            switch (_myState)
-            {
-            case eSystemState::paused :
-                [[fallthrough]];
-            case eSystemState::idle :
-                _myState = eSystemState::running;
-                break;
-            case eSystemState::running:
-                [[fallthrough]];
-            default:
-                _myState = eSystemState::paused;
-                break;
-            }            
-        break;
-
-        default:
-            break;
-    }
-}
+}}
