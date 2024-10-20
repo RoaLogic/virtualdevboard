@@ -112,4 +112,5 @@ class cDE10Lite : public cTestBench<Vde10lite_verilator_wrapper>, public cObserv
         inline void bitClr8(uint8_t& signal, uint8_t bit){ signal &= ~(1 << bit); }
 
         int run();
+        int run(uint32_t numMilliSeconds);
 };

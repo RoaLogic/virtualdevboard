@@ -131,8 +131,6 @@ int cDE10Lite::run()
     //Reset core
     sCoRoutineHandler reset = Reset();
 
-    long tick_cnt = 0;
-
     //Run testbench
     while(!finished())
     {
@@ -145,6 +143,32 @@ int cDE10Lite::run()
     INFO << "Simulation ended\n";
 
     return 0;
+}
+
+int cDE10Lite::run(uint32_t numMilliSeconds)
+{
+    //Reset core
+    sCoRoutineHandler reset = Reset();
+
+    //Run testbench
+    while(!finished())
+    {
+        tick();
+
+        if(numMilliSeconds != 0)
+        {
+            if(getTime().ms() > numMilliSeconds)
+            {
+                finish();
+                INFO << "Time passed, end simulation\n";
+            }
+        }
+    }
+
+    INFO << "Simulation ended\n";
+
+    return 0;
+
 }
 
 void cDE10Lite::notify(eEvent aEvent, void* data)

@@ -67,10 +67,14 @@ cValueOption<std::string> optWaveFile  ("",  "wave",     "Waveform file");
 cValueOption<std::string> optLog       ("l", "log",      "Set the path for the log file");
 cValueOption<uint8_t>     optLogLvl    ("",  "level",    "Log level; start loggin from 0=Debug, 1=Log, 2=Info, 3=Warning, 4=Error, 5=Fatal");
 cValueOption<std::string> optInitFile  ("",  "initfile", "Initialisation file for the on-chip RAM");
+cValueOption<uint32_t>    optNoGui     ("",  "nogui",    "Start system without a GUI, possible to add in simulation time in milliseconds");
 
 //type definitions for program options and logger (see bottom of the file)
 int setupProgramOptions(int argc, char** argv);
 void setupLogger(void);
+
+cVirtualDemoBoard* demoBoard = nullptr;
+std::thread threadGUI;
 
 //Main routine
 int main(int argc, char** argv)
@@ -95,10 +99,13 @@ int main(int argc, char** argv)
   //parse Verilator options
   contextp->commandArgs(argc, argv);
 
-  // Create GUI and start it on different thread
-  cVirtualDemoBoard* demoBoard = new cVirtualDemoBoard;
-  std::thread threadGUI(&cVirtualDemoBoard::init, demoBoard, argc, argv);
-  this_thread::sleep_for(chrono::seconds(1));// Give the GUI time to start, it has to be active before we can sent events to it
+  if(!optNoGui.isSet())
+  {
+    // Create GUI and start it on different thread
+    demoBoard = new cVirtualDemoBoard;
+    threadGUI = std::thread(&cVirtualDemoBoard::init, demoBoard, argc, argv);
+    this_thread::sleep_for(chrono::seconds(1));// Give the GUI time to start, it has to be active before we can sent events to it
+  }
 
   //create testbench
   cDE10Lite* de10lite = new cDE10Lite(contextp.get(), enableTrace, demoBoard);
@@ -127,12 +134,20 @@ int main(int argc, char** argv)
   }
 
   //Run the testbench
-  de10lite->run();
-
-  // Close GUI
-  if(threadGUI.joinable())
+  if(optNoGui.isSet())
   {
-    threadGUI.join();
+
+    de10lite->run(optNoGui.value());
+  }
+  else
+  {
+    de10lite->run();
+
+    // Close GUI
+    if(threadGUI.joinable())
+    {
+      threadGUI.join();
+    }
   }
 
   //close testbench
@@ -165,6 +180,7 @@ int setupProgramOptions(int argc, char** argv)
     programOptions.add(&optLog);
     programOptions.add(&optLogLvl);
     programOptions.add(&optInitFile);
+    programOptions.add(&optNoGui);
 
     programOptions.parse(argc, argv);
 
