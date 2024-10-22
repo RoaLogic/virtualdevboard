@@ -92,7 +92,7 @@ class cMainFrame : public wxFrame
     static const int cMinHeightSize   = 600;
     static const int cStartButtonID   = 100;
     static const int cResetButtonID    = 101;
-    // static const int cPauseButtonID   = 102;
+    static const int cStopButtonID   = 102;
     // static const int cResumeButtonID  = 103;
 
     cSubject* _subject;
@@ -102,7 +102,7 @@ class cMainFrame : public wxFrame
     wxPanel* _rightPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
 
     wxButton* _startButton;
-    // wxButton* _stopButton;
+    wxButton* _stopButton;
     // wxButton* _pauseButton;
     wxButton* _resetButton;
 
@@ -120,7 +120,7 @@ class cMainFrame : public wxFrame
 
     void onButtonStart(wxCommandEvent& event);
     void onButtonReset(wxCommandEvent& event);
-    // void onButtonPause(wxCommandEvent& event);
+    void onButtonStop(wxCommandEvent& event);
     // void onButtonResume(wxCommandEvent& event);
 
     //void onStatusChange(wxCommandEvent& event);

@@ -80,6 +80,7 @@ std::thread threadGUI;
 int main(int argc, char** argv)
 {
   bool enableTrace = false;
+  bool rerun = false;
 
   //first setup the program options
   if (setupProgramOptions(argc,argv))
@@ -107,51 +108,57 @@ int main(int argc, char** argv)
     this_thread::sleep_for(chrono::seconds(1));// Give the GUI time to start, it has to be active before we can sent events to it
   }
 
-  //create testbench
-  cDE10Lite* de10lite = new cDE10Lite(contextp.get(), enableTrace, demoBoard);
-
-  //Open waveform dump file if enabled
-  if (enableTrace)
+  do
   {
-    if (optWaveFile.isSet())
+    rerun = false;
+    //create testbench
+    cDE10Lite* de10lite = new cDE10Lite(contextp.get(), enableTrace, demoBoard);
+
+    //Open waveform dump file if enabled
+    if (enableTrace)
     {
-      de10lite->opentrace(optWaveFile.value());
+      if (optWaveFile.isSet())
+      {
+        de10lite->opentrace(optWaveFile.value());
+      }
+      else
+      {
+        de10lite->opentrace("waves.vcd");
+      }
+    }
+
+    //Initialize RAMs
+    if (optInitFile.isSet())
+    {
+      //split string at ':' to get <instance> : <initfile>
+      std::vector<string> split_string = split(optInitFile.value(), ':');
+
+      //initialise altsyncram instance
+      altsyncram_initialize(split_string[0], split_string[1]);
+    }
+
+    //Run the testbench
+    if(optNoGui.isSet())
+    {
+      de10lite->run(optNoGui.value());
     }
     else
     {
-      de10lite->opentrace("waves.vcd");
+      if(de10lite->run() == eRunState::restart)
+      {
+        rerun = true;
+      }
     }
-  }
 
-  //Initialize RAMs
-  if (optInitFile.isSet())
+    //close testbench
+    delete de10lite;
+  } while (rerun);
+  
+  // Close GUI
+  if(threadGUI.joinable())
   {
-    //split string at ':' to get <instance> : <initfile>
-    std::vector<string> split_string = split(optInitFile.value(), ':');
-
-    //initialise altsyncram instance
-    altsyncram_initialize(split_string[0], split_string[1]);
+    threadGUI.join();
   }
-
-  //Run the testbench
-  if(optNoGui.isSet())
-  {
-
-    de10lite->run(optNoGui.value());
-  }
-  else
-  {
-    de10lite->run();
-
-    // Close GUI
-    if(threadGUI.joinable())
-    {
-      threadGUI.join();
-    }
-  }
-
-  //close testbench
-  delete de10lite;
 
   //close log
   cLog::getInstance()->close();

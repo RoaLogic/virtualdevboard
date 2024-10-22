@@ -130,7 +130,7 @@ sCoRoutineHandler<bool> cDE10Lite::Reset()
  * @brief Run testbench
  *
  */
-int cDE10Lite::run()
+eRunState cDE10Lite::run()
 {
     if(_myGUI)
     {
@@ -158,10 +158,10 @@ int cDE10Lite::run()
     reset.resume(); // End the reset coroutine at this point
     INFO << "Simulation ended\n";
 
-    return 0;
+    return _returnState;
 }
 
-int cDE10Lite::run(uint32_t numMilliSeconds)
+eRunState cDE10Lite::run(uint32_t numMilliSeconds)
 {
     //Reset core
     sCoRoutineHandler reset = Reset();
@@ -184,7 +184,7 @@ int cDE10Lite::run(uint32_t numMilliSeconds)
     reset.resume(); // End the reset coroutine at this point
     INFO << "Simulation ended\n";
 
-    return 0;
+    return _returnState;
 
 }
 
@@ -193,6 +193,11 @@ void cDE10Lite::notify(eEvent aEvent, void* data)
     switch(aEvent)
     {
         case eEvent::close:
+            finish();
+        break;
+
+        case eEvent::stop:
+            _returnState = eRunState::restart;
             finish();
         break;
 

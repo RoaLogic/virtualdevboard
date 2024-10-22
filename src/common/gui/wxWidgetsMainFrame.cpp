@@ -86,24 +86,12 @@ cMainFrame::cMainFrame(cSubject* aSubject) :
     _startButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonStart, this);
     _resetButton   = new wxButton(_leftPanel, cResetButtonID , wxT("Reset"));
     _resetButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonReset, this);
-    // _pauseButton  = new wxButton(_leftPanel, wxID_ANY, wxT("Pause"));
-    // //_resumeButton = new wxButton(_leftPanel, cResumeButtonID, wxT("Resume"));
+    _stopButton  = new wxButton(_leftPanel, cStopButtonID, wxT("Stop"));
+    _stopButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonStop, this);
 
     leftPanelSizer->Add(_startButton,  0, wxLEFT, cLeftPanelOffset);
-    // leftPanelSizer->Add(_stopButton,   0, wxLEFT, cLeftPanelOffset);
-    // leftPanelSizer->Add(_pauseButton,  0, wxLEFT, cLeftPanelOffset);
     leftPanelSizer->Add(_resetButton, 0, wxLEFT, cLeftPanelOffset);
-
-    // // Bind the functions for starting and pausing verilator to the verilator thread
-    // // Both the Start and resume button have the same functionality
-    // function<void (wxCommandEvent&)> startHandler(bind(&cDE10LiteThread::OnStart, de10Thread, std::placeholders::_1));
-    // _startButton->Bind(wxEVT_BUTTON, startHandler, wxID_ANY, wxID_ANY, de10Thread);
-
-    // // function<void (wxCommandEvent&)> resumeHandler(bind(&cDE10LiteThread::OnStart, &(*de10Thread), std::placeholders::_1));
-    // // _resumeButton->Bind(wxEVT_BUTTON, resumeHandler);
-
-    // function<void (wxCommandEvent&)> pauseHandler(bind(&cDE10LiteThread::OnPauze, de10Thread, std::placeholders::_1));
-    // _pauseButton->Bind(wxEVT_BUTTON, pauseHandler, wxID_ANY, wxID_ANY, de10Thread);
+    leftPanelSizer->Add(_stopButton,   0, wxLEFT, cLeftPanelOffset);
 
     _leftPanel->SetSizer(leftPanelSizer);
 
@@ -157,6 +145,12 @@ void cMainFrame::onButtonStart(wxCommandEvent& event)
 void cMainFrame::onButtonReset(wxCommandEvent& event)
 {
     _subject->notifyObserver(eEvent::reset);
+}
+
+void cMainFrame::onButtonStop(wxCommandEvent& event)
+{
+    _subject->notifyObserver(eEvent::stop);
+    _startButton->SetLabel("Start");
 }
 
 void cMainFrame::onAddLed(wxCommandEvent& event)
