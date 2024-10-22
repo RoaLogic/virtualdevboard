@@ -49,6 +49,7 @@
 enum class eEvent
 {
     close,
+    reset,
     stateChange
 };
 

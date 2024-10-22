@@ -91,7 +91,7 @@ class cMainFrame : public wxFrame
     static const int cMinWidthSize    = 750;
     static const int cMinHeightSize   = 600;
     static const int cStartButtonID   = 100;
-    // static const int cStopButtonID    = 101;
+    static const int cResetButtonID    = 101;
     // static const int cPauseButtonID   = 102;
     // static const int cResumeButtonID  = 103;
 
@@ -104,7 +104,7 @@ class cMainFrame : public wxFrame
     wxButton* _startButton;
     // wxButton* _stopButton;
     // wxButton* _pauseButton;
-    //wxButton* _resumeButton;
+    wxButton* _resetButton;
 
     std::vector<cVirtualLed*> ledInstances;
 
@@ -119,7 +119,7 @@ class cMainFrame : public wxFrame
     void OnAbout(wxCommandEvent& event);
 
     void onButtonStart(wxCommandEvent& event);
-    // void onButtonStop(wxCommandEvent& event);
+    void onButtonReset(wxCommandEvent& event);
     // void onButtonPause(wxCommandEvent& event);
     // void onButtonResume(wxCommandEvent& event);
 

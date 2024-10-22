@@ -90,7 +90,13 @@ cDE10Lite::~cDE10Lite()
 /**
  * @brief Generate reset
  * @details This is a coroutine function that generates the main reset
- *
+ * 
+ * It is generates the first reset after 5 clock cycles. Following that
+ * it is suspended until a resume() is called on it. This is done so that
+ * in a running design another reset could be triggered in the system. 
+ * 
+ * No processing power is used when the reset function is in a suspended state.
+ * 
  * @return The coroutine handle for this function
  */
 sCoRoutineHandler<bool> cDE10Lite::Reset()
@@ -105,13 +111,16 @@ sCoRoutineHandler<bool> cDE10Lite::Reset()
         waitPosEdge(clk_50);
     }
 
+    do
+    {
+        INFO << "Assert reset\n";
+        bitClr8(key,0);
+        waitPosEdge(clk_50);
 
-    INFO << "Assert reset\n";
-    bitClr8(key,0);
-    waitPosEdge(clk_50);
-
-    INFO << "Negate reset\n";
-    bitSet8(key,0);
+        INFO << "Negate reset\n";
+        bitSet8(key,0);
+        co_await std::suspend_always{};
+    } while (!finished());
 
     co_return true;    
 }
@@ -138,8 +147,15 @@ int cDE10Lite::run()
         {
             tick();
         }
+
+        if(doReset)
+        {
+            reset.resume();
+            doReset = false;
+        }
     }
 
+    reset.resume(); // End the reset coroutine at this point
     INFO << "Simulation ended\n";
 
     return 0;
@@ -165,6 +181,7 @@ int cDE10Lite::run(uint32_t numMilliSeconds)
         }
     }
 
+    reset.resume(); // End the reset coroutine at this point
     INFO << "Simulation ended\n";
 
     return 0;
@@ -179,6 +196,10 @@ void cDE10Lite::notify(eEvent aEvent, void* data)
             finish();
         break;
 
+        case eEvent::reset:
+            doReset = true;
+            break;
+
         case eEvent::stateChange:
             switch (_myState)
             {
@@ -192,7 +213,7 @@ void cDE10Lite::notify(eEvent aEvent, void* data)
             default:
                 _myState = eSystemState::paused;
                 break;
-            }            
+            }
         break;
 
         default:

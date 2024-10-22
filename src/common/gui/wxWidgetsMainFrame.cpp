@@ -84,14 +84,15 @@ cMainFrame::cMainFrame(cSubject* aSubject) :
     
     _startButton  = new wxButton(_leftPanel, cStartButtonID, wxT("Start"));
     _startButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonStart, this);
-    // _stopButton   = new wxButton(_leftPanel, wxID_ANY , wxT("Stop"));
+    _resetButton   = new wxButton(_leftPanel, cResetButtonID , wxT("Reset"));
+    _resetButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonReset, this);
     // _pauseButton  = new wxButton(_leftPanel, wxID_ANY, wxT("Pause"));
     // //_resumeButton = new wxButton(_leftPanel, cResumeButtonID, wxT("Resume"));
 
     leftPanelSizer->Add(_startButton,  0, wxLEFT, cLeftPanelOffset);
     // leftPanelSizer->Add(_stopButton,   0, wxLEFT, cLeftPanelOffset);
     // leftPanelSizer->Add(_pauseButton,  0, wxLEFT, cLeftPanelOffset);
-    // //leftPanelSizer->Add(_resumeButton, 0, wxLEFT, cLeftPanelOffset);
+    leftPanelSizer->Add(_resetButton, 0, wxLEFT, cLeftPanelOffset);
 
     // // Bind the functions for starting and pausing verilator to the verilator thread
     // // Both the Start and resume button have the same functionality
@@ -151,6 +152,11 @@ void cMainFrame::onButtonStart(wxCommandEvent& event)
     {
         _startButton->SetLabel("Pause");
     }
+}
+
+void cMainFrame::onButtonReset(wxCommandEvent& event)
+{
+    _subject->notifyObserver(eEvent::reset);
 }
 
 void cMainFrame::onAddLed(wxCommandEvent& event)

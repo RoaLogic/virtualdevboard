@@ -95,7 +95,9 @@ class cDE10Lite : public cTestBench<Vde10lite_verilator_wrapper>, public cObserv
         cClock* clk_adc_10;
         uint8_t& key;
 
-        eSystemState _myState = eSystemState::idle;
+        std::atomic<eSystemState> _myState = eSystemState::idle;
+
+        atomic_bool doReset = false;
 
     protected:
 
