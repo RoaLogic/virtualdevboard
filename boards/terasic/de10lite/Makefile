@@ -43,9 +43,11 @@
 ##                                                                 ##
 #####################################################################
 
+CWD:=$(dir $(lastword $(MAKEFILE_LIST)))
+
 #include common Virtual Devboard rules
-include ../../../common/build/Makefile.build
-include ../src/Makefile.include
+include ../boards/common/Makefile.build
+include $(CWD)/src/Makefile.include
 
 #include Altera files
 include $(ROOT_DIR)src/vendors/altera/Makefile.include
