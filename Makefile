@@ -64,6 +64,7 @@ boards=$(filter-out boards $(vendors),$(subst /, ,$(boards_list)))
 
 #Call the makefile in the <vendor>/<board>/<build> directory
 $(boards):
+	if [ ! -d $(BUILDDIR) ]; then mkdir $(BUILDDIR); fi
 	$(MAKE) -C $(BUILDDIR) -f "../$(filter %/$@/, $(boards_list))Makefile" $@ 	\
 		CALLING_FROM=$(abspath $(CURDIR))		\
 		board=$@ filelist=$(filelist)
