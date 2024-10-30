@@ -1,2 +1,4 @@
 *.swp
 *.swo
+.vscode/settings.json
+/.vscode

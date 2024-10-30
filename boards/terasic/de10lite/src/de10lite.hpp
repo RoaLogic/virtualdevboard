@@ -69,6 +69,12 @@ using namespace clock;
 using namespace GUI;
 using namespace observer;
 
+enum class eRunState
+{
+    completed,
+    restart
+};
+
 /**
  * @class cDE10Lite
  * @author Richard Herveille, Bjorn Schouteten
@@ -95,7 +101,9 @@ class cDE10Lite : public cTestBench<Vde10lite_verilator_wrapper>, public cObserv
         cClock* clk_adc_10;
         uint8_t& key;
 
-        eSystemState _myState = eSystemState::idle;
+        std::atomic<eRunState> _returnState = eRunState::completed;
+        std::atomic<eSystemState> _myState = eSystemState::idle;
+        atomic_bool doReset = false;
 
     protected:
 
@@ -111,6 +119,6 @@ class cDE10Lite : public cTestBench<Vde10lite_verilator_wrapper>, public cObserv
 
         inline void bitClr8(uint8_t& signal, uint8_t bit){ signal &= ~(1 << bit); }
 
-        int run();
-        int run(uint32_t numMilliSeconds);
+        eRunState run();
+        eRunState run(uint32_t numMilliSeconds);
 };
