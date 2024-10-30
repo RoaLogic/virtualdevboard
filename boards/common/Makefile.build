@@ -76,7 +76,7 @@ OBJDIR:=obj_dir
 #Set VERILATOR_ROOT if not already set
 VERILATOR_ROOT ?= $(shell bash -c 'verilator -V | grep VERILATOR_ROOT | tail -1 | sed -e " s/^.*=\s*//"')
 ifeq ($(VERILATOR_ROOT),"")
-  VERILATOR_ROOT ?= $(shell bash -c 'verilator -V | grep VERILATOR_ROOT | head -1 | sed -e " s/^.*=\s*//"')
+  VERILATOR_ROOT = $(shell bash -c 'verilator -V | grep VERILATOR_ROOT | head -1 | sed -e " s/^.*=\s*//"')
 endif
 VERILATOR_FLAGS ?= -Wall -Wno-PINCONNECTEMPTY
 VERILATE_FLAGS ?= -CFLAGS -DVL_NO_LEGACY -Wno-lint -structs-packed --trace 
