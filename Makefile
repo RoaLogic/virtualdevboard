@@ -44,8 +44,9 @@
 #####################################################################
 
 PWD:=$(dir $(lastword MAKEFILE_LIST))
+BUILDDIR=build
 
-include $(PWD)boards/common/build/Makefile.include
+include $(PWD)boards/common/Makefile.include
 
 #get the vendors
 list_vendors=$(filter-out $1 common, $(subst /, ,$(call list_directories,$1)))
@@ -59,17 +60,19 @@ boards=$(filter-out boards $(vendors),$(subst /, ,$(boards_list)))
 #####################################################################
 ## Boards                
 #####################################################################
-.PHONY: $(boards) $(boards)_clean
+.PHONY: $(boards) clean distclean
 
 #Call the makefile in the <vendor>/<board>/<build> directory
 $(boards):
-	$(MAKE) -C "$(filter %/$@/, $(boards_list))build" $@ 	\
+	$(MAKE) -C $(BUILDDIR) -f "../$(filter %/$@/, $(boards_list))Makefile" $@ 	\
 		CALLING_FROM=$(abspath $(CURDIR))		\
 		board=$@ filelist=$(filelist)
 
-$(boards)_clean: %_clean :
-	$(MAKE) -C "$(filter %/$*/, $(boards_list))build" clean
+clean:
+	$(MAKE) -C $(BUILDDIR) -f ../boards/common/Makefile.build clean
 
+distclean:
+	rm -rf $(BUILDDIR)/*
 
 #####################################################################
 ## Demo
