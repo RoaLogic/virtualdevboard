@@ -98,7 +98,6 @@ module de10lite_verilator_wrapper
 
   wire [7:0] hex [6];
 
-  wire       vga_pixel_clk;
   wire [3:0] vga_r,vga_g,vga_b;
   wire       vga_hsync;
   wire       vga_vsync;
@@ -195,7 +194,6 @@ endgenerate
   //
   vdbVGAMonitor
   vgaMonitor_inst (
-    .pixel_clk ( vga_pixel_clk ),
     .r         ( vga_r         ),
     .g         ( vga_g         ),
     .b         ( vga_b         ),

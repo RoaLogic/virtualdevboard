@@ -89,9 +89,6 @@ module vdbVGAMonitor
   parameter int VERT_BP   = 31
 )
 (
-  input       pixel_clk, //to be provided by the testbench
-
-  //VGA signals
   input [7:0] r, g, b,
   input       hsync,
   input       vsync
@@ -149,6 +146,7 @@ module vdbVGAMonitor
   //-----------------------
   // Variables
   //
+  bit                    pixel_clk /*verilator public*/;
 
   logic                  hsync_dly, vsync_dly;
   logic                  hsync_trigger, vsync_trigger;
