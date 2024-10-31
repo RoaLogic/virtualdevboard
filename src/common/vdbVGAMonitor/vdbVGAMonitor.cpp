@@ -43,7 +43,16 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#include "vdbLED.hpp"
+#include "vdbVGAMonitor.hpp"
+
+#define DBG_VDB_VGA
+
+// // Define the wxEVT_LED, which is special within this class
+// wxDEFINE_EVENT(wxEVT_VGA, wxCommandEvent);
+
+// wxEvtHandler* cVdbVGA::_parent; // The parent handler for the VGA events
+// Internal reference for mapping ID's to cVdbVGA instances
+std::vector<cVdbVGA::sVdbVGAMap> cVdbVGA::_referencePointers; 
 
 /**
  * @brief VGA Monitor HSYNC DPI-C callback
@@ -52,14 +61,7 @@
  */
 void vdbVGAMonitorHSYNC(int id)
 {
-    //get instance scope
-    svScope scope = svGetScope();
-
-    //get hierarchical name
-    const char* scopeName = svGetNameFromScope(scope);
-
-    //report progress
-    INFO << "VGA Monitor(" << scopeName << ") HSYNC\n";
+    cVdbVGA::processVGAEvent(id, eVgaEvent::hsync);
 }
 
 /**
@@ -69,13 +71,190 @@ void vdbVGAMonitorHSYNC(int id)
  */
 void vdbVGAMonitorVSYNC(int id)
 {
-    //get instance scope
-    svScope scope = svGetScope();
+    cVdbVGA::processVGAEvent(id, eVgaEvent::vsync);
+}
 
-    //get hierarchical name
-    const char* scopeName = svGetNameFromScope(scope);
+/**
+ * @brief Register a new virtual VGA class 
+ * @details This function registers a new virtual VGA class with the static modules.
+ * 
+ * It stores the reference information into the vector and stores the global parent variabele
+ * 
+ * @param[in] reference       The reference information to store
+ */
+void cVdbVGA::registerVirtualVGA(sVdbVGAMap reference)
+{
+    _referencePointers.push_back(reference);
+}
 
-    //report progress
-    INFO << "VGA Monitor(" << scopeName << ") VSYNC\n";
+/**
+ * @brief Process a VGA event from the verilated class
+ * @details This function processes a VGA event from the verilated context.
+ * 
+ * It checks in the reference pointers if it finds the corresponding ID. When
+ * found it will call the corresponding function of the event.
+ * 
+ * @param[in] vgaID       The VGA ID which had the event
+ * @param[in] event       The VGA event which occured
+ */
+void cVdbVGA::processVGAEvent(int vgaID, eVgaEvent event)
+{
+    bool found = false;
+
+    for (const sVdbVGAMap& ref : _referencePointers)
+    {
+        if(ref.ID == vgaID)
+        {
+            if(event == eVgaEvent::vsync)
+            {
+                ref.reference->handleVsync();
+            }
+            else if(event == eVgaEvent::hsync)
+            {
+                ref.reference->handleHsync();
+            }
+            found = true;
+            break;
+        }
+    }
+
+    if(!found)
+    {
+        WARNING << "VGA: Event on non found module: " << vgaID << " \n";
+    }
+}
+
+/**
+ * @brief Send a LED event in the verilator thread
+ * @details Send a event from any LED
+ * 
+ * Within this function we create a event which is sent to the GUI
+ * thread. It holds the LED ID and the state of the LED. Those are
+ * packed in a sEventData structure and then posted to the event
+ * handling system
+ * 
+ * @attention This function runs in the verilator thread context
+ * 
+ * @param[in] vgaID     The ID of the VGA which had the event
+ * @param[in] state     The new state of the LED
+ */
+// void cVdbVGA::SendVGAEvent(int vgaID, bool vsync)
+// {
+//     wxCommandEvent testEvent{wxEVT_VGA};
+//     sEventData* const eventData{ new sEventData};
+
+//     if(_parent)
+//     {
+//         eventData->id = vgaID;
+//         eventData->vsync = vsync;
+
+//         #ifdef DBG_VDB_VGA
+//         INFO << "Received VGA " << eventData->id << " vsync: " << eventData->vsync << " Thread: " <<  wxThread::GetCurrentId() << "\n";
+//         #endif
+
+//         testEvent.SetClientObject(eventData);
+//         wxPostEvent(_parent, testEvent);
+//     }
+// }
+
+// /**
+//  * @brief Handle a led event in the GUI thread
+//  * @details 
+//  * Within this function a LED event from the system is handled. 
+//  * 
+//  * @attention This function runs in the GUI thread context
+//  * 
+//  * @param[in] event     The event which happend
+//  */
+// void cVdbVGA::OnVGAEvent(wxCommandEvent& event)
+// {
+//     sEventData* eventData = reinterpret_cast<sEventData*>(event.GetClientObject());
+
+//     for (const sVirtualVGAMap& ref : _referencePointers)
+//     {
+//         if(ref.ID == eventData->id)
+//         {
+//             if(eventData->vsync)
+//             {
+//                 ref.ledReference->handleVsync();
+//             }
+//             else
+//             {
+//                 ref.ledReference->handleHsync();
+//             }
+
+//             #ifdef DBG_VDB_VGA
+//             INFO << "Processed VGA " << eventData->id << " vsync: " << eventData->vsync << " Thread: " << wxThread::GetCurrentId() <<"\n";
+//             #endif
+//         }
+//     }
+// }
+
+// cVdbVGA::cVdbVGA(std::string scopeName, wxEvtHandler* aParent, int id) :
+//     wxFrame(nullptr, wxID_ANY, "Virtual VGA monitor")
+// {
+//     registerVirtualVGA(sVirtualVGAMap{id, this},  aParent);
+//     aParent->Bind(wxEVT_VGA, cVdbVGA::OnVGAEvent);
+
+//     const svScope scope = svGetScopeFromName(scopeName.c_str());
+//     svSetScope(scope);
+
+//     newImage = wxImage(640,640, false);
+
+//     for (size_t i = 0; i < 640; i++)
+//     {
+//         for (size_t y = 0; y < 640; y++)
+//         {
+//             newImage.SetRGB(i, y, 10, 200, 0);
+//         }
+//     }
+
+//     wxBoxSizer* topSizer = new wxBoxSizer(wxHORIZONTAL);
+//     _myStaticBitmap = new wxStaticBitmap(this, wxID_ANY, wxBitmap(newImage), wxDefaultPosition, wxSize(640,640));
+    
+//     topSizer->Add(_myStaticBitmap, 0, wxEXPAND);
+
+//     SetSizerAndFit(topSizer);
+//     Show(true);
+// }
+
+cVdbVGA::cVdbVGA(std::string scopeName, int id, cTimeInterface* timeInterface) :
+    _timeInterface(timeInterface)
+{
+    registerVirtualVGA(sVdbVGAMap{id, this});
+
+    const svScope scope = svGetScopeFromName(scopeName.c_str());
+    svSetScope(scope);
+}
+
+cVdbVGA::~cVdbVGA()
+{
+
+}
+
+void cVdbVGA::show(bool show)
+{
+    //Show(show);
+}
+
+void cVdbVGA::handleHsync()
+{
+    _numHsync++;
+}
+
+void cVdbVGA::handleVsync()
+{
+    if(_timeInterface)
+    {
+        simtime_t currentVSyncTime = _timeInterface->getTime();
+        _timeBetweenVsync = currentVSyncTime - _previousVSyncTime;
+        _previousVSyncTime = currentVSyncTime;
+
+        #ifdef DBG_VDB_VGA
+        INFO << "VGA: Frequency " << _timeBetweenVsync.Hz() << "Hz \n";
+        INFO << "VGA: Num hsync in vsync:"<< _numHsync << "\n";
+        #endif
+        _numHsync = 0;
+    }
 }
 

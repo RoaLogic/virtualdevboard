@@ -43,9 +43,77 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-
+#include <vector>
 //include Dpi headers, required to link verilator model to C++
 #include "vdb__Dpi.h"
 
-#include "log.hpp"
+// #include <wx/wx.h>
+// #include "wx/event.h"
+// #include "wx/bitmap.h"
 
+#include "log.hpp"
+#include "testbench.hpp"
+
+#ifndef VDB_VGA_HPP
+#define VDB_VGA_HPP
+
+//wxDECLARE_EVENT(wxEVT_VGA, wxCommandEvent);
+
+using namespace RoaLogic::testbench;
+
+enum class eVgaEvent
+{
+    vsync,
+    hsync
+};
+
+class cVdbVGA
+{
+    private:
+    struct sVdbVGAMap
+    {
+        int ID;
+        cVdbVGA* reference;
+    };
+
+    union uRGBValue
+    {
+        uint32_t asInt;
+        struct
+        {
+            uint8_t red;
+            uint8_t green;
+            uint8_t blue;
+            uint8_t unused;
+        };
+    };
+
+    static std::vector<sVdbVGAMap> _referencePointers;
+    static void registerVirtualVGA(sVdbVGAMap reference);
+
+    public:
+    // Function to call for going from static scope to class scope
+    static void processVGAEvent(int vgaID, eVgaEvent event);
+
+    private:
+    cTimeInterface* _timeInterface;
+    size_t _numHsync = 0;
+    simtime_t _previousVSyncTime;
+    simtime_t _timeBetweenVsync;
+    //wxFrame* _myFrame;
+    //wxBitmap _myBitmap;
+    // wxStaticBitmap* _myStaticBitmap;
+    // wxImage newImage;
+    // uint32_t currentRow = 0;
+
+    public:
+    //cVdbVGA(std::string scopeName, wxEvtHandler* aParent, int id);
+    cVdbVGA(std::string scopeName, int id, cTimeInterface* timeInterface);
+    ~cVdbVGA();
+
+    void show(bool show);
+    void handleVsync();
+    void handleHsync();
+};
+
+#endif

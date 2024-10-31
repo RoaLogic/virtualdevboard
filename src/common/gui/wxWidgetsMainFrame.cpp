@@ -47,6 +47,7 @@
 
 wxDEFINE_EVENT(wxEVT_STATUS, wxCommandEvent);
 wxDEFINE_EVENT(wxEVT_ADD_LED, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_ADD_VGA, wxCommandEvent);
 
 cMainFrame::cMainFrame(cSubject* aSubject) :
     wxFrame(nullptr, wxID_ANY, "Virtual DE10 demo board"),
@@ -111,6 +112,7 @@ cMainFrame::cMainFrame(cSubject* aSubject) :
 
     //Bind(wxEVT_STATUS, &cMainFrame::onStatusChange, this, wxID_ANY);
     Bind(wxEVT_ADD_LED, &cMainFrame::onAddLed, this, wxID_ANY);
+    Bind(wxEVT_ADD_VGA, &cMainFrame::onAddVGA, this, wxID_ANY);
 }
 
 void cMainFrame::OnExit(wxCommandEvent& event)
@@ -151,6 +153,20 @@ void cMainFrame::onButtonStop(wxCommandEvent& event)
 {
     _subject->notifyObserver(eEvent::stop);
     _startButton->SetLabel("Start");
+
+    // Clear all the GUI elements, since those will be newly constructed
+    for(const cVdbVGA* vga : vgaInstances)
+    {
+        delete vga;
+    }
+    vgaInstances.clear();
+
+    for(const cVirtualLed* led : ledInstances)
+    {
+        delete led;
+    }
+    ledInstances.clear();
+    
 }
 
 void cMainFrame::onAddLed(wxCommandEvent& event)
@@ -171,6 +187,12 @@ void cMainFrame::onAddLed(wxCommandEvent& event)
 
         Refresh();
     }
+}
+
+void cMainFrame::onAddVGA(wxCommandEvent& event)
+{
+    // cVdbVGA* newVGA = new cVdbVGA("TOP.de10lite_verilator_wrapper.vgaMonitor_inst" , 1, this);
+    // vgaInstances.push_back(newVGA);
 }
 
 // void cMainFrame::onStatusChange(wxCommandEvent& event)

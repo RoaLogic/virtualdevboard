@@ -82,6 +82,7 @@ namespace GUI {
         //virtual void setCurrentStatus(eSystemState state) = 0;
         
         virtual void addVirtualLED(size_t numLeds) = 0;
+        virtual void addVirtualVGA() = 0;
     };
 
 }}

@@ -135,6 +135,8 @@ eRunState cDE10Lite::run()
     if(_myGUI)
     {
         _myGUI->addVirtualLED(8);
+        _vgaController = new cVdbVGA("TOP.de10lite_verilator_wrapper.vgaMonitor_inst", 1, this);
+        //_myGUI->addVirtualVGA();
     }
 
     //Reset core

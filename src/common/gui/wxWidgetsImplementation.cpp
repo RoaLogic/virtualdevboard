@@ -82,6 +82,17 @@ void cVirtualDemoBoard::addVirtualLED(size_t numLeds)
     wxPostEvent(_mainFrame, statusEvent);
 }
 
+void cVirtualDemoBoard::addVirtualVGA()
+{
+    wxCommandEvent statusEvent{wxEVT_ADD_VGA};
+    //sAddLedEvent* const eventData{ new sAddLedEvent};
+
+    //eventData->numLeds = numLeds;
+
+    //statusEvent.SetClientObject(eventData);
+    wxPostEvent(_mainFrame, statusEvent); 
+}
+
 // void cVirtualDemoBoard::setCurrentStatus(eSystemState state)
 // {
 //     wxCommandEvent statusEvent{wxEVT_STATUS};

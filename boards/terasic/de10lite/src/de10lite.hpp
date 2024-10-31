@@ -61,6 +61,8 @@
 //altsyncram class
 #include "altsyncram.hpp"
 
+#include "vdbVGAMonitor.hpp"
+
 
 using namespace RoaLogic;
 using namespace testbench;
@@ -100,6 +102,8 @@ class cDE10Lite : public cTestBench<Vde10lite_verilator_wrapper>, public cObserv
         cClock* clk2_50;
         cClock* clk_adc_10;
         uint8_t& key;
+
+        cVdbVGA* _vgaController;
 
         std::atomic<eRunState> _returnState = eRunState::completed;
         std::atomic<eSystemState> _myState = eSystemState::idle;
