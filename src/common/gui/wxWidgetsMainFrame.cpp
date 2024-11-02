@@ -82,7 +82,7 @@ cMainFrame::cMainFrame(cSubject* aSubject) :
                                          wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT),
                                          0, wxLEFT, cLeftPanelOffset);
     
-    _startButton  = new wxButton(_leftPanel, cStartButtonID, wxT("Start"));
+    _startButton  = new wxPlayPauseButton(_leftPanel, cStartButtonID, wxT("Play"));
     _startButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonStart, this);
     _resetButton   = new wxButton(_leftPanel, cResetButtonID , wxT("Reset"));
     _resetButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonReset, this);
@@ -127,7 +127,7 @@ void cMainFrame::OnAbout(wxCommandEvent& event)
 void cMainFrame::onButtonStart(wxCommandEvent& event)
 {
     _subject->notifyObserver(eEvent::stateChange);
-
+/*
     if(_startButton->GetLabel() == wxT("Start"))
     {
         _startButton->SetLabel("Pause");
@@ -140,6 +140,7 @@ void cMainFrame::onButtonStart(wxCommandEvent& event)
     {
         _startButton->SetLabel("Pause");
     }
+*/
 }
 
 void cMainFrame::onButtonReset(wxCommandEvent& event)
