@@ -146,7 +146,7 @@ module vdbVGAMonitor
   //-----------------------
   // Variables
   //
-  bit                    pixel_clk /*verilator public*/;
+  wire                   pixel_clk /*verilator public*/;
 
   logic                  hsync_dly, vsync_dly;
   logic                  hsync_trigger, vsync_trigger;

@@ -47,6 +47,40 @@
 
 #define DBG_VDB_VGA
 
+/**
+ * The following structure is build to compress the full VGA timing per VESA specs.
+ * See the system verilog file for the values.
+ */
+struct sVGATiming
+{
+    uint16_t horizontalPixels;
+    uint16_t verticalPixels;
+    uint8_t frequencyHz;
+    float pixelClockMHz;
+    uint16_t totalHorizontal; // Active video + front porch + sync + back porch
+    uint16_t totalVertical; // Active video + front porch + sync + back porch
+};
+
+static const sVGATiming cVGATiming[] =
+{
+    { 640, 480, 60, 25.175,  800, 524},
+    { 640, 480, 72, 31.500,  832, 520},
+    { 640, 480, 75, 31.500,  800, 524},
+    { 640, 480, 85, 36.000,  832, 509},
+    { 800, 600, 56, 38.100, 1088, 619},
+    { 800, 600, 60, 40.000, 1056, 628},
+    { 800, 600, 72, 50.000,  932, 666},
+    { 800, 600, 75, 49.500, 1056, 624},
+    { 800, 600, 85, 56.250, 1048, 632},
+    {1024, 768, 60, 65.000, 1344, 806},
+    {1024, 768, 70, 75.000, 1328, 804},
+    {1024, 768, 75, 78.750, 1312, 800},
+    {1024, 768, 85, 94.500, 1376, 808}
+};
+
+static const size_t cVGATimingSize = sizeof(cVGATiming) / sizeof(cVGATiming[0]);
+
+
 // // Define the wxEVT_LED, which is special within this class
 // wxDEFINE_EVENT(wxEVT_VGA, wxCommandEvent);
 
@@ -244,6 +278,8 @@ void cVdbVGA::handleHsync()
 
 void cVdbVGA::handleVsync()
 {
+    bool found = false;
+
     if(_timeInterface)
     {
         simtime_t currentVSyncTime = _timeInterface->getTime();
@@ -254,6 +290,26 @@ void cVdbVGA::handleVsync()
         INFO << "VGA: Frequency " << _timeBetweenVsync.Hz() << "Hz \n";
         INFO << "VGA: Num hsync in vsync:"<< _numHsync << "\n";
         #endif
+
+        for (size_t i = 0; i < cVGATimingSize; i++)
+        {
+            if(cVGATiming[i].frequencyHz == std::round(_timeBetweenVsync.Hz()) &&
+               cVGATiming[i].totalVertical == _numHsync)
+            {
+                #ifdef DBG_VDB_VGA
+                INFO << "VGA: Found resolution: "<< cVGATiming[i].horizontalPixels << "*"<< cVGATiming[i].verticalPixels << "\n";
+                #endif
+                found = true;
+                break;
+            }
+        }
+
+        if(found)
+        {
+            svBitVecVal value = 10;
+            vdbVGAMonitorSetHorizontalTiming(&value, &value, &value);
+        }
+
         _numHsync = 0;
     }
 }

@@ -2,4 +2,5 @@
 *.swo
 .vscode/settings.json
 /.vscode
-/build
+build/
+log

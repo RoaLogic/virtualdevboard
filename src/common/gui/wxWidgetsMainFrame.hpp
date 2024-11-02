@@ -49,6 +49,7 @@
 #include <wx/wxprec.h>
 #include <wx/wx.h>
 #include <wx/splitter.h>
+#include "wxMediaButton.hpp"
 
 #include "eventDefinition.hpp"
 #include "subject.hpp"
@@ -103,7 +104,7 @@ class cMainFrame : public wxFrame
     wxPanel* _leftPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
     wxPanel* _rightPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
 
-    wxButton* _startButton;
+    wxPlayPauseButton* _startButton;
     wxButton* _stopButton;
     // wxButton* _pauseButton;
     wxButton* _resetButton;
