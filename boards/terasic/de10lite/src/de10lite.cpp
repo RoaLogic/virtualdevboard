@@ -72,8 +72,7 @@ cDE10Lite::cDE10Lite(VerilatedContext* context, bool traceActive, cGuiInterface*
     clk_50  = addClock(_core->CLK_50, 20.0_ns);
     clk2_50 = addClock(_core->CLK2_50, 20.0_ns);
     clk_adc_10 = addClock(_core->CLOCK_ADC_10, 100.0_ns);
-    clk_vga = addClock(_core->de10lite_verilator_wrapper->vgaMonitor_inst->pixel_clk, 100.0_ns);
-    
+    clk_vga = addClock(_core->de10lite_verilator_wrapper->vgaMonitor_inst->pixel_clk, 100.0_ns, false);
 
     /*
       KEY
@@ -138,7 +137,7 @@ eRunState cDE10Lite::run()
     if(_myGUI)
     {
         _myGUI->addVirtualLED(8);
-        _vgaController = new cVdbVGA("TOP.de10lite_verilator_wrapper.vgaMonitor_inst", 1, this);
+        _vgaController = new cVdbVGA("TOP.de10lite_verilator_wrapper.vgaMonitor_inst", this, clk_vga);
         //_myGUI->addVirtualVGA();
     }
 

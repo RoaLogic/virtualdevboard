@@ -72,7 +72,7 @@ class cVdbVGA
     private:
     struct sVdbVGAMap
     {
-        int ID;
+        svScope scope;
         cVdbVGA* reference;
     };
 
@@ -93,13 +93,17 @@ class cVdbVGA
 
     public:
     // Function to call for going from static scope to class scope
-    static void processVGAEvent(int vgaID, eVgaEvent event);
+    static void processVGAEvent(svScope scope, eVgaEvent event);
 
     private:
     cTimeInterface* _timeInterface;
+    cClock* _pixelClock;
+    svScope _myScope;
     size_t _numHsync = 0;
     simtime_t _previousVSyncTime;
     simtime_t _timeBetweenVsync;
+    bool _settingFound = false;
+    uint8_t _currentSetting = 0xff;
     //wxFrame* _myFrame;
     //wxBitmap _myBitmap;
     // wxStaticBitmap* _myStaticBitmap;
@@ -108,7 +112,7 @@ class cVdbVGA
 
     public:
     //cVdbVGA(std::string scopeName, wxEvtHandler* aParent, int id);
-    cVdbVGA(std::string scopeName, int id, cTimeInterface* timeInterface);
+    cVdbVGA(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock);
     ~cVdbVGA();
 
     void show(bool show);

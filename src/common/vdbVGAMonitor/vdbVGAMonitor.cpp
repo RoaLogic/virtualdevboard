@@ -56,26 +56,32 @@ struct sVGATiming
     uint16_t horizontalPixels;
     uint16_t verticalPixels;
     uint8_t frequencyHz;
-    float pixelClockMHz;
+    long double pixelClock;
     uint16_t totalHorizontal; // Active video + front porch + sync + back porch
+    svBitVecVal  frontPorchHorizontal;
+    svBitVecVal  syncHorizontal;
+    svBitVecVal  backPorchHorizontal;
     uint16_t totalVertical; // Active video + front porch + sync + back porch
+    svBitVecVal  frontPorchVertical;
+    svBitVecVal  syncVertical;
+    svBitVecVal  backPorchVertical;
 };
 
 static const sVGATiming cVGATiming[] =
 {
-    { 640, 480, 60, 25.175,  800, 524},
-    { 640, 480, 72, 31.500,  832, 520},
-    { 640, 480, 75, 31.500,  800, 524},
-    { 640, 480, 85, 36.000,  832, 509},
-    { 800, 600, 56, 38.100, 1088, 619},
-    { 800, 600, 60, 40.000, 1056, 628},
-    { 800, 600, 72, 50.000,  932, 666},
-    { 800, 600, 75, 49.500, 1056, 624},
-    { 800, 600, 85, 56.250, 1048, 632},
-    {1024, 768, 60, 65.000, 1344, 806},
-    {1024, 768, 70, 75.000, 1328, 804},
-    {1024, 768, 75, 78.750, 1312, 800},
-    {1024, 768, 85, 94.500, 1376, 808}
+    { 640, 480, 60, 25.175_MHz,  800, 16,  96,  48, 524, 11, 2, 31},
+    { 640, 480, 72, 31.500_MHz,  832, 24,  40, 128, 520,  9, 3, 28},
+    { 640, 480, 75, 31.500_MHz,  800, 16,  96,  48, 524, 11, 2, 32},
+    { 640, 480, 85, 36.000_MHz,  832, 32,  48, 112, 509,  1, 3, 25},
+    { 800, 600, 56, 38.100_MHz, 1088, 32, 128, 128, 619,  1, 4, 14},
+    { 800, 600, 60, 40.000_MHz, 1056, 40, 128,  88, 628,  1, 4, 23},
+    { 800, 600, 72, 50.000_MHz,  932, 56, 120,  64, 666, 37, 6, 23},
+    { 800, 600, 75, 49.500_MHz, 1056, 16,  80, 160, 624,  1, 2, 21},
+    { 800, 600, 85, 56.250_MHz, 1048, 32,  64, 152, 632,  1, 3, 27},
+    {1024, 768, 60, 65.000_MHz, 1344, 24, 136, 160, 806,  3, 6, 29},
+    {1024, 768, 70, 75.000_MHz, 1328, 24, 136, 144, 804,  1, 6, 29},
+    {1024, 768, 75, 78.750_MHz, 1312, 16,  96, 176, 800,  1, 3, 28},
+    {1024, 768, 85, 94.500_MHz, 1376, 48,  96, 208, 808,  1, 3, 36}
 };
 
 static const size_t cVGATimingSize = sizeof(cVGATiming) / sizeof(cVGATiming[0]);
@@ -95,7 +101,7 @@ std::vector<cVdbVGA::sVdbVGAMap> cVdbVGA::_referencePointers;
  */
 void vdbVGAMonitorHSYNC(int id)
 {
-    cVdbVGA::processVGAEvent(id, eVgaEvent::hsync);
+    cVdbVGA::processVGAEvent(svGetScope(), eVgaEvent::hsync);
 }
 
 /**
@@ -105,7 +111,7 @@ void vdbVGAMonitorHSYNC(int id)
  */
 void vdbVGAMonitorVSYNC(int id)
 {
-    cVdbVGA::processVGAEvent(id, eVgaEvent::vsync);
+    cVdbVGA::processVGAEvent(svGetScope(), eVgaEvent::vsync);
 }
 
 /**
@@ -131,13 +137,13 @@ void cVdbVGA::registerVirtualVGA(sVdbVGAMap reference)
  * @param[in] vgaID       The VGA ID which had the event
  * @param[in] event       The VGA event which occured
  */
-void cVdbVGA::processVGAEvent(int vgaID, eVgaEvent event)
+void cVdbVGA::processVGAEvent(svScope scope, eVgaEvent event)
 {
     bool found = false;
 
     for (const sVdbVGAMap& ref : _referencePointers)
     {
-        if(ref.ID == vgaID)
+        if(ref.scope == scope)
         {
             if(event == eVgaEvent::vsync)
             {
@@ -154,7 +160,7 @@ void cVdbVGA::processVGAEvent(int vgaID, eVgaEvent event)
 
     if(!found)
     {
-        WARNING << "VGA: Event on non found module: " << vgaID << " \n";
+        WARNING << "VGA: Event on non found module: " << svGetNameFromScope(scope) << " \n";
     }
 }
 
@@ -252,13 +258,16 @@ void cVdbVGA::processVGAEvent(int vgaID, eVgaEvent event)
 //     Show(true);
 // }
 
-cVdbVGA::cVdbVGA(std::string scopeName, int id, cTimeInterface* timeInterface) :
-    _timeInterface(timeInterface)
+cVdbVGA::cVdbVGA(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock) :
+    _timeInterface(timeInterface),
+    _pixelClock(pixelClock)
 {
-    registerVirtualVGA(sVdbVGAMap{id, this});
+    assert(pixelClock != nullptr);
 
-    const svScope scope = svGetScopeFromName(scopeName.c_str());
-    svSetScope(scope);
+    _myScope = svGetScopeFromName(scopeName.c_str());
+    svSetScope(_myScope);
+
+    registerVirtualVGA(sVdbVGAMap{_myScope, this});
 }
 
 cVdbVGA::~cVdbVGA()
@@ -278,8 +287,6 @@ void cVdbVGA::handleHsync()
 
 void cVdbVGA::handleVsync()
 {
-    bool found = false;
-
     if(_timeInterface)
     {
         simtime_t currentVSyncTime = _timeInterface->getTime();
@@ -296,18 +303,34 @@ void cVdbVGA::handleVsync()
             if(cVGATiming[i].frequencyHz == std::round(_timeBetweenVsync.Hz()) &&
                cVGATiming[i].totalVertical == _numHsync)
             {
-                #ifdef DBG_VDB_VGA
-                INFO << "VGA: Found resolution: "<< cVGATiming[i].horizontalPixels << "*"<< cVGATiming[i].verticalPixels << "\n";
-                #endif
-                found = true;
+                if(_currentSetting != i)
+                {
+                    #ifdef DBG_VDB_VGA
+                    INFO << "VGA: Found resolution: "<< cVGATiming[i].horizontalPixels << "*"<< cVGATiming[i].verticalPixels << "\n";
+                    #endif
+                    _currentSetting = i;
+
+                    svSetScope(_myScope);     
+                    _pixelClock->setLowPeriod(cVGATiming[i].pixelClock/2.0);
+                    _pixelClock->setHighPeriod(cVGATiming[i].pixelClock/2.0);
+
+                    _pixelClock->enable();
+
+                    vdbVGAMonitorSetHorizontalTiming(&cVGATiming[i].frontPorchHorizontal, &cVGATiming[i].syncHorizontal, &cVGATiming[i].backPorchHorizontal);
+                    vdbVGAMonitorSetVerticalTiming(&cVGATiming[i].frontPorchVertical, &cVGATiming[i].syncVertical, &cVGATiming[i].backPorchVertical);
+                }
+                else
+                {
+                    // Read the data from VGA monitor
+                }
+
                 break;
             }
-        }
-
-        if(found)
-        {
-            svBitVecVal value = 10;
-            vdbVGAMonitorSetHorizontalTiming(&value, &value, &value);
+            else
+            {
+                _currentSetting = 0xFF;
+                _pixelClock->disable();
+            }
         }
 
         _numHsync = 0;
