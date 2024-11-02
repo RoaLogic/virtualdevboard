@@ -58,8 +58,8 @@ class wxPlayPauseButton : public wxWindow
        Button phase, play=false, pause=true
     */
     bool phase;
-    const bool PAUSE = true;
-    const bool PLAY  = false;
+    static const bool PAUSE = true;
+    static const bool PLAY  = false;
     double scale = 0.8;
 
 
