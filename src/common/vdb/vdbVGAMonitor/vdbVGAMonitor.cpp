@@ -242,24 +242,27 @@ namespace vdb
      */
     void cVdbVGAMonitor::handleHsync()
     { 
-        uRGBValue* data = new uRGBValue[cVGATiming[_currentSetting].horizontalPixels];
-
-        // Get all the data from the VGA monitor
-        for (size_t i = 0; i < cVGATiming[_currentSetting].horizontalPixels; i++)
+        if(_currentSetting <= cVGATimingSize)
         {
-            uRGBValue rgbValue;
-            rgbValue.asInt = vdbVGAMonitorGetPixel(i, _numHsync);
-            data[i] = rgbValue;
+            uRGBValue* data = new uRGBValue[cVGATiming[_currentSetting].horizontalPixels];
+
+            // Get all the data from the VGA monitor
+            for (size_t i = 0; i < cVGATiming[_currentSetting].horizontalPixels; i++)
+            {
+                uRGBValue rgbValue;
+                rgbValue.asInt = vdbVGAMonitorGetPixel(i, _numHsync);
+                data[i] = rgbValue;
+            }
+
+            // Set the data in the event, number of vertical and horizontal pixels is already set
+            _myEventData.dataArray = data;
+            notifyObserver(eEvent::vgaData, &_myEventData);
+
+            // Delete the data
+            delete data;
         }
 
-        // Set the data in the event, number of vertical and horizontal pixels is already set
-        _myEventData.dataArray = data;                   
-        notifyObserver(eEvent::vgaData, &_myEventData);
-
         _numHsync++; // Count the number of HSYNC, do this after we read the full line of data
-
-        // Delete the data
-        delete data;
     }
 
     /**
