@@ -89,7 +89,7 @@ cMainFrame::cMainFrame(cSubject* aSubject) :
     _stopButton  = new wxButton(_leftPanel, cStopButtonID, wxT("Stop"));
     _stopButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonStop, this);
 
-    leftPanelSizer->Add(_startButton,  0, wxLEFT, cLeftPanelOffset);
+    leftPanelSizer->Add(_startButton,  0, wxALIGN_CENTRE, cLeftPanelOffset);
     leftPanelSizer->Add(_resetButton, 0, wxLEFT, cLeftPanelOffset);
     leftPanelSizer->Add(_stopButton,   0, wxLEFT, cLeftPanelOffset);
 
