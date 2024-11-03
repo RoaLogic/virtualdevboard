@@ -53,15 +53,17 @@
 
 #include "eventDefinition.hpp"
 #include "subject.hpp"
+#include "gui_interface.hpp"
 
 #include "vdbLED.hpp"
-#include "vdbVGAMonitor.hpp"
 
 using namespace RoaLogic::observer;
+using namespace RoaLogic::GUI;
+using namespace RoaLogic::vdb;
 
 wxDECLARE_EVENT(wxEVT_STATUS, wxCommandEvent);
 wxDECLARE_EVENT(wxEVT_ADD_LED, wxCommandEvent);
-wxDECLARE_EVENT(wxEVT_ADD_VGA, wxCommandEvent);
+wxDECLARE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
 
 struct sSystemStateEvent : public wxClientData
 {
@@ -71,6 +73,20 @@ struct sSystemStateEvent : public wxClientData
 struct sAddLedEvent : public wxClientData
 {
     size_t numLeds;
+};
+
+enum class eVdbComponentType
+{
+    vdbLed,
+    vdbVGA,
+    vdb7seg
+};
+
+struct sAddVdbComponent : public wxClientData
+{
+    eVdbComponentType type;
+    uint8_t numComponents;
+    cVDBCommon* vdbComponent;
 };
 
 /**
@@ -110,7 +126,7 @@ class cMainFrame : public wxFrame
     wxButton* _resetButton;
 
     std::vector<cVirtualLed*> ledInstances;
-    std::vector<cVdbVGA*> vgaInstances;
+    std::vector<cGuiVDBComponent*> vdbInstances;
 
     public:
     cMainFrame(cSubject* aSubject);
@@ -130,7 +146,7 @@ class cMainFrame : public wxFrame
     //void onStatusChange(wxCommandEvent& event);
 
     void onAddLed(wxCommandEvent& event);
-    void onAddVGA(wxCommandEvent& event);
+    void onAddVdb(wxCommandEvent& event);
 };
 
 

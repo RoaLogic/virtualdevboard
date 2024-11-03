@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    Virtual Devboard VGA Monitor Verilator C++ header file       //
+//    WX widgets virtual Devboard VGA Monitor C++ header file      //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,81 +43,47 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#include <vector>
-//include Dpi headers, required to link verilator model to C++
-#include "vdb__Dpi.h"
+#ifndef WX_WIDGETS_VDB_VGA_HPP
+#define WX_WIDGETS_VDB_VGA_HPP
 
-// #include <wx/wx.h>
-// #include "wx/event.h"
-// #include "wx/bitmap.h"
+#include <wx/wxprec.h>
+#include <wx/wx.h>
 
-#include "log.hpp"
-#include "testbench.hpp"
+#include "gui_interface.hpp"
 
-#ifndef VDB_VGA_HPP
-#define VDB_VGA_HPP
+wxDECLARE_EVENT(wxEVT_VGA, wxCommandEvent);
 
-//wxDECLARE_EVENT(wxEVT_VGA, wxCommandEvent);
+namespace RoaLogic {
+    using namespace observer;
+namespace GUI {
 
-using namespace RoaLogic::testbench;
-
-enum class eVgaEvent
-{
-    vsync,
-    hsync
-};
-
-class cVdbVGA
-{
-    private:
-    struct sVdbVGAMap
+    /**
+     * @class cVdbVGAMonitor
+     * @author Bjorn Schouteten
+     * @brief VGA virtual development board component
+     * 
+     * @details
+     * This class communicates with the verilator component, any
+     * class that wants to listen to it should register itself through
+     * the subject-observer pattern. 
+     */
+    class cWXvdbVGAMonitor : public cGuiVDBComponent, private wxFrame
     {
-        svScope scope;
-        cVdbVGA* reference;
+        private:
+        wxEvtHandler* _evtHandler;
+        wxStaticBitmap* _myStaticBitmap;
+        wxImage _myImage;
+        size_t verticalCounter = 0;
+
+        void notify(eEvent aEvent, void* data);
+
+        void onVGAEvent(wxCommandEvent& event);
+
+        public:
+            cWXvdbVGAMonitor(cVDBCommon* myVDBComponent, wxEvtHandler* myEvtHandler);
+            ~cWXvdbVGAMonitor();
     };
 
-    union uRGBValue
-    {
-        uint32_t asInt;
-        struct
-        {
-            uint8_t red;
-            uint8_t green;
-            uint8_t blue;
-            uint8_t unused;
-        };
-    };
-
-    static std::vector<sVdbVGAMap> _referencePointers;
-    static void registerVirtualVGA(sVdbVGAMap reference);
-
-    public:
-    // Function to call for going from static scope to class scope
-    static void processVGAEvent(svScope scope, eVgaEvent event);
-
-    private:
-    cTimeInterface* _timeInterface;
-    cClock* _pixelClock;
-    svScope _myScope;
-    size_t _numHsync = 0;
-    simtime_t _previousVSyncTime;
-    simtime_t _timeBetweenVsync;
-    bool _settingFound = false;
-    uint8_t _currentSetting = 0xff;
-    //wxFrame* _myFrame;
-    //wxBitmap _myBitmap;
-    // wxStaticBitmap* _myStaticBitmap;
-    // wxImage newImage;
-    // uint32_t currentRow = 0;
-
-    public:
-    //cVdbVGA(std::string scopeName, wxEvtHandler* aParent, int id);
-    cVdbVGA(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock);
-    ~cVdbVGA();
-
-    void show(bool show);
-    void handleVsync();
-    void handleHsync();
-};
+}}
 
 #endif

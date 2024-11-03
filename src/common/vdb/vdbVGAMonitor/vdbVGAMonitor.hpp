@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    GUI interface class                                          //
+//    Virtual Devboard VGA Monitor Verilator C++ header file       //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,78 +43,88 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#ifndef GUI_INTERFACE_HPP
-#define GUI_INTERFACE_HPP
-
-#include "subject.hpp"
 #include "vdbCommon.hpp"
+#include <vector>
 
-namespace RoaLogic {
-    using namespace observer;
-    using namespace vdb;
-namespace GUI {
+#ifndef VDB_VGA_HPP
+#define VDB_VGA_HPP
 
+using namespace RoaLogic::testbench;
+using namespace RoaLogic::observer;
+
+namespace RoaLogic
+{
+namespace vdb
+{
     /**
-     * @class cGuiInterface
+     * @class cVdbVGAMonitor
      * @author Bjorn Schouteten
-     * @brief GUI interface
-     * @version 0.1
-     * @date 19-okt-2024
-     *
-     * @details This class is a interface which shall be derived
-     * by the GUI implementation.
+     * @brief VGA virtual development board component
      * 
-     * When an event happens in the GUI implementation it can be 
-     * processed by any observer listening to this interface.
-     * 
-     * At the moment that the system wants to show something to the
-     * user it will call the corresponding interface function. The
-     * implementation of the interface will then convert the event
-     * to the GUI event handling system.
-     * 
-     * @attention Be aware that it's likely that the interface and
-     * verilator are running in different threads. When calling any
-     * of these function or sending a notification, the corresponding
-     * function is still in the callers context. 
-     * 
-     */
-    class cGuiInterface : public cSubject
-    {
-        public:
-        //virtual void setCurrentStatus(eSystemState state) = 0;
-        
-        virtual void addVirtualLED(size_t numLeds) = 0;
-        virtual void addVirtualVGA(cVDBCommon* cdbComponent) = 0;
-    };
-
-    /**
-     * @class cGuiVDBComponent
-     * @author Bjorn Schouteten
-     * @brief GUI virtual development board component
-     * @version 0.1
-     * @date 03-nov-2024
      * @details
-     * This class is a base class for any GUI element which implements
-     * a verilated vdb component. It makes sure that all events from the
-     * verilated vdb component are passed through the notify function.
+     * This class communicates with the verilator component, any
+     * class that wants to listen to it should register itself through
+     * the subject-observer pattern. 
      * 
-     * @todo: Add a method to sent data from the GUI to the verilated design
+     * There are two events sent by this class, the vgaData and the 
+     * vgaDataReady event. vgaData is sent at the moment a HSYNC is received,
+     * where the vgaDataReady is sent when a VSYNC is received. The vgaDataReady
+     * shall be used to redraw the image, where the vgaData shall be used to store
+     * the data in the image.
+     * 
+     * The data in the event is the sVgaData structure. It holds the number of 
+     * horizontal and vertical lines, as well as a pointer to the data. Do note that
+     * the data is deleted at the end of the function, so it should be copied and
+     * not re-used.
+     * 
+     * 
+     * @todo: Handle the front/back porch and sync period within this class when sending data
+     * @todo: Should the current line be added into the data structure?
+     * 
      */
-    class cGuiVDBComponent : public cObserver
+    class cVdbVGAMonitor : public cVDBCommon
     {
         private:
-        cVDBCommon* _myVDBComponent;
+        static const size_t cMaxHorizontalLines = 1024;
+        static const size_t cMaxVerticalLines = 768;
+
+        struct sVdbVGAMap
+        {
+            svScope scope;
+            cVdbVGAMonitor* reference;
+        };
+
+        static std::vector<sVdbVGAMap> _referencePointers;
+        static void registerVirtualVGA(sVdbVGAMap reference);
+
+        public:    
+        enum class eVgaEvent
+        {
+            vsync,
+            hsync
+        };
+
+        // Function to call for going from static scope to class scope
+        static void processVGAEvent(svScope scope, eVgaEvent event);
+
+        private:
+        cTimeInterface* _timeInterface;   //!< Pointer to the time interface for retrieving the current time
+        cClock* _pixelClock;              //!< Pointer to the pixel clock, which must be generated within this class
+        svScope _myScope;                 //!< The scope of the verilated context
+        simtime_t _previousVSyncTime;     //!< Previous time that a VSYNC occured
+        uint8_t _currentSetting = 0xff;   //!< Current lookup table setting, 0xff means no element found
+        sVgaData _myEventData;            //!< Event data element which is passed in any of the events
+        size_t _numHsync = 0;             //!< Counter for the number of HSYNC in a single VSYNC period
 
         public:
-        cGuiVDBComponent(cVDBCommon* myVDBComponent) :
-            _myVDBComponent(myVDBComponent)
-        {
-            myVDBComponent->registerObserver(this);
-        }
+        cVdbVGAMonitor(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock);
+        ~cVdbVGAMonitor();
 
-        virtual void notify(eEvent aEvent, void* data) = 0;
+        void handleVsync();
+        void handleHsync();
     };
 
-}}
+}
+}
 
 #endif

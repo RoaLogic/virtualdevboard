@@ -82,24 +82,15 @@ void cVirtualDemoBoard::addVirtualLED(size_t numLeds)
     wxPostEvent(_mainFrame, statusEvent);
 }
 
-void cVirtualDemoBoard::addVirtualVGA()
+void cVirtualDemoBoard::addVirtualVGA(cVDBCommon* vdbComponent)
 {
-    wxCommandEvent statusEvent{wxEVT_ADD_VGA};
-    //sAddLedEvent* const eventData{ new sAddLedEvent};
+    wxCommandEvent statusEvent{wxEVT_ADD_VDB};
+    sAddVdbComponent* const eventData{ new sAddVdbComponent};
 
-    //eventData->numLeds = numLeds;
+    eventData->type = eVdbComponentType::vdbVGA;
+    eventData->numComponents = 1;
+    eventData->vdbComponent = vdbComponent;
 
-    //statusEvent.SetClientObject(eventData);
-    wxPostEvent(_mainFrame, statusEvent); 
+    statusEvent.SetClientObject(eventData);
+    wxPostEvent(_mainFrame, statusEvent);
 }
-
-// void cVirtualDemoBoard::setCurrentStatus(eSystemState state)
-// {
-//     wxCommandEvent statusEvent{wxEVT_STATUS};
-//     sSystemStateEvent* const eventData{ new sSystemStateEvent};
-
-//     eventData->state = state;
-
-//     statusEvent.SetClientObject(eventData);
-//     wxPostEvent(_mainFrame, statusEvent);
-// }

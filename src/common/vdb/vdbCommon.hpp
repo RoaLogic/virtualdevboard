@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    GUI interface class                                          //
+//    Virtual Devboard common C++ header file                      //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,78 +43,51 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#ifndef GUI_INTERFACE_HPP
-#define GUI_INTERFACE_HPP
+//include Dpi headers, required to link verilator model to C++
+#include "vdb__Dpi.h"
 
+#include "log.hpp"
+#include "testbench.hpp"
 #include "subject.hpp"
-#include "vdbCommon.hpp"
 
-namespace RoaLogic {
+#ifndef VDB_COMMON_HPP
+#define VDB_COMMON_HPP
+
+namespace RoaLogic
+{
     using namespace observer;
-    using namespace vdb;
-namespace GUI {
-
+namespace vdb
+{
     /**
-     * @class cGuiInterface
+     * @class cVDBCommon
      * @author Bjorn Schouteten
-     * @brief GUI interface
-     * @version 0.1
-     * @date 19-okt-2024
-     *
-     * @details This class is a interface which shall be derived
-     * by the GUI implementation.
-     * 
-     * When an event happens in the GUI implementation it can be 
-     * processed by any observer listening to this interface.
-     * 
-     * At the moment that the system wants to show something to the
-     * user it will call the corresponding interface function. The
-     * implementation of the interface will then convert the event
-     * to the GUI event handling system.
-     * 
-     * @attention Be aware that it's likely that the interface and
-     * verilator are running in different threads. When calling any
-     * of these function or sending a notification, the corresponding
-     * function is still in the callers context. 
-     * 
-     */
-    class cGuiInterface : public cSubject
-    {
-        public:
-        //virtual void setCurrentStatus(eSystemState state) = 0;
-        
-        virtual void addVirtualLED(size_t numLeds) = 0;
-        virtual void addVirtualVGA(cVDBCommon* cdbComponent) = 0;
-    };
-
-    /**
-     * @class cGuiVDBComponent
-     * @author Bjorn Schouteten
-     * @brief GUI virtual development board component
-     * @version 0.1
-     * @date 03-nov-2024
+     * @brief Common virtual development board component
      * @details
-     * This class is a base class for any GUI element which implements
-     * a verilated vdb component. It makes sure that all events from the
-     * verilated vdb component are passed through the notify function.
      * 
-     * @todo: Add a method to sent data from the GUI to the verilated design
+     * This is the common class for a virtual development board component. It 
+     * holds the base for the system to interact with all the components in the
+     * same matter.
+     * 
+     * It inherits the cSubject so that each component can notifyObservers through
+     * the corresponding function. All events must be defined in the eventDefinition.hpp,
+     * together with the structures of data that are sent over the events. For each
+     * virtual development board component it doesn't matter who is listening, it
+     * just sents the event. 
+     * 
+     * @todo: Add a way to receive events from the outside
      */
-    class cGuiVDBComponent : public cObserver
+    class cVDBCommon : public cSubject
     {
         private:
-        cVDBCommon* _myVDBComponent;
 
         public:
-        cGuiVDBComponent(cVDBCommon* myVDBComponent) :
-            _myVDBComponent(myVDBComponent)
-        {
-            myVDBComponent->registerObserver(this);
-        }
+        // void notify(eEvent aEvent, void* data)
+        // {
 
-        virtual void notify(eEvent aEvent, void* data) = 0;
+        // }
     };
 
-}}
+}
+}
 
 #endif

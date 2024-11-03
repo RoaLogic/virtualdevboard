@@ -44,10 +44,11 @@
 /////////////////////////////////////////////////////////////////////
 
 #include "wxWidgetsMainFrame.hpp"
+#include "wxWidgetsvdbVGA.hpp"
 
 wxDEFINE_EVENT(wxEVT_STATUS, wxCommandEvent);
 wxDEFINE_EVENT(wxEVT_ADD_LED, wxCommandEvent);
-wxDEFINE_EVENT(wxEVT_ADD_VGA, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
 
 cMainFrame::cMainFrame(cSubject* aSubject) :
     wxFrame(nullptr, wxID_ANY, "Virtual DE10 demo board"),
@@ -112,7 +113,7 @@ cMainFrame::cMainFrame(cSubject* aSubject) :
 
     //Bind(wxEVT_STATUS, &cMainFrame::onStatusChange, this, wxID_ANY);
     Bind(wxEVT_ADD_LED, &cMainFrame::onAddLed, this, wxID_ANY);
-    Bind(wxEVT_ADD_VGA, &cMainFrame::onAddVGA, this, wxID_ANY);
+    Bind(wxEVT_ADD_VDB, &cMainFrame::onAddVdb, this, wxID_ANY);
 }
 
 void cMainFrame::OnExit(wxCommandEvent& event)
@@ -156,11 +157,11 @@ void cMainFrame::onButtonStop(wxCommandEvent& event)
     _startButton->SetLabel("Start");
 
     // Clear all the GUI elements, since those will be newly constructed
-    for(const cVdbVGA* vga : vgaInstances)
+    for(const cGuiVDBComponent* vdb : vdbInstances)
     {
-        delete vga;
+        delete vdb;
     }
-    vgaInstances.clear();
+    vdbInstances.clear();
 
     for(const cVirtualLed* led : ledInstances)
     {
@@ -190,19 +191,28 @@ void cMainFrame::onAddLed(wxCommandEvent& event)
     }
 }
 
-void cMainFrame::onAddVGA(wxCommandEvent& event)
+void cMainFrame::onAddVdb(wxCommandEvent& event)
 {
-    // cVdbVGA* newVGA = new cVdbVGA("TOP.de10lite_verilator_wrapper.vgaMonitor_inst" , 1, this);
-    // vgaInstances.push_back(newVGA);
-}
+    sAddVdbComponent* eventData = reinterpret_cast<sAddVdbComponent*>(event.GetClientObject());
 
-// void cMainFrame::onStatusChange(wxCommandEvent& event)
-// {
-//     sSystemStateEvent* eventData = reinterpret_cast<sSystemStateEvent*>(event.GetClientObject());
-    
-//     if(eventData->state == eSystemState::running)
-//     {
-//         SetStatusText("Started verilator");
-//         _startButton->SetLabel("Pause");
-//     }
-// }
+    if(eventData)
+    {
+        switch (eventData->type)
+        {
+            case eVdbComponentType::vdbVGA :
+            {
+                cWXvdbVGAMonitor* newVGA = new cWXvdbVGAMonitor(eventData->vdbComponent, this);
+                vdbInstances.push_back(newVGA);
+                break;
+            }
+        
+        default:
+            ERROR << "Unknown vdb component type registered \n";
+            break;
+        }
+    }
+    else
+    {
+        ERROR << "Failed to read event data when adding vdb component \n";
+    }    
+}

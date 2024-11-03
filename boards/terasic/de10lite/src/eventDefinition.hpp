@@ -43,6 +43,8 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
+#include "stdint.h"
+
 #ifndef EVENT_DEFINITION_HPP
 #define EVENT_DEFINITION_HPP
 
@@ -51,7 +53,9 @@ enum class eEvent
     close,
     reset,
     stop,
-    stateChange
+    stateChange,
+    vgaData,
+    vgaDataReady
 };
 
 enum class eSystemState
@@ -61,5 +65,25 @@ enum class eSystemState
     paused,
     stopped,
 };
+
+union uRGBValue
+{
+    uint32_t asInt;
+    struct
+    {
+        uint8_t red;
+        uint8_t green;
+        uint8_t blue;
+        uint8_t unused;
+    };
+};
+
+struct sVgaData
+{
+    uint32_t horizontalLines;
+    uint32_t verticalLines;
+    uRGBValue* dataArray;
+};
+
 
 #endif
