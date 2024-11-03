@@ -87,6 +87,7 @@ class cVirtualDemoBoard : public wxApp, public cGuiInterface
     void init(int argc, char** argv);
 
     void addVirtualLED(size_t numLeds);
+    void addVirtualVGA();
     //void setCurrentStatus(eSystemState state);
 };
 

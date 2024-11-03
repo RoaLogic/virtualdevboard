@@ -55,11 +55,13 @@
 #include "subject.hpp"
 
 #include "vdbLED.hpp"
+#include "vdbVGAMonitor.hpp"
 
 using namespace RoaLogic::observer;
 
 wxDECLARE_EVENT(wxEVT_STATUS, wxCommandEvent);
 wxDECLARE_EVENT(wxEVT_ADD_LED, wxCommandEvent);
+wxDECLARE_EVENT(wxEVT_ADD_VGA, wxCommandEvent);
 
 struct sSystemStateEvent : public wxClientData
 {
@@ -108,6 +110,7 @@ class cMainFrame : public wxFrame
     wxButton* _resetButton;
 
     std::vector<cVirtualLed*> ledInstances;
+    std::vector<cVdbVGA*> vgaInstances;
 
     public:
     cMainFrame(cSubject* aSubject);
@@ -127,6 +130,7 @@ class cMainFrame : public wxFrame
     //void onStatusChange(wxCommandEvent& event);
 
     void onAddLed(wxCommandEvent& event);
+    void onAddVGA(wxCommandEvent& event);
 };
 
 

@@ -68,6 +68,6 @@ void vdb7SegmentDisplayUpdate(int id, const svBitVecVal* val)
     const char* scopeName = svGetNameFromScope(scope);
 
     //report progress
-    INFO << "7-Segment(" << scopeName << ") with ID:" << id << " val=" << *val << "\n";
+    //INFO << "7-Segment(" << scopeName << ") with ID:" << id << " val=" << *val << "\n";
 }
 
