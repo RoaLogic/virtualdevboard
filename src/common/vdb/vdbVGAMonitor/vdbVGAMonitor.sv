@@ -111,7 +111,7 @@ module vdbVGAMonitor
   //-----------------------
   // DPI Functions
   //
-  import "DPI-C" context function void vdbVGAMonitorHSYNC(int ID);
+  //import "DPI-C" context function void vdbVGAMonitorHSYNC(int ID);
   import "DPI-C" context function void vdbVGAMonitorVSYNC(int ID);
 
   export "DPI-C" task vdbVGAMonitorSetHorizontalTiming;
@@ -162,7 +162,7 @@ module vdbVGAMonitor
 
   logic                  active_video;
 
-  rgb_t                  framebuffer [MAX_LINES][MAX_PIXELS];
+  rgb_t                  framebuffer [MAX_LINES][MAX_PIXELS] /*verilator public*/;
 
 
   //-----------------------
@@ -181,7 +181,7 @@ module vdbVGAMonitor
   end
 
   //Notify C++ HSYNC/VSYNC
-  always @(negedge hsync) vdbVGAMonitorHSYNC(ID);
+  //always @(negedge hsync) vdbVGAMonitorHSYNC(ID);
   always @(negedge vsync) vdbVGAMonitorVSYNC(ID);
 
 

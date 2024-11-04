@@ -108,6 +108,8 @@ namespace vdb
         static void processVGAEvent(svScope scope, eVgaEvent event);
 
         private:
+        static const size_t cMaxNumVertical = 768;
+        static const size_t cMaxHorizontal = 1024;
         cTimeInterface* _timeInterface;   //!< Pointer to the time interface for retrieving the current time
         cClock* _pixelClock;              //!< Pointer to the pixel clock, which must be generated within this class
         svScope _myScope;                 //!< The scope of the verilated context
@@ -116,8 +118,13 @@ namespace vdb
         sVgaData _myEventData;            //!< Event data element which is passed in any of the events
         size_t _numHsync = 0;             //!< Counter for the number of HSYNC in a single VSYNC period
 
+        //VlUnpacked<unsigned int, cMaxNumVertical*cMaxHorizontal> _myFramebuffer;
+        VlUnpacked<VlUnpacked<unsigned int, cMaxHorizontal>, cMaxNumVertical>& _myFramebuffer;
+
         public:
-        cVdbVGAMonitor(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock);
+        cVdbVGAMonitor(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock,
+                        // VlUnpacked<unsigned int, cMaxNumVertical*cMaxHorizontal>& framebuffer);
+                            VlUnpacked<VlUnpacked<unsigned int, cMaxHorizontal>, cMaxNumVertical>& framebuffer);
         ~cVdbVGAMonitor();
 
         void handleVsync();
