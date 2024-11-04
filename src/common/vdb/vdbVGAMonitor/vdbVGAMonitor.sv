@@ -192,8 +192,8 @@ module vdbVGAMonitor
   always @(posedge pixel_clk)
     if (hsync_trigger) vsync_dly <= vsync;
 
-  assign hsync_trigger = hsync & ~hsync_dly;
-  assign vsync_trigger = vsync & ~vsync_dly;
+  assign hsync_trigger = ~hsync & hsync_dly;
+  assign vsync_trigger = ~vsync & vsync_dly;
 
   
   //Time keeping
