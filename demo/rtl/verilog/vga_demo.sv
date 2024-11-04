@@ -95,12 +95,14 @@ module vga_demo
   always @(posedge clk, negedge rst_n)
     if (!rst_n)
     begin
-        hcnt <= {HTOTAL_LEN{1'b0}};
-        vcnt <= {VTOTAL_LEN{1'b0}};
+        hcnt   <= {HTOTAL_LEN{1'b0}};
+        vcnt   <= {VTOTAL_LEN{1'b0}};
+        VGA_HS <= 1'b1;
+        VGA_VS <= 1'b1;
     end
     else
     begin
-        //horizontal/vertial counters
+        //horizontal/vertical counters
         if (hcnt == HTOTAL -1)
         begin
             hcnt <= {HTOTAL_LEN{1'b0}};
@@ -116,11 +118,13 @@ module vga_demo
 
 
         //control signals
-        VGA_HS <= (hcnt >= HWIDTH + HFPORCH) &&
-                  (hcnt <  HWIDTH + HFPORCH + HSYNC);
+        VGA_HS <= ~((hcnt >= HWIDTH + HFPORCH) &&
+                    (hcnt <  HWIDTH + HFPORCH + HSYNC)
+                   );
 
-        VGA_VS <= (vcnt >= VWIDTH + VFPORCH) &&
-                  (vcnt <  VWIDTH + VFPORCH + VSYNC);
+        VGA_VS <= ~((vcnt >= VWIDTH + VFPORCH) &&
+                    (vcnt <  VWIDTH + VFPORCH + VSYNC)
+                   );
 
 //        active <= (hcnt < HWIDTH) && (vcnt < VWIDTH);
     end
@@ -130,7 +134,8 @@ module vga_demo
   // Draw moving circle
   //
   localparam COLOUR_BLACK  = 16'h0000; //Black
-  localparam COLOUR_CIRCLE = 16'h87E0; //Bright Green
+  localparam COLOUR_CIRCLE = 16'h2FE0; //Bright Green
+  localparam COLOUR_BORDER = 16'h029F; //Blue
 
   //16bit rgb
   logic [15:0] rgb;
@@ -169,38 +174,41 @@ module vga_demo
     end
     else
     begin
+        // Should we draw the border?
+        if      (vcnt == 0  ) rgb <= COLOUR_BORDER;
         // Should we draw the circle?
-        if (draw_circle) rgb <= COLOUR_CIRCLE;
-        else             rgb <= COLOUR_BLACK;
+        else if (draw_circle) rgb <= COLOUR_CIRCLE;
+        // Draw background
+        else                  rgb <= COLOUR_BLACK;
 
         //move circle
         if (update_circle_pos)
         begin
-            circle_x <= direction_x ? circle_x -'h1 : circle_y + 'h1;
-            circle_y <= direction_y ? circle_y -'h1 : circle_y + 'h1;
+            circle_x <= direction_x ? circle_x -'h5 : circle_y + 'h5;
+            circle_y <= direction_y ? circle_y -'h5 : circle_y + 'h5;
         end
 
        //check boundaries
        if (!direction_x) //moving left-to-right
        begin
            //if we're at the right edge, start moving right-to-left
-           if ((circle_x + RADIUS) == HWIDTH-1) direction_x <= 1'b1;
+           if ((circle_x + RADIUS) >= HWIDTH-1) direction_x <= 1'b1;
        end
        else
        begin
            //if we're at the left edge, start moving left-to-right
-           if ((circle_x - RADIUS) == 0) direction_x <= 1'b0;
+           if ((circle_x - RADIUS) <= 0) direction_x <= 1'b0;
        end
 
-       if (!direction_y) //moving to-to-bottom
+       if (!direction_y) //moving top-to-bottom
        begin
            //if we're at the bottom edge, start moving bottom-to-top
-           if ((circle_y + RADIUS) == VWIDTH-1) direction_y <= 1'b1;
+           if ((circle_y + RADIUS) >= VWIDTH-1) direction_y <= 1'b1;
        end
        else
        begin
            //if we're at the top edge, start moving top-to-bottom
-           if ((circle_y - RADIUS) == 0) direction_y <= 1'b0;
+           if ((circle_y - RADIUS) <= 0) direction_y <= 1'b0;
        end
     end
 
