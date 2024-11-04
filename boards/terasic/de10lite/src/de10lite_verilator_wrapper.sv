@@ -194,9 +194,9 @@ endgenerate
   //
   vdbVGAMonitor
   vgaMonitor_inst (
-    .r         ( vga_r         ),
-    .g         ( vga_g         ),
-    .b         ( vga_b         ),
+    .r         ( {vga_r,4'h0}  ),
+    .g         ( {vga_g,4'h0}  ),
+    .b         ( {vga_b,4'h0}  ),
     .hsync     ( vga_hsync     ),
     .vsync     ( vga_vsync     )); 
 
