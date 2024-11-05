@@ -141,7 +141,8 @@ module vdbVGAMonitor
   localparam int MAX_PIXELS   = 1024;
   localparam int MAX_LINES    = 768;
   localparam int TOTAL_PIXELS = MAX_LINES * MAX_PIXELS;
-  localparam int PIXELS_LEN   = $clog2(TOTAL_PIXELS);
+  localparam int PIXEL_BITS   = $bits(rgb_t) * TOTAL_PIXELS;
+  localparam int PIXELS_LEN   = $clog2(PIXEL_BITS);
 //  localparam int LINES_LEN    = $clog2(MAX_LINES );
 
 
@@ -164,7 +165,7 @@ module vdbVGAMonitor
 
   logic                  active_video;
 
-  bit   [3*TOTAL_PIXELS-1:0] framebuffer /*verilator public*/;
+  bit   [PIXEL_BITS-1:0] framebuffer /*verilator public*/;
 
 
   //-----------------------
@@ -223,7 +224,7 @@ module vdbVGAMonitor
         end
         else
         begin
-            if (active_video) pixel_cnt <= pixel_cnt +3;
+            if (active_video) pixel_cnt <= pixel_cnt + $bits(rgb_t);
 /*
             if (hback_porch_cnt == 0) pixel_cnt       <= pixel_cnt +1;
             else                      hback_porch_cnt <= hback_porch_cnt -1;
