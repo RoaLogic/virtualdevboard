@@ -138,11 +138,16 @@ module vdbVGAMonitor
   //-----------------------
   // Constants
   //
+//  `define TEST_VLWIDE
   localparam int MAX_PIXELS   = 1024;
   localparam int MAX_LINES    = 768;
   localparam int TOTAL_PIXELS = MAX_LINES * MAX_PIXELS;
   localparam int PIXEL_BITS   = $bits(rgb_t) * TOTAL_PIXELS;
+`ifdef TEST_VLWIDE
   localparam int PIXELS_LEN   = $clog2(PIXEL_BITS);
+`else
+  localparam int PIXELS_LEN   = $clog2(TOTAL_PIXELS);
+`endif
 //  localparam int LINES_LEN    = $clog2(MAX_LINES );
 
 
@@ -165,8 +170,11 @@ module vdbVGAMonitor
 
   logic                  active_video;
 
+`ifdef TEST_VLWIDE
   bit   [PIXEL_BITS-1:0] framebuffer /*verilator public*/;
-
+`else
+  rgb_t                  framebuffer [TOTAL_PIXELS] /*verilator public*/;
+`endif
 
   //-----------------------
   // Module body
@@ -224,7 +232,11 @@ module vdbVGAMonitor
         end
         else
         begin
+`ifdef TEST_VLWIDE
             if (active_video) pixel_cnt <= pixel_cnt + $bits(rgb_t);
+`else
+            if (active_video) pixel_cnt <= pixel_cnt +1;
+`endif
 /*
             if (hback_porch_cnt == 0) pixel_cnt       <= pixel_cnt +1;
             else                      hback_porch_cnt <= hback_porch_cnt -1;
@@ -237,6 +249,9 @@ module vdbVGAMonitor
 
   //store RGB value in frame buffer
   always @(posedge pixel_clk)
+`ifdef TEST_VLWIDE
     if (active_video) framebuffer[pixel_cnt +: $bits(rgb_t)] <= {r,g,b};
- 
+ `else
+    if (active_video) framebuffer[pixel_cnt] <= {r,g,b};
+`endif
 endmodule
