@@ -359,11 +359,15 @@ namespace vdb
 
                     // Set the scope and sent the values through the DPI functions
                     svSetScope(_myScope);     
-                    vdbVGAMonitorSetHorizontalTiming(&cVGATiming[i].frontPorchHorizontal, &cVGATiming[i].syncHorizontal, &cVGATiming[i].backPorchHorizontal);
-                    vdbVGAMonitorSetVerticalTiming(&cVGATiming[i].frontPorchVertical, &cVGATiming[i].syncVertical, &cVGATiming[i].backPorchVertical);
+                    vdbVGAMonitorSetHorizontalTiming(&cVGATiming[i].frontPorchHorizontal -1,
+                                                     &cVGATiming[i].syncHorizontal -1,
+                                                     &cVGATiming[i].backPorchHorizontal -1);
+                    vdbVGAMonitorSetVerticalTiming(&cVGATiming[i].frontPorchVertical -1,
+                                                   &cVGATiming[i].syncVertical -1,
+                                                   &cVGATiming[i].backPorchVertical -1);
 
                     // Set the pixel clock and enable it
-                    _pixelClock->setLowPeriod(cVGATiming[i].pixelClock/2.0);
+                    _pixelClock->setLowPeriod (cVGATiming[i].pixelClock/2.0);
                     _pixelClock->setHighPeriod(cVGATiming[i].pixelClock/2.0);
 
                     _pixelClock->enable();
