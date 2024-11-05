@@ -160,15 +160,7 @@ namespace GUI {
                     _myImage.Resize(wxSize(eventData->horizontalLines, eventData->verticalLines), wxDefaultPosition);
                 }
 
-                for (size_t i = 0; i < eventData->horizontalLines; i++)
-                {
-                    // Do not add any VGA data when in front/back porch
-                    // Should this be checked in the vdbVGAMonitor class?
-                    if(verticalCounter < eventData->verticalLines)
-                    {
-                        _myImage.SetRGB(i, verticalCounter, eventData->dataArray[i].red, eventData->dataArray[i].green, eventData->dataArray[i].blue);
-                    }
-                }
+                _lastEvent = *eventData;
 
                 if(aEvent == eEvent::vgaDataReady)
                 {
@@ -196,6 +188,18 @@ namespace GUI {
      */
     void cWXvdbVGAMonitor::onVGAEvent(wxCommandEvent& event)
     {
+        size_t imageWidth = _myImage.GetWidth();
+        size_t currentOffset = 0;
+
+        for (size_t y = 0; y < _myImage.GetHeight(); y++)
+        {
+            for (size_t x = 0; x < _myImage.GetWidth(); x++)
+            {
+                _myImage.SetRGB(x, y, _lastEvent.dataArray[currentOffset].red, _lastEvent.dataArray[currentOffset].green, _lastEvent.dataArray[currentOffset].blue);
+                currentOffset++;
+            }
+        }
+
         _myStaticBitmap->SetBitmap(_myImage);
     }
 

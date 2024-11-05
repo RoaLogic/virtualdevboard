@@ -74,6 +74,7 @@ namespace GUI {
         wxStaticBitmap* _myStaticBitmap;
         wxImage _myImage;
         size_t verticalCounter = 0;
+        sVgaData _lastEvent;
 
         void notify(eEvent aEvent, void* data);
 
