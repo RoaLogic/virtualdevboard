@@ -162,7 +162,7 @@ module vdbVGAMonitor
 
   logic                  active_video;
 
-  rgb_t                  framebuffer [MAX_LINES][MAX_PIXELS];
+  rgb_t                  framebuffer [MAX_LINES][MAX_PIXELS] /*verilator public*/;
 
 
   //-----------------------
