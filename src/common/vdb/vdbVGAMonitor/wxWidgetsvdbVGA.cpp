@@ -195,8 +195,18 @@ namespace GUI {
         {
             for (size_t x = 0; x < _myImage.GetWidth(); x++)
             {
+                #ifdef VlUnpackedSingle_Array
                 _myImage.SetRGB(x, y, _lastEvent.dataArray[currentOffset].red, _lastEvent.dataArray[currentOffset].green, _lastEvent.dataArray[currentOffset].blue);
                 currentOffset++;
+                #endif
+                #ifdef VlUnpacked2D_Array
+                _myImage.SetRGB(x, y, _lastEvent.dataArray[currentOffset].red, _lastEvent.dataArray[currentOffset].green, _lastEvent.dataArray[currentOffset].blue);
+                currentOffset++;
+                #endif
+                #ifdef VlWide_Array
+                _myImage.SetRGB(x, y, _lastEvent.dataArray[currentOffset], _lastEvent.dataArray[currentOffset + 1], _lastEvent.dataArray[currentOffset + 2]);
+                currentOffset += 3;
+                #endif
             }
         }
 

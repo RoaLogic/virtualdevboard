@@ -90,6 +90,9 @@ CXX ?= g++
 #CXXFLAGS ?= -fcoroutines
 CXXFLAGS += $(shell wx-config --cxxflags)
 CXXFLAGS += -g
+#CXXFLAGS += -DVlUnpacked2D_Array
+#CXXFLAGS += -DVlUnpackedSingle_Array
+CXXFLAGS += -DVlWide_Array
 
 CPPSTD ?= c++20
 CPPLIB ?= stdc++

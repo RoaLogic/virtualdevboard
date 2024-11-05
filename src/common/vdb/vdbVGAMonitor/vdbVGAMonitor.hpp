@@ -118,13 +118,28 @@ namespace vdb
         sVgaData _myEventData;            //!< Event data element which is passed in any of the events
         size_t _numHsync = 0;             //!< Counter for the number of HSYNC in a single VSYNC period
 
-        //VlUnpacked<unsigned int, cMaxNumVertical*cMaxHorizontal> _myFramebuffer;
+        #ifdef VlUnpackedSingle_Array
+        VlUnpacked<unsigned int, cMaxNumVertical*cMaxHorizontal> _myFramebuffer;
+        #endif
+        #ifdef VlUnpacked2D_Array
         VlUnpacked<VlUnpacked<unsigned int, cMaxHorizontal>, cMaxNumVertical>& _myFramebuffer;
+        #endif
+        #ifdef VlWide_Array
+        VlWide<589824>& _myFramebuffer;
+        #endif
 
         public:
         cVdbVGAMonitor(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock,
-                        // VlUnpacked<unsigned int, cMaxNumVertical*cMaxHorizontal>& framebuffer);
-                            VlUnpacked<VlUnpacked<unsigned int, cMaxHorizontal>, cMaxNumVertical>& framebuffer);
+                #ifdef VlUnpackedSingle_Array
+                VlUnpacked<unsigned int, cMaxNumVertical*cMaxHorizontal>& framebuffer);
+                #endif
+                #ifdef VlUnpacked2D_Array
+                VlUnpacked<VlUnpacked<unsigned int, cMaxHorizontal>, cMaxNumVertical>& framebuffer);
+                #endif
+                #ifdef VlWide_Array
+                VlWide<589824>& framebuffer);
+                #endif
+
         ~cVdbVGAMonitor();
 
         void handleVsync();

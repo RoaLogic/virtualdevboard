@@ -82,7 +82,16 @@ struct sVgaData
 {
     uint32_t horizontalLines;
     uint32_t verticalLines;
+    #ifdef VlUnpackedSingle_Array
     uRGBValue* dataArray;
+    #endif
+    #ifdef VlUnpacked2D_Array
+    uRGBValue* dataArray;
+    #endif
+    #ifdef VlWide_Array
+    uint8_t* dataArray;
+    #endif
+    
 };
 
 

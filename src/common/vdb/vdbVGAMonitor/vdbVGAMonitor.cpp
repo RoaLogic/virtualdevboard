@@ -227,9 +227,15 @@ namespace vdb
      * @param[in] pixelClock    Pointer to the pixelClock for generating the VGA pixel clock
      */
     cVdbVGAMonitor::cVdbVGAMonitor(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock,
-                // VlUnpacked<unsigned int, cMaxNumVertical*cMaxHorizontal>& framebuffer);
+                #ifdef VlUnpackedSingle_Array
+                VlUnpacked<unsigned int, cMaxNumVertical*cMaxHorizontal>& framebuffer) :
+                #endif
+                #ifdef VlUnpacked2D_Array
                 VlUnpacked<VlUnpacked<unsigned int, cMaxHorizontal>, cMaxNumVertical>& framebuffer) :
-                //VlUnpacked<VlUnpacked<unsigned int, 1024>, 768>& framebuffer) :
+                #endif
+                #ifdef VlWide_Array
+                VlWide<589824>& framebuffer) :
+                #endif
         _timeInterface(timeInterface),
         _pixelClock(pixelClock),
         _myFramebuffer(framebuffer)
@@ -368,8 +374,16 @@ namespace vdb
                 }
 
                 // Set the data in the event, number of vertical and horizontal pixels is already set
-                //_myEventData.dataArray = reinterpret_cast<uRGBValue*>(_myFramebuffer.data());
+                #ifdef VlUnpackedSingle_Array
+                _myEventData.dataArray = reinterpret_cast<uRGBValue*>(_myFramebuffer.data());
+                #endif
+                #ifdef VlUnpacked2D_Array
                 _myEventData.dataArray = reinterpret_cast<uRGBValue*>(_myFramebuffer[0].data());
+                #endif
+                #ifdef VlWide_Array
+                _myEventData.dataArray = reinterpret_cast<uint8_t*>(_myFramebuffer.data());
+                #endif
+
                 notifyObserver(eEvent::vgaDataReady, &_myEventData);
 
                 break;
