@@ -128,19 +128,21 @@ module vdbVGAMonitor
       vertical.back_porch  = bp;
   endtask
 
+/*
   export "DPI-C" function vdbVGAMonitorGetPixel;
   function rgb_t vdbVGAMonitorGetPixel(input int line, input int pixel);
     return framebuffer[line][pixel];
   endfunction
-
+*/
 
   //-----------------------
   // Constants
   //
-  localparam int MAX_PIXELS = 1024;
-  localparam int MAX_LINES  = 768;
-  localparam int PIXELS_LEN = $clog2(MAX_PIXELS);
-  localparam int LINES_LEN  = $clog2(MAX_LINES );
+  localparam int MAX_PIXELS   = 1024;
+  localparam int MAX_LINES    = 768;
+  localparam int TOTAL_PIXELS = MAX_LINES * MAX_PIXELS;
+  localparam int PIXELS_LEN   = $clog2(TOTAL_PIXELS);
+//  localparam int LINES_LEN    = $clog2(MAX_LINES );
 
 
   //-----------------------
@@ -157,12 +159,12 @@ module vdbVGAMonitor
   logic [           7:0] hback_porch_cnt;
 
   sync_t                 vertical;
-  logic [LINES_LEN -1:0] line_cnt;
+//  logic [LINES_LEN -1:0] line_cnt;
   logic [           7:0] vback_porch_cnt;
 
   logic                  active_video;
 
-  rgb_t                  framebuffer [MAX_LINES][MAX_PIXELS] /*verilator public*/;
+  bit   [3*TOTAL_PIXELS-1:0] framebuffer /*verilator public*/;
 
 
   //-----------------------
@@ -202,23 +204,30 @@ module vdbVGAMonitor
         if (hsync_trigger)
         begin
             hback_porch_cnt <= horizontal.back_porch;
-            pixel_cnt       <= {PIXELS_LEN{1'b0}};
+//            pixel_cnt       <= {PIXELS_LEN{1'b0}};
 
             if (vsync_trigger)
             begin
                 vback_porch_cnt <= vertical.back_porch;
-                line_cnt        <= {LINES_LEN{1'b0}};
+//                line_cnt        <= {LINES_LEN{1'b0}};
+                pixel_cnt       <= {PIXELS_LEN{1'b0}};
             end
             else
             begin
+                if (vback_porch_cnt != 0) vback_porch_cnt <= vback_porch_cnt -1;
+/*
                 if (vback_porch_cnt == 0) line_cnt        <= line_cnt +1;
                 else                      vback_porch_cnt <= vback_porch_cnt -1;
+*/
             end
         end
         else
         begin
+            if (active_video) pixel_cnt <= pixel_cnt +3;
+/*
             if (hback_porch_cnt == 0) pixel_cnt       <= pixel_cnt +1;
             else                      hback_porch_cnt <= hback_porch_cnt -1;
+*/
         end
     end
 
@@ -227,6 +236,6 @@ module vdbVGAMonitor
 
   //store RGB value in frame buffer
   always @(posedge pixel_clk)
-    if (active_video) framebuffer[line_cnt][pixel_cnt] <= {r,g,b};
+    if (active_video) framebuffer[pixel_cnt +: $bits(rgb_t)] <= {r,g,b};
  
 endmodule
