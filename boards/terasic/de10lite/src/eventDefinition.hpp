@@ -66,33 +66,4 @@ enum class eSystemState
     stopped,
 };
 
-union uRGBValue
-{
-    uint32_t asInt;
-    struct
-    {
-        uint8_t blue;
-        uint8_t green;
-        uint8_t red;
-        uint8_t alpha;
-    };
-};
-
-struct sVgaData
-{
-    uint32_t horizontalLines;
-    uint32_t verticalLines;
-    #ifdef VlUnpackedSingle_Array
-    uRGBValue* dataArray;
-    #endif
-    #ifdef VlUnpacked2D_Array
-    uRGBValue* dataArray;
-    #endif
-    #ifdef VlWide_Array
-    uint8_t* dataArray;
-    #endif
-    
-};
-
-
 #endif

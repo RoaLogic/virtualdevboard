@@ -56,6 +56,25 @@ namespace RoaLogic
 {
 namespace vdb
 {
+    union uRGBValue
+    {
+        uint32_t asInt;
+        struct
+        {
+            uint8_t blue;
+            uint8_t green;
+            uint8_t red;
+            uint8_t alpha;
+        };
+    };
+
+    struct sVgaData
+    {
+        uint32_t horizontalLines;
+        uint32_t verticalLines;
+        uRGBValue* dataArray;    
+    };
+
     /**
      * @class cVdbVGAMonitor
      * @author Bjorn Schouteten
@@ -85,9 +104,6 @@ namespace vdb
     class cVdbVGAMonitor : public cVDBCommon
     {
         private:
-        static const size_t cMaxHorizontalLines = 1024;
-        static const size_t cMaxVerticalLines = 768;
-
         struct sVdbVGAMap
         {
             svScope scope;
@@ -97,7 +113,9 @@ namespace vdb
         static std::vector<sVdbVGAMap> _referencePointers;
         static void registerVirtualVGA(sVdbVGAMap reference);
 
-        public:    
+        public:
+        static const size_t cMaxHorizontalLines = 1024;
+        static const size_t cMaxVerticalLines = 768;
         enum class eVgaEvent
         {
             vsync,
@@ -108,8 +126,6 @@ namespace vdb
         static void processVGAEvent(svScope scope, eVgaEvent event);
 
         private:
-        static const size_t cMaxNumVertical = 768;
-        static const size_t cMaxHorizontal = 1024;
         cTimeInterface* _timeInterface;   //!< Pointer to the time interface for retrieving the current time
         cClock* _pixelClock;              //!< Pointer to the pixel clock, which must be generated within this class
         svScope _myScope;                 //!< The scope of the verilated context
@@ -118,32 +134,15 @@ namespace vdb
         sVgaData _myEventData;            //!< Event data element which is passed in any of the events
         size_t _numHsync = 0;             //!< Counter for the number of HSYNC in a single VSYNC period
 
-        #ifdef VlUnpackedSingle_Array
-        VlUnpacked<unsigned int, cMaxNumVertical*cMaxHorizontal>& _myFramebuffer;
-        #endif
-        #ifdef VlUnpacked2D_Array
-        VlUnpacked<VlUnpacked<unsigned int, cMaxHorizontal>, cMaxNumVertical>& _myFramebuffer;
-        #endif
-        #ifdef VlWide_Array
-        VlWide<589824>& _myFramebuffer;
-        #endif
+        VlUnpacked<unsigned int, cMaxVerticalLines*cMaxHorizontalLines>& _myFramebuffer;
 
         public:
         cVdbVGAMonitor(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock,
-                #ifdef VlUnpackedSingle_Array
-                VlUnpacked<unsigned int, cMaxNumVertical*cMaxHorizontal>& framebuffer);
-                #endif
-                #ifdef VlUnpacked2D_Array
-                VlUnpacked<VlUnpacked<unsigned int, cMaxHorizontal>, cMaxNumVertical>& framebuffer);
-                #endif
-                #ifdef VlWide_Array
-                VlWide<589824>& framebuffer);
-                #endif
+                VlUnpacked<unsigned int, cMaxVerticalLines*cMaxHorizontalLines>& framebuffer);
 
         ~cVdbVGAMonitor();
 
         void handleVsync();
-        void handleHsync();
     };
 
 }

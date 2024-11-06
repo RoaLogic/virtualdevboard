@@ -67,7 +67,8 @@ namespace GUI {
         wxFrame(NULL, wxID_ANY, wxT("VGA monitor")),
         cGuiVDBComponent(myVDBComponent),
         _evtHandler(myEvtHandler),
-        _myImage(640, 480, false)
+        _myImage(640, 480, false),
+        _copySemaphore(1)
     {
         for (size_t i = 0; i < 640; i++)
         {
@@ -160,17 +161,17 @@ namespace GUI {
                     _myImage.Resize(wxSize(eventData->horizontalLines, eventData->verticalLines), wxDefaultPosition);
                 }
 
-                _lastEvent = *eventData;
+                _copySemaphore.acquire();
+                for (size_t y = 0; y < (_myImage.GetWidth() * _myImage.GetHeight()); y++)
+                {
+                    _copyArray[y] = eventData->dataArray[y];
+                }
+                _copySemaphore.release();
 
                 if(aEvent == eEvent::vgaDataReady)
                 {
                     wxCommandEvent vgaEvent{wxEVT_VGA};
                     wxPostEvent(_evtHandler, vgaEvent);
-                    verticalCounter = 0;
-                }
-                else
-                {
-                    verticalCounter++;
                 }
             }
         }
@@ -191,25 +192,16 @@ namespace GUI {
         size_t imageWidth = _myImage.GetWidth();
         size_t currentOffset = 0;
 
+        _copySemaphore.acquire();
         for (size_t y = 0; y < _myImage.GetHeight(); y++)
         {
             for (size_t x = 0; x < _myImage.GetWidth(); x++)
             {
-                //INFO << x << " " << y << " " << _lastEvent.dataArray[currentOffset].asInt << "\n";
-                #ifdef VlUnpackedSingle_Array
-                _myImage.SetRGB(x, y, _lastEvent.dataArray[currentOffset].red, _lastEvent.dataArray[currentOffset].green, _lastEvent.dataArray[currentOffset].blue);
+                _myImage.SetRGB(x, y, _copyArray[currentOffset].red, _copyArray[currentOffset].green, _copyArray[currentOffset].blue);
                 currentOffset++;
-                #endif
-                #ifdef VlUnpacked2D_Array
-                _myImage.SetRGB(x, y, _lastEvent.dataArray[currentOffset].red, _lastEvent.dataArray[currentOffset].green, _lastEvent.dataArray[currentOffset].blue);
-                currentOffset++;
-                #endif
-                #ifdef VlWide_Array
-                _myImage.SetRGB(x, y, _lastEvent.dataArray[currentOffset], _lastEvent.dataArray[currentOffset + 1], _lastEvent.dataArray[currentOffset + 2]);
-                currentOffset += 3;
-                #endif
             }
         }
+        _copySemaphore.release();
 
         _myStaticBitmap->SetBitmap(_myImage);
     }
