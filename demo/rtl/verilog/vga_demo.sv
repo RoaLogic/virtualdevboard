@@ -61,7 +61,7 @@ module vga_demo
   parameter int VSYNC   = 2,    //vertical sync
   parameter int VBPORCH = 31,   //vertical back porch
 
-  parameter int RADIUS = 30     //circle radius
+  parameter int RADIUS = 30     //object radius
 )
 (
   //Reset
@@ -127,44 +127,51 @@ module vga_demo
 
 
   //-------------------------------
-  // Draw moving circle
+  // Draw moving object
   //
   localparam COLOUR_BLACK  = 16'h0000; //Black
   localparam COLOUR_CIRCLE = 16'h2FE0; //Bright Green
   localparam COLOUR_BORDER = 16'h029F; //Blue
+  localparam COLOUR_CROSS  = 16'hF800; //Red
 
   //16bit rgb
   logic [15:0] rgb;
 
-  //position of the circle (centre)
-  logic [HTOTAL_LEN-1:0] circle_x;
-  logic [VTOTAL_LEN-1:0] circle_y;
+  //position of the object (centre)
+  logic [HTOTAL_LEN-1:0] object_x;
+  logic [VTOTAL_LEN-1:0] object_y;
 
-  //circle movement direction
+  //object movement direction
   logic direction_x; //0=left-to-right, 1=right-to-left
   logic direction_y; //0=top-to-bottom, 1=bottom-to-top
 
   //update direction on vsync
   logic vsync_dly;
-  logic update_circle_pos;
-  logic draw_circle;
+  logic update_object_pos;
+  logic draw_object;
 
   always @(posedge clk)
     vsync_dly <= VGA_VS;
 
-  assign update_circle_pos = VGA_VS & ~vsync_dly;
+  assign update_object_pos = VGA_VS & ~vsync_dly;
 
 
-  //should we draw the circle?
-  assign draw_circle = (circle_x - hcnt) * (circle_x - hcnt) +
-                       (circle_y - vcnt) * (circle_y - vcnt) <= RADIUS * RADIUS;
-
+  //should we draw the object?
+/*
+  //circle
+  assign draw_object = (object_x - hcnt)**2 +
+                       (object_y - vcnt)**2 < RADIUS * (RADIUS +1);
+*/
+  //box
+  assign draw_object = (hcnt >= object_x-RADIUS) & (hcnt < object_x+RADIUS) &
+                       (vcnt >= object_y-RADIUS) & (vcnt < object_y+RADIUS);
+ 
   //Draw
   always @(posedge clk, negedge rst_n)
     if (!rst_n)
     begin
-        circle_x    <= RADIUS;
-        circle_y    <= RADIUS;
+        object_x    <= RADIUS;
+        object_y    <= RADIUS;
         direction_x <= 1'b0;
         direction_y <= 1'b0;
     end
@@ -172,39 +179,44 @@ module vga_demo
     begin
         // Should we draw the border?
         if      (vcnt == 0  ) rgb <= COLOUR_BORDER;
-        // Should we draw the circle?
-        else if (draw_circle) rgb <= COLOUR_CIRCLE;
+        // Should we draw the cross?
+        else if (hcnt == HWIDTH/2 ||
+                 vcnt == VWIDTH/2) rgb <= COLOUR_CROSS;
+        // Should we draw the object?
+        else if (draw_object) rgb <= COLOUR_CIRCLE;
         // Draw background
         else                  rgb <= COLOUR_BLACK;
 
-        //move circle
-        if (update_circle_pos)
+        //move object
+        if (update_object_pos)
         begin
-            circle_x <= direction_x ? circle_x -'h5 : circle_y + 'h5;
-            circle_y <= direction_y ? circle_y -'h5 : circle_y + 'h5;
+            object_x <= direction_x ? object_x -'h5 : object_y + 'h5;
+            object_y <= direction_y ? object_y -'h5 : object_y + 'h5;
         end
 
        //check boundaries
        if (!direction_x) //moving left-to-right
        begin
            //if we're at the right edge, start moving right-to-left
-           if ((circle_x + RADIUS) >= HWIDTH-1) direction_x <= 1'b1;
+           if ((object_x + RADIUS) >= HWIDTH-1)begin direction_x <= 1'b1;
+$display("x:%0d, x+RADIUS:%0d, HWIDTH:%0d", object_x, object_x + RADIUS, HWIDTH);
+end
        end
        else
        begin
            //if we're at the left edge, start moving left-to-right
-           if ((circle_x - RADIUS) <= 0) direction_x <= 1'b0;
+           if ((object_x - RADIUS) <= 0) direction_x <= 1'b0;
        end
 
        if (!direction_y) //moving top-to-bottom
        begin
            //if we're at the bottom edge, start moving bottom-to-top
-           if ((circle_y + RADIUS) >= VWIDTH-1) direction_y <= 1'b1;
+           if ((object_y + RADIUS) >= VWIDTH-1) direction_y <= 1'b1;
        end
        else
        begin
            //if we're at the top edge, start moving top-to-bottom
-           if ((circle_y - RADIUS) <= 0) direction_y <= 1'b0;
+           if ((object_y - RADIUS) <= 0) direction_y <= 1'b0;
        end
     end
 
