@@ -107,28 +107,6 @@ static const size_t cVGATimingSize = sizeof(cVGATiming) / sizeof(cVGATiming[0]);
 std::vector<cVdbVGAMonitor::sVdbVGAMap> cVdbVGAMonitor::_referencePointers; 
 
 /**
- * @brief VGA Monitor HSYNC DPI-C callback
- * @details This function gets called when the VGA Monitor detects an HSYNC
- * 
- * @note Static function used by each VGA object
- * 
- * @param[in] ID    The ID of the VGA, currently unused
- */
-// void vdbVGAMonitorHSYNC(int id)
-// {
-//     #ifdef DBG_MEASURE_VDB_VGA
-//     auto start = steady_clock::now();
-//     #endif
-//     cVdbVGAMonitor::processVGAEvent(svGetScope(), cVdbVGAMonitor::eVgaEvent::hsync);
-
-//     #ifdef DBG_MEASURE_VDB_VGA
-//     auto duration = duration_cast<microseconds>(steady_clock::now() - start);
-//     hsyncTimeUs += duration.count();
-//     hsyncCount++;
-//     #endif
-// }
-
-/**
  * @brief VGA Monitor VSYNC DPI-C callback
  * @details This function gets called when the VGA Monitor detects a VSYNC
  * 
@@ -148,9 +126,6 @@ void vdbVGAMonitorVSYNC(int id)
     auto stop = steady_clock::now();
     INFO << "VSync duration: " << duration_cast<microseconds>(stop - start).count() << " us \n";
     INFO << "VSync timing: " << duration_cast<milliseconds>(stop - _previousVsync).count() << " ms \n";
-    //INFO << "HSync average: " << (hsyncTimeUs / hsyncCount) << " us \n";
-    //hsyncCount = 0;
-    //hsyncTimeUs = 0;
     _previousVsync = steady_clock::now();
     #endif
 }
@@ -199,10 +174,6 @@ namespace vdb
                 {
                     ref.reference->handleVsync();
                 }
-                // else if(event == eVgaEvent::hsync)
-                // {
-                //     ref.reference->handleHsync();
-                // }
                 found = true;
                 break;
             }
@@ -227,15 +198,7 @@ namespace vdb
      * @param[in] pixelClock    Pointer to the pixelClock for generating the VGA pixel clock
      */
     cVdbVGAMonitor::cVdbVGAMonitor(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock,
-                #ifdef VlUnpackedSingle_Array
-                VlUnpacked<unsigned int, cMaxNumVertical*cMaxHorizontal>& framebuffer) :
-                #endif
-                #ifdef VlUnpacked2D_Array
-                VlUnpacked<VlUnpacked<unsigned int, cMaxHorizontal>, cMaxNumVertical>& framebuffer) :
-                #endif
-                #ifdef VlWide_Array
-                VlWide<589824>& framebuffer) :
-                #endif
+                VlUnpacked<unsigned int,cMaxVerticalLines*cMaxHorizontalLines>& framebuffer) :
         _timeInterface(timeInterface),
         _pixelClock(pixelClock),
         _myFramebuffer(framebuffer)
@@ -269,46 +232,6 @@ namespace vdb
     {
 
     }
-
-    /**
-     * @brief Handle a VGA Hsync signal
-     * @details This function handles the HSYNC signal from the VGA module.
-     * 
-     * It counts the _numHsync variabele, which is used to count the number of HSYNC
-     * between each VSYNC. Next to this it will fire a VGA data event, in this event
-     * it will pass the current of data. This is done so that there is no need to have 
-     * a double copy of the data. The handler shall store the data into a image for
-     * showing to the user. 
-     * 
-     * It's likely that this methodology is a bit slower then getting all at once. However
-     * it is way easier to handle and uses less state tracking. The data can directly be 
-     * stored in the correct image instead of creating a large two dimensional array which 
-     * has to be passed between threads.
-     */
-    // void cVdbVGAMonitor::handleHsync()
-    // {
-    //     // if(_currentSetting <= cVGATimingSize)
-    //     // {
-    //     //     // uRGBValue* data = new uRGBValue[cVGATiming[_currentSetting].horizontalPixels];
-
-    //     //     // // Get all the data from the VGA monitor
-    //     //     // for (size_t i = 0; i < cVGATiming[_currentSetting].horizontalPixels; i++)
-    //     //     // {
-    //     //     //     uRGBValue rgbValue;
-    //     //     //     rgbValue.asInt = vdbVGAMonitorGetPixel(i, _numHsync);
-    //     //     //     data[i] = rgbValue;
-    //     //     // }
-
-    //     //     // Set the data in the event, number of vertical and horizontal pixels is already set
-    //     //     _myEventData.dataArray = reinterpret_cast<uRGBValue*>(_myFramebuffer[_numHsync].data());
-    //     //     notifyObserver(eEvent::vgaData, &_myEventData);
-
-    //     //     // Delete the data
-    //     //     //delete data;
-    //     // }
-
-    //     _numHsync++; // Count the number of HSYNC, do this after we read the full line of data
-    // }
 
     /**
      * @brief Handle a VGA Vsync signal  
@@ -359,21 +282,9 @@ namespace vdb
 
                     // Set the scope and sent the values through the DPI functions
                     svSetScope(_myScope);
-                    INFO << "Horizontal fp: " << cVGATiming[i].frontPorchHorizontal -1 << " sync: " 
-                         << cVGATiming[i].syncHorizontal -1 << " bp: " 
-                         << cVGATiming[i].backPorchHorizontal -1 << "\n";
 
-                    svBitVecVal fp, sync, bp;
-
-                    fp   = cVGATiming[i].frontPorchHorizontal -1;
-                    sync = cVGATiming[i].syncHorizontal -1;
-                    bp   = cVGATiming[i].backPorchHorizontal -1;
-                    vdbVGAMonitorSetHorizontalTiming(&fp, &sync, &bp);
-
-                    fp   = cVGATiming[i].frontPorchVertical -1;
-                    sync = cVGATiming[i].syncVertical -1;
-                    bp   = cVGATiming[i].backPorchVertical -1;
-                    vdbVGAMonitorSetVerticalTiming(&fp, &sync, &bp);
+                    vdbVGAMonitorSetHorizontalTiming(&cVGATiming[i].frontPorchHorizontal, &cVGATiming[i].syncHorizontal, &cVGATiming[i].backPorchHorizontal);
+                    vdbVGAMonitorSetVerticalTiming(&cVGATiming[i].frontPorchVertical, &cVGATiming[i].syncVertical , &cVGATiming[i].backPorchVertical);
 
                     // Set the pixel clock and enable it
                     _pixelClock->setLowPeriod (cVGATiming[i].pixelClock/2.0);
@@ -387,28 +298,7 @@ namespace vdb
                 }
 
                 // Set the data in the event, number of vertical and horizontal pixels is already set
-                #ifdef VlUnpackedSingle_Array
                 _myEventData.dataArray = reinterpret_cast<uRGBValue*>(_myFramebuffer.data());
-                #endif
-                #ifdef VlUnpacked2D_Array
-                _myEventData.dataArray = reinterpret_cast<uRGBValue*>(_myFramebuffer[0].data());
-                #endif
-                #ifdef VlWide_Array
-                _myEventData.dataArray = reinterpret_cast<uint8_t*>(_myFramebuffer.data());
-                #endif
-
-                svSetScope(_myScope);
-
-                size_t offset = 0;
-                for (size_t y = 0; y < _myEventData.verticalLines; y++)
-                {
-                    for (size_t x = 0; x < _myEventData.horizontalLines; x++)
-                    {
-                        INFO << y << " " << x << " " << vdbVGAMonitorGetPixel(y,x) << "\n";
-                        INFO << y << " " << x << " " << _myFramebuffer[offset++] << "\n";
-                    }
-                }
-
                 notifyObserver(eEvent::vgaDataReady, &_myEventData);
 
                 break;

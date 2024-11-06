@@ -50,11 +50,14 @@
 #include <wx/wx.h>
 
 #include "gui_interface.hpp"
+#include "vdbVGAMonitor.hpp"
+#include <semaphore>
 
 wxDECLARE_EVENT(wxEVT_VGA, wxCommandEvent);
 
 namespace RoaLogic {
     using namespace observer;
+    using namespace vdb;
 namespace GUI {
 
     /**
@@ -73,8 +76,9 @@ namespace GUI {
         wxEvtHandler* _evtHandler;
         wxStaticBitmap* _myStaticBitmap;
         wxImage _myImage;
-        size_t verticalCounter = 0;
         sVgaData _lastEvent;
+        std::binary_semaphore _copySemaphore;
+        uRGBValue _copyArray[cVdbVGAMonitor::cMaxVerticalLines * cVdbVGAMonitor::cMaxHorizontalLines];
 
         void notify(eEvent aEvent, void* data);
 
