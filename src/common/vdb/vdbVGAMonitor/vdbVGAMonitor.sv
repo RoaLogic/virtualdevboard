@@ -98,10 +98,10 @@ module vdbVGAMonitor
   // Typedefs
   //
   typedef struct {
-    bit [9:0] active;
-    bit [7:0] front_porch,
-              sync,
-              back_porch;
+    bit [10:0] active;
+    bit [ 7:0] front_porch,
+               sync,
+               back_porch;
   } sync_t;
 
   typedef struct packed {
@@ -116,15 +116,17 @@ module vdbVGAMonitor
   import "DPI-C" context function void vdbVGAMonitorVSYNC(int ID);
 
   export "DPI-C" task vdbVGAMonitorSetHorizontalTiming;
-  task vdbVGAMonitorSetHorizontalTiming (input bit [7:0] fp, input bit [7:0] sync, input bit [7:0] bp);
+  task vdbVGAMonitorSetHorizontalTiming (input bit [10:0] pixels, input bit [7:0] fp, input bit [7:0] sync, input bit [7:0] bp);
+      vertical.active        = pixels;
       horizontal.front_porch = fp;
       horizontal.sync        = sync;
       horizontal.back_porch  = bp;
-$display("Horizontal (Verilog) fp=%x, sync=%x, bp=%x", fp, sync, bp);
+$display("Horizontal (Verilog) pixels=%x, fp=%x, sync=%x, bp=%x", pixels, fp, sync, bp);
   endtask
 
   export "DPI-C" task vdbVGAMonitorSetVerticalTiming;
-  task vdbVGAMonitorSetVerticalTiming (input bit [7:0] fp, input bit [7:0] sync, input bit [7:0] bp);
+  task vdbVGAMonitorSetVerticalTiming (input bit [10:0] pixels, input bit [7:0] fp, input bit [7:0] sync, input bit [7:0] bp);
+      vertical.active      = pixels;
       vertical.front_porch = fp;
       vertical.sync        = sync;
       vertical.back_porch  = bp;
@@ -150,7 +152,6 @@ $display("Horizontal (Verilog) fp=%x, sync=%x, bp=%x", fp, sync, bp);
 `else
   localparam int PIXELS_LEN   = $clog2(TOTAL_PIXELS);
 `endif
-//  localparam int LINES_LEN    = $clog2(MAX_LINES );
 
 
   //-----------------------
@@ -163,7 +164,7 @@ $display("Horizontal (Verilog) fp=%x, sync=%x, bp=%x", fp, sync, bp);
 
   sync_t                 horizontal;
   logic [           8:0] hblank_cnt;
-  logic [           9:0] hactive_cnt;
+  logic [          10:0] hactive_cnt;
   logic                  hactive_video;
 
   sync_t                 vertical;
@@ -186,15 +187,15 @@ $display("Horizontal (Verilog) fp=%x, sync=%x, bp=%x", fp, sync, bp);
 
   initial
   begin
-      horizontal.active      = HOR_ACT   -1;
-      horizontal.front_porch = HOR_FP    -1;
-      horizontal.sync        = HOR_SYNC  -1;
-      horizontal.back_porch  = HOR_BP    -1;
+      horizontal.active      = HOR_ACT;
+      horizontal.front_porch = HOR_FP;
+      horizontal.sync        = HOR_SYNC;
+      horizontal.back_porch  = HOR_BP;
 
-      vertical.active        = VERT_ACT  -1;
-      vertical.front_porch   = VERT_FP   -1;
-      vertical.sync          = VERT_SYNC -1;
-      vertical.back_porch    = VERT_BP   -1;
+      vertical.active        = VERT_ACT;
+      vertical.front_porch   = VERT_FP;
+      vertical.sync          = VERT_SYNC;
+      vertical.back_porch    = VERT_BP;
   end
 
   //Notify C++ HSYNC/VSYNC
@@ -231,9 +232,9 @@ $display("Horizontal (Verilog) fp=%x, sync=%x, bp=%x", fp, sync, bp);
         */
         if (hsync_trigger)
         begin
-            hactive_cnt   <= horizontal.active +1;
+            hactive_cnt   <= horizontal.active;
             hactive_video <= 1'b0;
-            hblank_cnt    <= horizontal.sync + horizontal.back_porch +1;
+            hblank_cnt    <= horizontal.sync + horizontal.back_porch -1;
 
         end
         else
@@ -258,9 +259,9 @@ $display("Horizontal (Verilog) fp=%x, sync=%x, bp=%x", fp, sync, bp);
         */
         if (vsync_trigger)
         begin
-            vactive_cnt   <= vertical.active +1;
+            vactive_cnt   <= vertical.active;
             vactive_video <= 1'b0;
-            vblank_cnt    <= vertical.sync + vertical.back_porch +1;
+            vblank_cnt    <= vertical.sync + vertical.back_porch -1;
             pixel_cnt     <= {PIXELS_LEN{1'b0}};
         end
         else if (hsync_trigger)
