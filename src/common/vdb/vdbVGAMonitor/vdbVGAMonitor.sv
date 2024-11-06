@@ -98,6 +98,7 @@ module vdbVGAMonitor
   // Typedefs
   //
   typedef struct {
+    bit [9:0] active;
     bit [7:0] front_porch,
               sync,
               back_porch;
@@ -119,6 +120,7 @@ module vdbVGAMonitor
       horizontal.front_porch = fp;
       horizontal.sync        = sync;
       horizontal.back_porch  = bp;
+$display("Horizontal (Verilog) fp=%x, sync=%x, bp=%x", fp, sync, bp);
   endtask
 
   export "DPI-C" task vdbVGAMonitorSetVerticalTiming;
@@ -160,15 +162,17 @@ module vdbVGAMonitor
   logic                  hsync_trigger, vsync_trigger;
 
   sync_t                 horizontal;
-  sync_t                 horizontal_cnt;
-  logic [PIXELS_LEN-1:0] pixel_cnt;
-  logic [           7:0] hback_porch_cnt;
+  logic [           8:0] hblank_cnt;
+  logic [           9:0] hactive_cnt;
+  logic                  hactive_video;
 
   sync_t                 vertical;
-//  logic [LINES_LEN -1:0] line_cnt;
-  logic [           7:0] vback_porch_cnt;
+  logic [           5:0] vblank_cnt;
+  logic [           9:0] vactive_cnt;
+  logic                  vactive_video;
 
   logic                  active_video;
+  logic [PIXELS_LEN-1:0] pixel_cnt;
 
 `ifdef TEST_VLWIDE
   bit   [PIXEL_BITS-1:0] framebuffer /*verilator public*/;
@@ -182,13 +186,15 @@ module vdbVGAMonitor
 
   initial
   begin
-      horizontal.front_porch = HOR_FP;
-      horizontal.sync        = HOR_SYNC;
-      horizontal.back_porch  = HOR_BP;
+      horizontal.active      = HOR_ACT   -1;
+      horizontal.front_porch = HOR_FP    -1;
+      horizontal.sync        = HOR_SYNC  -1;
+      horizontal.back_porch  = HOR_BP    -1;
 
-      vertical.front_porch   = VERT_FP;
-      vertical.sync          = VERT_SYNC;
-      vertical.back_porch    = VERT_BP;
+      vertical.active        = VERT_ACT  -1;
+      vertical.front_porch   = VERT_FP   -1;
+      vertical.sync          = VERT_SYNC -1;
+      vertical.back_porch    = VERT_BP   -1;
   end
 
   //Notify C++ HSYNC/VSYNC
@@ -201,7 +207,7 @@ module vdbVGAMonitor
     hsync_dly <= hsync;
 
   always @(posedge pixel_clk)
-    if (hsync_trigger) vsync_dly <= vsync;
+    vsync_dly <= vsync;
 
   assign hsync_trigger = ~hsync & hsync_dly;
   assign vsync_trigger = ~vsync & vsync_dly;
@@ -210,42 +216,68 @@ module vdbVGAMonitor
   //Time keeping
   always @(posedge pixel_clk)
     begin
+        /**
+            Horizontal
+        */
         if (hsync_trigger)
         begin
-            hback_porch_cnt <= horizontal.back_porch;
-//            pixel_cnt       <= {PIXELS_LEN{1'b0}};
+            hactive_cnt   <= horizontal.active;
+            hactive_video <= 1'b0;
+            hblank_cnt    <= horizontal.sync + horizontal.back_porch +1;
 
-            if (vsync_trigger)
-            begin
-                vback_porch_cnt <= vertical.back_porch;
-//                line_cnt        <= {LINES_LEN{1'b0}};
-                pixel_cnt       <= {PIXELS_LEN{1'b0}};
-            end
-            else
-            begin
-                if (vback_porch_cnt != 0) vback_porch_cnt <= vback_porch_cnt -1;
-/*
-                if (vback_porch_cnt == 0) line_cnt        <= line_cnt +1;
-                else                      vback_porch_cnt <= vback_porch_cnt -1;
-*/
-            end
         end
         else
         begin
-`ifdef TEST_VLWIDE
-            if (active_video) pixel_cnt <= pixel_cnt + $bits(rgb_t);
-`else
-            if (active_video) pixel_cnt <= pixel_cnt +1;
-`endif
-/*
-            if (hback_porch_cnt == 0) pixel_cnt       <= pixel_cnt +1;
-            else                      hback_porch_cnt <= hback_porch_cnt -1;
-*/
+            if (hblank_cnt != 0)
+            begin
+                hblank_cnt <= hblank_cnt -1;
+            end
+            else if (hactive_cnt != 0)
+            begin
+                hactive_video <= 1'b1;
+                hactive_cnt   <= hactive_cnt -1;
+            end
+            else
+            begin
+                hactive_video <= 1'b0;
+            end
         end
+
+        /**
+            Vertical
+        */
+        if (vsync_trigger)
+        begin
+            vactive_cnt   <= vertical.active;
+            vactive_video <= 1'b0;
+            vblank_cnt    <= vertical.sync + vertical.back_porch +1;
+            pixel_cnt     <= {PIXELS_LEN{1'b0}};
+        end
+        else if (hsync_trigger)
+        begin
+            if (vblank_cnt != 0)
+            begin
+                vblank_cnt <= vblank_cnt -1;
+            end
+            else if (vactive_cnt != 0)
+            begin
+                vactive_video <= 1'b1;
+                vactive_cnt   <= vactive_cnt -1;
+            end
+            else
+            begin
+                vactive_cnt <= 1'b0;
+            end
+        end
+
+`ifdef TEST_VLWIDE
+        if (active_video) pixel_cnt <= pixel_cnt + $bits(rgb_t);
+`else
+        if (active_video) pixel_cnt <= pixel_cnt +1;
+`endif
     end
 
-
-  assign active_video = (hback_porch_cnt == 0) & (vback_porch_cnt == 0);
+  assign active_video = vactive_video & hactive_video;
 
   //store RGB value in frame buffer
   always @(posedge pixel_clk)
