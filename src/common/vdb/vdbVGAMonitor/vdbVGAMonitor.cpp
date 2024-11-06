@@ -359,7 +359,9 @@ namespace vdb
 
                     // Set the scope and sent the values through the DPI functions
                     svSetScope(_myScope);
-INFO << "Horizontal fp: " << cVGATiming[i].frontPorchHorizontal -1 << " sync: " << cVGATiming[i].syncHorizontal -1 << " bp: " << cVGATiming[i].backPorchHorizontal -1 << "\n";
+                    INFO << "Horizontal fp: " << cVGATiming[i].frontPorchHorizontal -1 << " sync: " 
+                         << cVGATiming[i].syncHorizontal -1 << " bp: " 
+                         << cVGATiming[i].backPorchHorizontal -1 << "\n";
 
                     svBitVecVal fp, sync, bp;
 
@@ -394,6 +396,18 @@ INFO << "Horizontal fp: " << cVGATiming[i].frontPorchHorizontal -1 << " sync: " 
                 #ifdef VlWide_Array
                 _myEventData.dataArray = reinterpret_cast<uint8_t*>(_myFramebuffer.data());
                 #endif
+
+                svSetScope(_myScope);
+
+                size_t offset = 0;
+                for (size_t y = 0; y < _myEventData.verticalLines; y++)
+                {
+                    for (size_t x = 0; x < _myEventData.horizontalLines; x++)
+                    {
+                        INFO << y << " " << x << " " << vdbVGAMonitorGetPixel(y,x) << "\n";
+                        INFO << y << " " << x << " " << _myFramebuffer[offset++] << "\n";
+                    }
+                }
 
                 notifyObserver(eEvent::vgaDataReady, &_myEventData);
 

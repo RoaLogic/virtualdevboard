@@ -195,6 +195,7 @@ namespace GUI {
         {
             for (size_t x = 0; x < _myImage.GetWidth(); x++)
             {
+                //INFO << x << " " << y << " " << _lastEvent.dataArray[currentOffset].asInt << "\n";
                 #ifdef VlUnpackedSingle_Array
                 _myImage.SetRGB(x, y, _lastEvent.dataArray[currentOffset].red, _lastEvent.dataArray[currentOffset].green, _lastEvent.dataArray[currentOffset].blue);
                 currentOffset++;

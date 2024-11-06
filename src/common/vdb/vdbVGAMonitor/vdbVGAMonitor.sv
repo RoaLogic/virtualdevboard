@@ -130,12 +130,12 @@ $display("Horizontal (Verilog) fp=%x, sync=%x, bp=%x", fp, sync, bp);
       vertical.back_porch  = bp;
   endtask
 
-/*
+
   export "DPI-C" function vdbVGAMonitorGetPixel;
   function rgb_t vdbVGAMonitorGetPixel(input int line, input int pixel);
     return framebuffer[line][pixel];
   endfunction
-*/
+
 
   //-----------------------
   // Constants
