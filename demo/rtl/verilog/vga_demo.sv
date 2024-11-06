@@ -52,14 +52,14 @@
 module vga_demo
 #(
   parameter int HWIDTH  = 640,  //horizontal visible pixels
-  parameter int HFPORCH = 48,   //horizontal front porch
+  parameter int HFPORCH = 16,   //horizontal front porch
   parameter int HSYNC   = 96,   //horizontal sync
-  parameter int HBPORCH = 16,   //horizontal back porch
+  parameter int HBPORCH = 48,   //horizontal back porch
 
   parameter int VWIDTH  = 480,  //vertical visible pixels
-  parameter int VFPORCH = 33,   //vertical front porch
+  parameter int VFPORCH = 11,   //vertical front porch
   parameter int VSYNC   = 2,    //vertical sync
-  parameter int VBPORCH = 10,   //vertical back porch
+  parameter int VBPORCH = 31,   //vertical back porch
 
   parameter int RADIUS = 30     //circle radius
 )
@@ -79,8 +79,8 @@ module vga_demo
   //-------------------------------
   // constants
   //
-  localparam int HTOTAL = HFPORCH + HWIDTH + HSYNC + HBPORCH;
-  localparam int VTOTAL = VFPORCH + VWIDTH + VSYNC + VBPORCH;
+  localparam int HTOTAL = HWIDTH + HFPORCH + HSYNC + HBPORCH;
+  localparam int VTOTAL = VWIDTH + VFPORCH + VSYNC + VBPORCH;
   localparam int HTOTAL_LEN = $clog2(HTOTAL);
   localparam int VTOTAL_LEN = $clog2(VTOTAL);
 
@@ -106,16 +106,14 @@ module vga_demo
         if (hcnt == HTOTAL -1)
         begin
             hcnt <= {HTOTAL_LEN{1'b0}};
-            vcnt <= vcnt +1;
+
+            if (vcnt == VTOTAL -1) vcnt <= {VTOTAL_LEN{1'b0}};
+            else                   vcnt <= vcnt +1;
         end
         else
         begin
             hcnt <= hcnt +1;
         end
-
-        if (vcnt == VTOTAL -1)
-          vcnt <= {VTOTAL_LEN{1'b0}};
-
 
         //control signals
         VGA_HS <= ~((hcnt >= HWIDTH + HFPORCH) &&
@@ -125,8 +123,6 @@ module vga_demo
         VGA_VS <= ~((vcnt >= VWIDTH + VFPORCH) &&
                     (vcnt <  VWIDTH + VFPORCH + VSYNC)
                    );
-
-//        active <= (hcnt < HWIDTH) && (vcnt < VWIDTH);
     end
 
 
