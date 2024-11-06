@@ -213,15 +213,25 @@ $display("Horizontal (Verilog) fp=%x, sync=%x, bp=%x", fp, sync, bp);
   assign vsync_trigger = ~vsync & vsync_dly;
 
   
-  //Time keeping
+  /**
+     Time keeping
+  */
+  assign active_video = vactive_video & hactive_video;
+
   always @(posedge pixel_clk)
     begin
+`ifdef TEST_VLWIDE
+        if (active_video) pixel_cnt <= pixel_cnt + $bits(rgb_t);
+`else
+        if (active_video) pixel_cnt <= pixel_cnt +1;
+`endif
+
         /**
             Horizontal
         */
         if (hsync_trigger)
         begin
-            hactive_cnt   <= horizontal.active;
+            hactive_cnt   <= horizontal.active +1;
             hactive_video <= 1'b0;
             hblank_cnt    <= horizontal.sync + horizontal.back_porch +1;
 
@@ -248,7 +258,7 @@ $display("Horizontal (Verilog) fp=%x, sync=%x, bp=%x", fp, sync, bp);
         */
         if (vsync_trigger)
         begin
-            vactive_cnt   <= vertical.active;
+            vactive_cnt   <= vertical.active +1;
             vactive_video <= 1'b0;
             vblank_cnt    <= vertical.sync + vertical.back_porch +1;
             pixel_cnt     <= {PIXELS_LEN{1'b0}};
@@ -266,18 +276,11 @@ $display("Horizontal (Verilog) fp=%x, sync=%x, bp=%x", fp, sync, bp);
             end
             else
             begin
-                vactive_cnt <= 1'b0;
+                vactive_video <= 1'b0;
             end
         end
-
-`ifdef TEST_VLWIDE
-        if (active_video) pixel_cnt <= pixel_cnt + $bits(rgb_t);
-`else
-        if (active_video) pixel_cnt <= pixel_cnt +1;
-`endif
     end
 
-  assign active_video = vactive_video & hactive_video;
 
   //store RGB value in frame buffer
   always @(posedge pixel_clk)
