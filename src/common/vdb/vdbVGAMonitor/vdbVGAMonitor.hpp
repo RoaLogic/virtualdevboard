@@ -119,7 +119,7 @@ namespace vdb
         size_t _numHsync = 0;             //!< Counter for the number of HSYNC in a single VSYNC period
 
         #ifdef VlUnpackedSingle_Array
-        VlUnpacked<unsigned int, cMaxNumVertical*cMaxHorizontal> _myFramebuffer;
+        VlUnpacked<unsigned int, cMaxNumVertical*cMaxHorizontal>& _myFramebuffer;
         #endif
         #ifdef VlUnpacked2D_Array
         VlUnpacked<VlUnpacked<unsigned int, cMaxHorizontal>, cMaxNumVertical>& _myFramebuffer;
