@@ -363,17 +363,21 @@ namespace vdb
                          << cVGATiming[i].syncHorizontal -1 << " bp: " 
                          << cVGATiming[i].backPorchHorizontal -1 << "\n";
 
-                    svBitVecVal fp, sync, bp;
+                    {
+                        svBitVecVal pixels, fp, sync, bp;
 
-                    fp   = cVGATiming[i].frontPorchHorizontal -1;
-                    sync = cVGATiming[i].syncHorizontal -1;
-                    bp   = cVGATiming[i].backPorchHorizontal -1;
-                    vdbVGAMonitorSetHorizontalTiming(&fp, &sync, &bp);
+                        pixels = cVGATiming[i].horizontalPixels;
+                        fp     = cVGATiming[i].frontPorchHorizontal;
+                        sync   = cVGATiming[i].syncHorizontal;
+                        bp     = cVGATiming[i].backPorchHorizontal;
+                        vdbVGAMonitorSetHorizontalTiming(&pixels, &fp, &sync, &bp);
 
-                    fp   = cVGATiming[i].frontPorchVertical -1;
-                    sync = cVGATiming[i].syncVertical -1;
-                    bp   = cVGATiming[i].backPorchVertical -1;
-                    vdbVGAMonitorSetVerticalTiming(&fp, &sync, &bp);
+                        pixels = cVGATiming[i].verticalPixels;
+                        fp     = cVGATiming[i].frontPorchVertical;
+                        sync   = cVGATiming[i].syncVertical;
+                        bp     = cVGATiming[i].backPorchVertical;
+                        vdbVGAMonitorSetVerticalTiming(&pixels, &fp, &sync, &bp);
+                    }
 
                     // Set the pixel clock and enable it
                     _pixelClock->setLowPeriod (cVGATiming[i].pixelClock/2.0);
@@ -398,7 +402,7 @@ namespace vdb
                 #endif
 
                 svSetScope(_myScope);
-
+/*
                 size_t offset = 0;
                 for (size_t y = 0; y < _myEventData.verticalLines; y++)
                 {
@@ -408,7 +412,7 @@ namespace vdb
                         INFO << y << " " << x << " " << _myFramebuffer[offset++] << "\n";
                     }
                 }
-
+*/
                 notifyObserver(eEvent::vgaDataReady, &_myEventData);
 
                 break;
