@@ -157,15 +157,16 @@ module vga_demo
 
 
   //should we draw the object?
-/*
+
   //circle
-  assign draw_object = (object_x - hcnt)**2 +
-                       (object_y - vcnt)**2 < RADIUS * (RADIUS +1);
-*/
+  assign draw_object = (object_x - hcnt)*(object_x - hcnt) +
+                       (object_y - vcnt)*(object_y - vcnt) <= RADIUS * RADIUS + RADIUS;
+/*
   //box
   assign draw_object = (hcnt >= object_x-RADIUS) & (hcnt < object_x+RADIUS) &
                        (vcnt >= object_y-RADIUS) & (vcnt < object_y+RADIUS);
- 
+*/
+
   //Draw
   always @(posedge clk, negedge rst_n)
     if (!rst_n)
