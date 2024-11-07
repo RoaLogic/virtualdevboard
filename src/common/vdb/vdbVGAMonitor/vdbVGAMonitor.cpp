@@ -283,25 +283,26 @@ namespace vdb
                     // Set the scope and sent the values through the DPI functions
                     svSetScope(_myScope);
 
-                    {
-                        svBitVecVal pixels, fp, sync, bp;
+                    //Program VGAMonitor model
+                    svBitVecVal pixels, fp, sync, bp;
+                    long double pixelClock;
 
-                        pixels = cVGATiming[i].horizontalPixels;
-                        fp     = cVGATiming[i].frontPorchHorizontal;
-                        sync   = cVGATiming[i].syncHorizontal;
-                        bp     = cVGATiming[i].backPorchHorizontal;
-                        vdbVGAMonitorSetHorizontalTiming(&pixels, &fp, &sync, &bp);
+                    pixels = cVGATiming[i].horizontalPixels;
+                    fp     = cVGATiming[i].frontPorchHorizontal;
+                    sync   = cVGATiming[i].syncHorizontal;
+                    bp     = cVGATiming[i].backPorchHorizontal;
+                    vdbVGAMonitorSetHorizontalTiming(&pixels, &fp, &sync, &bp);
 
-                        pixels = cVGATiming[i].verticalPixels;
-                        fp     = cVGATiming[i].frontPorchVertical;
-                        sync   = cVGATiming[i].syncVertical;
-                        bp     = cVGATiming[i].backPorchVertical;
-                        vdbVGAMonitorSetVerticalTiming(&pixels, &fp, &sync, &bp);
-                    }
+                    pixels = cVGATiming[i].verticalPixels;
+                    fp     = cVGATiming[i].frontPorchVertical;
+                    sync   = cVGATiming[i].syncVertical;
+                    bp     = cVGATiming[i].backPorchVertical;
+                    vdbVGAMonitorSetVerticalTiming(&pixels, &fp, &sync, &bp);
 
                     // Set the pixel clock and enable it
-                    _pixelClock->setLowPeriod (cVGATiming[i].pixelClock/2.0);
-                    _pixelClock->setHighPeriod(cVGATiming[i].pixelClock/2.0);
+                    pixelClock = cVGATiming[i].totalHorizontal * cVGATiming[i].totalVertical * timeBetweenVsync.Hz();
+                    _pixelClock->setLowPeriod ( (1.0/pixelClock)/2.0 );
+                    _pixelClock->setHighPeriod( (1.0/pixelClock)/2.0 );
 
                     _pixelClock->enable();
 
