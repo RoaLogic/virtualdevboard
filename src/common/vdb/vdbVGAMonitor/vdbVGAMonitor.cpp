@@ -64,15 +64,15 @@ uint64_t hsyncTimeUs = 0;
  */
 struct sVGATiming
 {
-    uint16_t horizontalPixels;
-    uint16_t verticalPixels;
+    svBitVecVal  horizontalPixels;
+    svBitVecVal  verticalPixels;
     uint8_t frequencyHz;
     long double pixelClock;
-    uint16_t totalHorizontal; // Active video + front porch + sync + back porch
+    svBitVecVal  totalHorizontal; // Active video + front porch + sync + back porch
     svBitVecVal  frontPorchHorizontal;
     svBitVecVal  syncHorizontal;
     svBitVecVal  backPorchHorizontal;
-    uint16_t totalVertical; // Active video + front porch + sync + back porch
+    svBitVecVal  totalVertical; // Active video + front porch + sync + back porch
     svBitVecVal  frontPorchVertical;
     svBitVecVal  syncVertical;
     svBitVecVal  backPorchVertical;
@@ -284,26 +284,22 @@ namespace vdb
                     svSetScope(_myScope);
 
                     //Program VGAMonitor model
-                    svBitVecVal pixels, fp, sync, bp;
+		    vdbVGAMonitorSetHorizontalTiming(&cVGATiming[i].horizontalPixels,
+                                                     &cVGATiming[i].frontPorchHorizontal,
+                                                     &cVGATiming[i].syncHorizontal,
+                                                     &cVGATiming[i].backPorchHorizontal);
+                    vdbVGAMonitorSetVerticalTiming(&cVGATiming[i].verticalPixels,
+                                                   &cVGATiming[i].frontPorchVertical,
+                                                   &cVGATiming[i].syncVertical,
+                                                   &cVGATiming[i].backPorchVertical);
+
+                    // Set the pixel clock timing
                     long double pixelClock;
-
-                    pixels = cVGATiming[i].horizontalPixels;
-                    fp     = cVGATiming[i].frontPorchHorizontal;
-                    sync   = cVGATiming[i].syncHorizontal;
-                    bp     = cVGATiming[i].backPorchHorizontal;
-                    vdbVGAMonitorSetHorizontalTiming(&pixels, &fp, &sync, &bp);
-
-                    pixels = cVGATiming[i].verticalPixels;
-                    fp     = cVGATiming[i].frontPorchVertical;
-                    sync   = cVGATiming[i].syncVertical;
-                    bp     = cVGATiming[i].backPorchVertical;
-                    vdbVGAMonitorSetVerticalTiming(&pixels, &fp, &sync, &bp);
-
-                    // Set the pixel clock and enable it
                     pixelClock = cVGATiming[i].totalHorizontal * cVGATiming[i].totalVertical * timeBetweenVsync.Hz();
                     _pixelClock->setLowPeriod ( (1.0/pixelClock)/2.0 );
                     _pixelClock->setHighPeriod( (1.0/pixelClock)/2.0 );
 
+                    // Enable pixel clock
                     _pixelClock->enable();
 
                     // Set the horizontal and vertical pixels
