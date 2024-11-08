@@ -109,7 +109,7 @@ endif
 ## Build app
 #################################################################
 
-$(board): $(OBJDIR)/V$(wrapper)__ALL.o vdb__Dpi.h $(VERILATOR_CXX) $(TB_CXX)
+$(board): $(OBJDIR)/V$(wrapper)__ALL.o $(OBJDIR)/vdb__Dpi.h $(VERILATOR_CXX) $(TB_CXX)
 	@echo "--- Building $@"
 	$(CXX) $(CXXFLAGS) -std=$(CPPSTD) 			\
 	$(VERILATOR_INCLUDE) $<	$(TB_CXX) $(VERILATOR_CXX)	\
@@ -123,31 +123,25 @@ $(board): $(OBJDIR)/V$(wrapper)__ALL.o vdb__Dpi.h $(VERILATOR_CXX) $(TB_CXX)
 ## Rules
 #####################################################################
 
-$(OBJDIR)/V%.mk: $(OBJDIR) $(RTL_VERILOG)
-	@echo "--- Verilating $@"
+V%.mk: $(RTL_VERILOG)
+	@echo "--- Verilating $*"
+	mkdir -p $(OBJDIR)
 	verilator $(VERILATOR_FLAGS) $(VERILATE_FLAGS)		\
-	-Mdir $(@D) --cc $(RTL_VERILOG) --top-module $*		\
+	-Mdir $(@D) --cc $(RTL_VERILOG) --top-module $(*F)	\
 	$(foreach d,$(DEFINES),+define+$d)			\
 	$(foreach d,$(INCDIRS),+incdir+$d)			\
 	$(foreach l,$(wildcard $(LIBDIRS)),-y $l)
 
+%__ALL.cpp: %.mk
+	#must rebuild here, otherwise prerequisites for _ALL.o not met
+	@echo "--- Building $(@F)"
+	make -C $(@D) -f $(*F).mk
 
-%__ALL.o: %.mk
-	echo "--- Building $(@F)"
-	make -C $(@D) -f $(^F)
-
-
-vdb__Dpi.h:
-	@echo "#include \"V$(wrapper)__Dpi.h\"" > $(OBJDIR)/$@
-
-
-#################################################################
-## Directories
-#################################################################
-.PHONY:$(OBJDIR)
+%__ALL.o: %__ALL.cpp
+	echo
 	
-$(OBJDIR):
-	mkdir -p $@ log
+%vdb__Dpi.h:
+	@echo "#include \"V$(wrapper)__Dpi.h\"" > $@
 
 
 #################################################################
