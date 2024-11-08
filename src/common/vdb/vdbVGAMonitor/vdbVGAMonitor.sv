@@ -121,7 +121,6 @@ module vdbVGAMonitor
       horizontal.front_porch = fp;
       horizontal.sync        = sync;
       horizontal.back_porch  = bp;
-$display("Horizontal (Verilog) pixels=%x, fp=%x, sync=%x, bp=%x", pixels, fp, sync, bp);
   endtask
 
   export "DPI-C" task vdbVGAMonitorSetVerticalTiming;
@@ -132,20 +131,23 @@ $display("Horizontal (Verilog) pixels=%x, fp=%x, sync=%x, bp=%x", pixels, fp, sy
       vertical.back_porch  = bp;
   endtask
 
-
   export "DPI-C" function vdbVGAMonitorGetPixel;
   function rgb_t vdbVGAMonitorGetPixel(input int line, input int pixel);
     return framebuffer[line][pixel];
   endfunction
 
+  export "DPI-C" function vdbVGAMonitorGetLineCnt;
+  function int vdbVGAMonitorGetLineCnt;
+    return line_cnt;
+  endfunction
 
   //-----------------------
   // Constants
   //
   localparam int MAX_PIXELS   = 1024;
   localparam int MAX_LINES    = 768;
+  localparam int LINES_LEN    = $clog2(MAX_LINES);
   localparam int TOTAL_PIXELS = MAX_LINES * MAX_PIXELS;
-  localparam int PIXEL_BITS   = $bits(rgb_t) * TOTAL_PIXELS;
   localparam int PIXELS_LEN   = $clog2(TOTAL_PIXELS);
 
 
@@ -169,13 +171,14 @@ $display("Horizontal (Verilog) pixels=%x, fp=%x, sync=%x, bp=%x", pixels, fp, sy
 
   logic                  active_video;
   logic [PIXELS_LEN-1:0] pixel_cnt;
+  logic [LINES_LEN -1:0] line_cnt;
 
   rgb_t                  framebuffer [TOTAL_PIXELS] /*verilator public*/;
+
 
   //-----------------------
   // Module body
   //
-
   initial
   begin
       horizontal.active      = HOR_ACT;
@@ -187,14 +190,19 @@ $display("Horizontal (Verilog) pixels=%x, fp=%x, sync=%x, bp=%x", pixels, fp, sy
       vertical.front_porch   = VERT_FP;
       vertical.sync          = VERT_SYNC;
       vertical.back_porch    = VERT_BP;
+
+      line_cnt               = 0;
   end
 
-  //Notify C++ HSYNC/VSYNC
-  //always @(negedge hsync) vdbVGAMonitorHSYNC(ID);
+  /**
+     Callback to C++ each VSYNC
+  */
   always @(negedge vsync) vdbVGAMonitorVSYNC(ID);
 
 
-  //HSYNC/VSYNC triggers (end of HSYNC/VSYNC)
+  /**
+     HSYNC/VSYNC triggers (end of HSYNC/VSYNC)
+  */
   always @(posedge pixel_clk)
     hsync_dly <= hsync;
 
@@ -204,7 +212,15 @@ $display("Horizontal (Verilog) pixels=%x, fp=%x, sync=%x, bp=%x", pixels, fp, sy
   assign hsync_trigger = ~hsync & hsync_dly;
   assign vsync_trigger = ~vsync & vsync_dly;
 
-  
+
+  /**
+     Line Count
+     Don't use pixel_clk, because pixel_clk might not be available yet
+  */
+  always @(posedge hsync_trigger) line_cnt++;
+  always @(posedge vsync_trigger) line_cnt = 0;
+
+ 
   /**
      Time keeping
   */
@@ -222,7 +238,6 @@ $display("Horizontal (Verilog) pixels=%x, fp=%x, sync=%x, bp=%x", pixels, fp, sy
             hactive_cnt   <= horizontal.active;
             hactive_video <= 1'b0;
             hblank_cnt    <= horizontal.sync + horizontal.back_porch -1;
-
         end
         else
         begin
@@ -270,7 +285,9 @@ $display("Horizontal (Verilog) pixels=%x, fp=%x, sync=%x, bp=%x", pixels, fp, sy
     end
 
 
-  //store RGB value in frame buffer
+  /**
+     store RGB value in frame buffer
+  */
   always @(posedge pixel_clk)
     if (active_video) framebuffer[pixel_cnt] <= {r,g,b};
 endmodule
