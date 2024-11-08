@@ -195,8 +195,11 @@ module altsyncram
   endtask
 
 
-  import "DPI-C" context function void altsyncram_registerInstance();
-  initial altsyncram_registerInstance();
+  /**
+     Initialize altsyncram
+  */
+//  import "DPI-C" context function void altsyncram_initializeInstance(input string init_file, input string init_file_layout);
+//  initial if (init_file != "") altsyncram_initializeInstance(init_file, init_file_layout);
 `endif
 
 
@@ -204,7 +207,7 @@ module altsyncram
   //-----------------------
   // Variables
   //
-  logic [width_a-1:0] mem_array [numwords_a];
+  logic [width_a  -1:0] mem_array [numwords_a];
 
   logic                 clk_outdata_a;
   logic                 clken_outdata_a;
