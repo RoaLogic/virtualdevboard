@@ -138,7 +138,7 @@ module vdbVGAMonitor
 
   export "DPI-C" function vdbVGAMonitorGetLineCnt;
   function int vdbVGAMonitorGetLineCnt;
-    return line_cnt;
+    return stored_line_cnt;
   endfunction
 
   //-----------------------
@@ -171,7 +171,7 @@ module vdbVGAMonitor
 
   logic                  active_video;
   logic [PIXELS_LEN-1:0] pixel_cnt;
-  logic [LINES_LEN -1:0] line_cnt;
+  logic [LINES_LEN -1:0] line_cnt, stored_line_cnt;
 
   rgb_t                  framebuffer [TOTAL_PIXELS] /*verilator public*/;
 
@@ -218,7 +218,11 @@ module vdbVGAMonitor
      Don't use pixel_clk, because pixel_clk might not be available yet
   */
   always @(posedge hsync_trigger) line_cnt++;
-  always @(posedge vsync_trigger) line_cnt = 0;
+  always @(posedge vsync_trigger)
+  begin
+      stored_line_cnt = line_cnt;
+      line_cnt        = 0;
+  end
 
  
   /**
