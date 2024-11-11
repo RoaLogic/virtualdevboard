@@ -198,8 +198,8 @@ module altsyncram
   /**
      Initialize altsyncram
   */
-//  import "DPI-C" context function void altsyncram_initializeInstance(input string init_file, input string init_file_layout);
-//  initial if (init_file != "") altsyncram_initializeInstance(init_file, init_file_layout);
+  import "DPI-C" context function void altsyncram_initializeInstance(input string init_file, input string init_file_layout);
+  initial if (init_file != "") altsyncram_initializeInstance(init_file, init_file_layout);
 `endif
 
 
