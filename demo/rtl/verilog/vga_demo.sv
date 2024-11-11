@@ -193,7 +193,6 @@ module vga_demo
         begin
             object_x <= direction_x ? object_x -'h5 : object_x + 'h5;
             object_y <= direction_y ? object_y -'h5 : object_y + 'h5;
-$display("direction: %b %b %0d", direction_x, direction_y, object_x);
         end
 
        //check boundaries
