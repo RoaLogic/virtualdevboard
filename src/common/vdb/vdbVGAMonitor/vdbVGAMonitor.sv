@@ -217,8 +217,8 @@ module vdbVGAMonitor
      Line Count
      Don't use pixel_clk, because pixel_clk might not be available yet
   */
-  always @(posedge hsync_trigger) line_cnt++;
-  always @(posedge vsync_trigger)
+  always @(negedge hsync) line_cnt++;
+  always @(negedge vsync)
   begin
       stored_line_cnt = line_cnt;
       line_cnt        = 0;

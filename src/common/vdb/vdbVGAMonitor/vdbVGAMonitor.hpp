@@ -83,22 +83,13 @@ namespace vdb
      * @details
      * This class communicates with the verilator component, any
      * class that wants to listen to it should register itself through
-     * the subject-observer pattern. 
+     * the subject-observer pattern.
      * 
-     * There are two events sent by this class, the vgaData and the 
-     * vgaDataReady event. vgaData is sent at the moment a HSYNC is received,
-     * where the vgaDataReady is sent when a VSYNC is received. The vgaDataReady
-     * shall be used to redraw the image, where the vgaData shall be used to store
-     * the data in the image.
-     * 
-     * The data in the event is the sVgaData structure. It holds the number of 
-     * horizontal and vertical lines, as well as a pointer to the data. Do note that
-     * the data is deleted at the end of the function, so it should be copied and
-     * not re-used.
-     * 
-     * 
-     * @todo: Handle the front/back porch and sync period within this class when sending data
-     * @todo: Should the current line be added into the data structure?
+     * This class sents one event, the vgaDataReady event. It passes 
+     * data according to the sVgaData structure. Which passes the number
+     * of horizontal and vertical lines. The data array is build up as a single
+     * array with a size of horizontal lines * vertical lines. All the horizontal
+     * lines are appended after each other.
      * 
      */
     class cVdbVGAMonitor : public cVDBCommon
@@ -132,8 +123,8 @@ namespace vdb
         simtime_t _previousVSyncTime;     //!< Previous time that a VSYNC occured
         uint8_t _currentSetting = 0xff;   //!< Current lookup table setting, 0xff means no element found
         sVgaData _myEventData;            //!< Event data element which is passed in any of the events
-        size_t _numHsync = 0;             //!< Counter for the number of HSYNC in a single VSYNC period
 
+        //!< The VGA data array buffer allocated in the verilog code, used as reference to show the data on screen
         VlUnpacked<unsigned int, cMaxVerticalLines*cMaxHorizontalLines>& _myFramebuffer;
 
         public:

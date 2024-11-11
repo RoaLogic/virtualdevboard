@@ -67,12 +67,13 @@ namespace GUI {
         wxFrame(NULL, wxID_ANY, wxT("VGA monitor")),
         cGuiVDBComponent(myVDBComponent),
         _evtHandler(myEvtHandler),
-        _myImage(640, 480, false),
+        _myImage(_cDefaultWidth, _cDefaultHeight, false),
         _copySemaphore(1)
     {
-        for (size_t i = 0; i < 640; i++)
+        // Fill data array with dummy screen
+        for (size_t i = 0; i < _cDefaultWidth; i++)
         {
-            for (size_t y = 0; y < 480; y++)
+            for (size_t y = 0; y < _cDefaultHeight; y++)
             {
                 if(i <= 91)
                 {
@@ -150,7 +151,7 @@ namespace GUI {
     {
         sVgaData* eventData = reinterpret_cast<sVgaData*>(data);
 
-        if(aEvent == eEvent::vgaData || aEvent == eEvent::vgaDataReady)
+        if(aEvent == eEvent::vgaDataReady)
         {
             if(eventData->horizontalLines != 0 && eventData->verticalLines != 0)
             {
@@ -161,6 +162,8 @@ namespace GUI {
                     _myImage.Resize(wxSize(eventData->horizontalLines, eventData->verticalLines), wxDefaultPosition);
                 }
 
+                // Copy the data from the buffer into our copy array and make sure that the copyarray is not accessed 
+                // during this time
                 _copySemaphore.acquire();
                 for (size_t y = 0; y < (_myImage.GetWidth() * _myImage.GetHeight()); y++)
                 {
@@ -168,11 +171,10 @@ namespace GUI {
                 }
                 _copySemaphore.release();
 
-                if(aEvent == eEvent::vgaDataReady)
-                {
-                    wxCommandEvent vgaEvent{wxEVT_VGA};
-                    wxPostEvent(_evtHandler, vgaEvent);
-                }
+                // Data is ready now post the event to switch context
+                // Updating the UI element must happen in the UI context
+                wxCommandEvent vgaEvent{wxEVT_VGA};
+                wxPostEvent(_evtHandler, vgaEvent);
             }
         }
     }
@@ -192,6 +194,7 @@ namespace GUI {
         size_t imageWidth = _myImage.GetWidth();
         size_t currentOffset = 0;
 
+        // Make sure we are not writing data into the array when we read it
         _copySemaphore.acquire();
         for (size_t y = 0; y < _myImage.GetHeight(); y++)
         {
@@ -203,6 +206,7 @@ namespace GUI {
         }
         _copySemaphore.release();
 
+        // Update the bitmap and show the new image
         _myStaticBitmap->SetBitmap(_myImage);
     }
 

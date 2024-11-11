@@ -112,6 +112,11 @@ namespace GUI {
             myVDBComponent->registerObserver(this);
         }
 
+        ~cGuiVDBComponent()
+        {
+            _myVDBComponent->removeObserver(this);
+        }
+
         virtual void notify(eEvent aEvent, void* data) = 0;
     };
 

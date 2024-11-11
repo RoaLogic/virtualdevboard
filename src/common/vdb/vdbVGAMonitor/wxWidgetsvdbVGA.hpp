@@ -68,16 +68,26 @@ namespace GUI {
      * @details
      * This class communicates with the verilator component, any
      * class that wants to listen to it should register itself through
-     * the subject-observer pattern. 
+     * the subject-observer pattern.
+     * 
+     * It receives the vgaDataReady event and copies the data into the
+     * _copyArray. By doing this the verilated context can continue and the 
+     * GUI thread can do the work of placing the data into a wxImage and show
+     * it on the screen. 
+     * 
+     * @attention The notify function runs in the verilated context, where
+     * the onVGAEvent runs in the GUI context.
      */
     class cWXvdbVGAMonitor : public cGuiVDBComponent, private wxFrame
     {
         private:
-        wxEvtHandler* _evtHandler;
-        wxStaticBitmap* _myStaticBitmap;
-        wxImage _myImage;
-        sVgaData _lastEvent;
-        std::binary_semaphore _copySemaphore;
+        static const size_t _cDefaultWidth = 640;   //!< Default image width to start with
+        static const size_t _cDefaultHeight = 480;  //!< Default image height to start with
+        wxEvtHandler* _evtHandler;                  //!< The event handler of this frame
+        wxStaticBitmap* _myStaticBitmap;            //!< Pointer to the handler for the bitmap
+        wxImage _myImage;                           //!< Temporary image, used to create a new bitmap       
+        std::binary_semaphore _copySemaphore;       //!< Semaphore to protect the copy array
+        //!< Temporary array with the maximum size possible, used to copy data between threads.
         uRGBValue _copyArray[cVdbVGAMonitor::cMaxVerticalLines * cVdbVGAMonitor::cMaxHorizontalLines];
 
         void notify(eEvent aEvent, void* data);

@@ -122,8 +122,6 @@ void vdbVGAMonitorVSYNC(int id)
     // Get the scope of the current call and pass this into the processing function
     cVdbVGAMonitor::processVGAEvent(svGetScope(), cVdbVGAMonitor::eVgaEvent::vsync);
 
-    INFO << "Line count:" << vdbVGAMonitorGetLineCnt() << "\n";
-
     #ifdef DBG_MEASURE_VDB_VGA
     auto stop = steady_clock::now();
     INFO << "VSync duration: " << duration_cast<microseconds>(stop - start).count() << " us \n";
@@ -248,22 +246,25 @@ namespace vdb
      * lookup table offset. With this we use _currentSetting for lookup table indexing. In case
      * the right setting is found the scope is set and the corresponding settings are sent to the 
      * verilated context. Also the event data information is set correctly, so that the user knows
-     * that the image is about to change. At last the pixel clock is started, so that we get the 
-     * right data from the device.
+     * that the image is about to change. At last the pixel clock is calculated and started, 
+     * so that we get the right data from the device.
      * 
      * When the setting is already found we get the last line of data and sent the vgaDataReady 
-     * event, so that the user knows that it's the last line of data.
+     * event, so that the user knows that it's the last line of data. It is up to the user on how
+     * to handle the data of this event. 
+     * 
+     * @note The passed data is a pointer that is continously updated, make sure that the
+     * data abstraction is thread safe.
      */
     void cVdbVGAMonitor::handleVsync()
     {
         simtime_t currentVSyncTime = _timeInterface->getTime();
         simtime_t timeBetweenVsync = currentVSyncTime - _previousVSyncTime;
         _previousVSyncTime = currentVSyncTime;
-        _numHsync = 524;
 
         #ifdef DBG_VDB_VGA
         INFO << "VGA: Frequency " << timeBetweenVsync.Hz() << "Hz \n";
-        INFO << "VGA: Num hsync in vsync:"<< _numHsync << "\n";
+        INFO << "VGA: Num hsync in vsync:"<< vdbVGAMonitorGetLineCnt() << "\n";
         #endif
 
         // Loop through the lookup table 
@@ -271,7 +272,7 @@ namespace vdb
         {
             // Check if we have found the right element in the table
             if(cVGATiming[i].frequencyHz == std::round(timeBetweenVsync.Hz()) &&
-                cVGATiming[i].totalVertical == _numHsync)
+                cVGATiming[i].totalVertical == vdbVGAMonitorGetLineCnt())
             {
                 // _currentSetting is used to see if we already found an element
                 if(_currentSetting != i)
@@ -286,7 +287,7 @@ namespace vdb
                     svSetScope(_myScope);
 
                     //Program VGAMonitor model
-		    vdbVGAMonitorSetHorizontalTiming(&cVGATiming[i].horizontalPixels,
+		            vdbVGAMonitorSetHorizontalTiming(&cVGATiming[i].horizontalPixels,
                                                      &cVGATiming[i].frontPorchHorizontal,
                                                      &cVGATiming[i].syncHorizontal,
                                                      &cVGATiming[i].backPorchHorizontal);
@@ -296,8 +297,7 @@ namespace vdb
                                                    &cVGATiming[i].backPorchVertical);
 
                     // Set the pixel clock timing
-                    long double pixelClock;
-                    pixelClock = cVGATiming[i].totalHorizontal * cVGATiming[i].totalVertical * timeBetweenVsync.Hz();
+                    long double pixelClock = cVGATiming[i].totalHorizontal * cVGATiming[i].totalVertical * timeBetweenVsync.Hz();
                     _pixelClock->setLowPeriod ( (1.0/pixelClock)/2.0 );
                     _pixelClock->setHighPeriod( (1.0/pixelClock)/2.0 );
 
@@ -321,8 +321,6 @@ namespace vdb
                 _pixelClock->disable();
             }
         }
-
-        _numHsync = 0;
     }
 
 }}
