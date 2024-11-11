@@ -191,17 +191,16 @@ module vga_demo
         //move object
         if (update_object_pos)
         begin
-            object_x <= direction_x ? object_x -'h5 : object_y + 'h5;
+            object_x <= direction_x ? object_x -'h5 : object_x + 'h5;
             object_y <= direction_y ? object_y -'h5 : object_y + 'h5;
+$display("direction: %b %b %0d", direction_x, direction_y, object_x);
         end
 
        //check boundaries
        if (!direction_x) //moving left-to-right
        begin
            //if we're at the right edge, start moving right-to-left
-           if ((object_x + RADIUS) >= HWIDTH-1)begin direction_x <= 1'b1;
-$display("x:%0d, x+RADIUS:%0d, HWIDTH:%0d", object_x, object_x + RADIUS, HWIDTH);
-end
+           if ((object_x + RADIUS) >= HWIDTH-1) direction_x <= 1'b1;
        end
        else
        begin
@@ -212,7 +211,7 @@ end
        if (!direction_y) //moving top-to-bottom
        begin
            //if we're at the bottom edge, start moving bottom-to-top
-           if ((object_y + RADIUS) >= VWIDTH-1) direction_y <= 1'b1;
+	   if ((object_y + RADIUS) >= VWIDTH-1) direction_y <= 1'b1;
        end
        else
        begin
