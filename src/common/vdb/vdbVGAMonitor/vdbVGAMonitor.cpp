@@ -122,6 +122,8 @@ void vdbVGAMonitorVSYNC(int id)
     // Get the scope of the current call and pass this into the processing function
     cVdbVGAMonitor::processVGAEvent(svGetScope(), cVdbVGAMonitor::eVgaEvent::vsync);
 
+    INFO << "Line count:" << vdbVGAMonitorGetLineCnt() << "\n";
+
     #ifdef DBG_MEASURE_VDB_VGA
     auto stop = steady_clock::now();
     INFO << "VSync duration: " << duration_cast<microseconds>(stop - start).count() << " us \n";
