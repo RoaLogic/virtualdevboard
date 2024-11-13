@@ -84,16 +84,16 @@ cMainFrame::cMainFrame(cSubject* aSubject) :
                                          wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT),
                                          0, wxLEFT, cLeftPanelOffset);
     
-    _startButton  = new wxPlayPauseButton(_leftPanel, cStartButtonID, wxT("Play"));
+    _startButton  = new wxMediaPlayPauseButton(_leftPanel, cStartButtonID, wxT("Play"));
     _startButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonStart, this);
-    _resetButton   = new wxButton(_leftPanel, cResetButtonID , wxT("Reset"));
-    _resetButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonReset, this);
-    _stopButton  = new wxButton(_leftPanel, cStopButtonID, wxT("Stop"));
+    _stopButton  = new wxMediaStopButton(_leftPanel, cStopButtonID, wxT("Stop"));
     _stopButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonStop, this);
+    _resetButton   = new wxMediaPowerButton(_leftPanel, cResetButtonID , wxT("Reset"));
+    _resetButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonReset, this);
 
-    leftPanelSizer->Add(_startButton,  0, wxLEFT, cLeftPanelOffset);
-    leftPanelSizer->Add(_resetButton, 0, wxLEFT, cLeftPanelOffset);
-    leftPanelSizer->Add(_stopButton,   0, wxLEFT, cLeftPanelOffset);
+    leftPanelSizer->Add(_startButton, 0, wxALIGN_CENTER, cLeftPanelOffset);
+    leftPanelSizer->Add(_resetButton, 0, wxALIGN_CENTER, cLeftPanelOffset);
+    leftPanelSizer->Add(_stopButton,  0, wxALIGN_CENTER, cLeftPanelOffset);
 
     _leftPanel->SetSizer(leftPanelSizer);
 

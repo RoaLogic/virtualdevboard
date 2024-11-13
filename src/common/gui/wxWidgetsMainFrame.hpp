@@ -120,10 +120,9 @@ class cMainFrame : public wxFrame
     wxPanel* _leftPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
     wxPanel* _rightPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
 
-    wxPlayPauseButton* _startButton;
-    wxButton* _stopButton;
-    // wxButton* _pauseButton;
-    wxButton* _resetButton;
+    wxMediaPlayPauseButton* _startButton;
+    wxMediaStopButton* _stopButton;
+    wxMediaPowerButton* _resetButton;
 
     std::vector<cVirtualLed*> ledInstances;
     std::vector<cGuiVDBComponent*> vdbInstances;
