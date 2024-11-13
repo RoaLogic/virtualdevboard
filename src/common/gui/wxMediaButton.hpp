@@ -51,37 +51,42 @@
 #include <wx/sizer.h>
 #include <wx/dcbuffer.h>
 
-class wxPlayPauseButton : public wxWindow
+
+/**
+ * @brief wxMediaButton class
+ * @details Base class for media buttons
+ */
+class wxMediaButton : public wxWindow
 {
-    private:
-    /**
-       Button phase, play=false, pause=true
-    */
-    bool phase;
-    static const bool PAUSE = true;
-    static const bool PLAY  = false;
+    protected:
     double scale = 0.8;
 
 
     public:
     /**
-        Default ctor
-    */
-    wxPlayPauseButton();
+     * @brief Default ctor
+     */
+    wxMediaButton();
 
 
     /**
-        Constructor, creating and showing the button
+     * @brief Constructor, create and show the button
+     * @details wxMediaButton constructor with same parameter as wxButton for compatibility reasons
+     */
+    wxMediaButton(wxWindow* parent, wxWindowID id,
+                  const wxString& label = wxEmptyString,
+                  const wxPoint& pos = wxDefaultPosition,
+                  const wxSize& size = wxDefaultSize,
+                  long style = 0,
+                  const wxValidator& validator = wxDefaultValidator,
+                  const wxString& name = wxButtonNameStr);
 
-        Same parameter as wxButton for compatibility reasons
-    */
-    wxPlayPauseButton(wxWindow* parent, wxWindowID id,
-                      const wxString& label = wxEmptyString,
-                      const wxPoint& pos = wxDefaultPosition,
-                      const wxSize& size = wxDefaultSize,
-                      long style = 0,
-                      const wxValidator& validator = wxDefaultValidator,
-                      const wxString& name = wxButtonNameStr);
+    /**
+     * @brief Destructor
+     */
+    ~wxMediaButton() {}
+
+
     /**
         Returns @true if an authentication needed symbol is displayed on the
         button.
@@ -92,51 +97,215 @@ class wxPlayPauseButton : public wxWindow
 
 
     /**
-        Returns the default size for the buttons. It is advised to make all the
-        dialog buttons of the same size and this function allows retrieving the
-        (platform, and current font dependent) size which should be the best
-        suited for this.
+     * @brief Default button size
+     * @details Returns the default size for the buttons. It is advised to make all the
+                dialog buttons of the same size and this function allows retrieving the
+                (platform, and current font dependent) size which should be the best
+                suited for this.
 
         The optional @a win argument is new since wxWidgets 3.1.3 and allows to
         get a per-monitor DPI specific size.
     */
-    static wxSize GetDefaultSize(wxWindow* win = NULL);
-
-    /**
-        Returns the string label for the button. Either "Play" or "Pause"
-
-        @see SetLabel()
-    */
-    wxString GetLabel() const;
+    static wxSize GetDefaultSize(wxWindow* win = NULL) { return wxSize(50,50); }
 
 
     /**
-        Sets the string label for the button.
-
-        @param label
-            The label to set.
-    */
-    void SetLabel(const wxString& label);
+     * @brief Draw the button
+     */
+    virtual void Draw(wxDC& dc);
 
 
     /**
-        Draw the button
+        Events with pre- and post-handlers
     */
-    void Draw(wxDC& dc);
-
-
-    /**
-        Events
-    */
+    virtual void OnPaintPreHandle(wxPaintEvent &evt) {}
     void OnPaint(wxPaintEvent& evt);
+    virtual void OnPaintPostHandle(wxPaintEvent &evt) {}
+
+    virtual void EnterWindowPreHandle(wxMouseEvent& evt) {}
     void EnterWindow(wxMouseEvent& evt);
+    virtual void EnterWindowPostHandle(wxMouseEvent& evt) {}
+
+    virtual void LeaveWindowPreHandle(wxMouseEvent& evt) {}
     void LeaveWindow(wxMouseEvent& evt);
+    virtual void LeaveWindowPostHandle(wxMouseEvent& evt) {}
+
+    virtual void MouseLeftUpPreHandle(wxMouseEvent& evt) {}
     void MouseLeftUp(wxMouseEvent& evt);
+    virtual void MouseLeftUpPostHandle(wxMouseEvent& evt) {}
 
     /**
         Helpers
     */
     bool SendClickEvent();
+};
+
+
+
+
+/**
+ * @brief wxMediaPlayPauseButton class
+ * @details Draws and handles the PlayPause media button
+ */
+class wxMediaPlayPauseButton : public wxMediaButton
+{
+    private:
+    /**
+       Button phase, play=false, pause=true
+    */
+    bool phase;
+    static const bool PAUSE = true;
+    static const bool PLAY  = false;
+
+
+    public:
+    /**
+      * @brief Default ctor
+      */
+    wxMediaPlayPauseButton();
+
+
+    /**
+     * @brief Constructor, creating and showing the button
+     * @details Construct and draw the wxPlayPauseButton
+                Same parameters as wxButton for compatibility reasons
+     */
+    wxMediaPlayPauseButton(wxWindow* parent, wxWindowID id,
+                           const wxString& label = wxEmptyString,
+                           const wxPoint& pos = wxDefaultPosition,
+                           const wxSize& size = wxDefaultSize,
+                           long style = 0,
+                           const wxValidator& validator = wxDefaultValidator,
+                           const wxString& name = wxButtonNameStr);
+
+
+    /**
+     * @brief Destructor
+     */
+    ~wxMediaPlayPauseButton() {}
+
+
+    /**
+     * @brief Returns the string label for the button. Either "Play" or "Pause"
+     * @see SetLabel()
+     */
+    wxString GetLabel() const;
+
+
+    /**
+     * @brief Sets the string label for the button.
+     * @param label The label to set.
+     */
+    void SetLabel(const wxString& label);
+
+
+    /**
+     * @brief Draw the button
+     */
+    void Draw(wxDC& dc);
+
+    /**
+     * @brief MouseLeftUp pre-handler
+     */
+    void MouseLeftUpPreHandle(wxMouseEvent &evt);
+};
+
+
+
+
+/**
+ * @brief wxMediaStopButton class
+ * @details Draws and handles the Stop media button
+ */
+class wxMediaStopButton : public wxMediaButton
+{
+    public:
+    /**
+      * @brief Default ctor
+      */
+    wxMediaStopButton();
+
+
+    /**
+     * @brief Constructor, creating and showing the button
+     * @details Construct and draw the wxPlayPauseButton
+                Same parameters as wxButton for compatibility reasons
+     */
+    wxMediaStopButton(wxWindow* parent, wxWindowID id,
+                      const wxString& label = wxEmptyString,
+                      const wxPoint& pos = wxDefaultPosition,
+                      const wxSize& size = wxDefaultSize,
+                      long style = 0,
+                      const wxValidator& validator = wxDefaultValidator,
+                      const wxString& name = wxButtonNameStr);
+
+
+    /**
+     * @brief Destructor
+     */
+    ~wxMediaStopButton() {}
+
+
+    /**
+     * @brief Returns the string label for the button. Always returns "Stop"
+     * @see SetLabel()
+     */
+    wxString GetLabel() const { return "Stop"; }
+
+
+    /**
+     * @brief Draw the button
+     */
+    void Draw(wxDC& dc);
+};
+
+
+
+
+/**
+ * @brief wxMediaPowerButton class
+ * @details Draws and handles the Power media button
+ */
+class wxMediaPowerButton : public wxMediaButton
+{
+    public:
+    /**
+      * @brief Default ctor
+      */
+    wxMediaPowerButton();
+
+
+    /**
+     * @brief Constructor, creating and showing the button
+     * @details Construct and draw the wxPlayPauseButton
+                Same parameters as wxButton for compatibility reasons
+     */
+    wxMediaPowerButton(wxWindow* parent, wxWindowID id,
+                       const wxString& label = wxEmptyString,
+                       const wxPoint& pos = wxDefaultPosition,
+                       const wxSize& size = wxDefaultSize,
+                       long style = 0,
+                       const wxValidator& validator = wxDefaultValidator,
+                       const wxString& name = wxButtonNameStr);
+
+
+    /**
+     * @brief Destructor
+     */
+    ~wxMediaPowerButton() {}
+
+
+    /**
+     * @brief Returns the string label for the button. Always returns "Power"
+     * @see SetLabel()
+     */
+    wxString GetLabel() const { return "Power"; }
+
+
+    /**
+     * @brief Draw the button
+     */
+    void Draw(wxDC& dc);
 };
 
 #endif

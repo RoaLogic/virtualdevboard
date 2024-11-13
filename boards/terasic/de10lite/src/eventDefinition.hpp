@@ -43,6 +43,8 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
+#include "stdint.h"
+
 #ifndef EVENT_DEFINITION_HPP
 #define EVENT_DEFINITION_HPP
 
@@ -51,7 +53,9 @@ enum class eEvent
     close,
     reset,
     stop,
-    stateChange
+    stateChange,
+    vgaData,
+    vgaDataReady
 };
 
 enum class eSystemState

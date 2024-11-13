@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    WX widgets main frame definition                             //
+//    Virtual Devboard VGA Monitor Verilator C++ header file       //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,110 +43,100 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#ifndef WXWIDGETS_MAIN_FRAME_HPP
-#define WXWIDGETS_MAIN_FRAME_HPP
+#include "vdbCommon.hpp"
+#include <vector>
 
-#include <wx/wxprec.h>
-#include <wx/wx.h>
-#include <wx/splitter.h>
-#include "wxMediaButton.hpp"
+#ifndef VDB_VGA_HPP
+#define VDB_VGA_HPP
 
-#include "eventDefinition.hpp"
-#include "subject.hpp"
-#include "gui_interface.hpp"
-
-#include "vdbLED.hpp"
-
+using namespace RoaLogic::testbench;
 using namespace RoaLogic::observer;
-using namespace RoaLogic::GUI;
-using namespace RoaLogic::vdb;
 
-wxDECLARE_EVENT(wxEVT_STATUS, wxCommandEvent);
-wxDECLARE_EVENT(wxEVT_ADD_LED, wxCommandEvent);
-wxDECLARE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
-
-struct sSystemStateEvent : public wxClientData
+namespace RoaLogic
 {
-    eSystemState state;
-};
-
-struct sAddLedEvent : public wxClientData
+namespace vdb
 {
-    size_t numLeds;
-};
-
-enum class eVdbComponentType
-{
-    vdbLed,
-    vdbVGA,
-    vdb7seg
-};
-
-struct sAddVdbComponent : public wxClientData
-{
-    eVdbComponentType type;
-    uint8_t numComponents;
-    cVDBCommon* vdbComponent;
-};
-
-/**
- * @class cMainFrame
- * @author Bjorn Schouteten
- * @brief Main frame
- * @version 0.1
- * @date 19-okt-2024
- *
- * @details This class is the definition of the main frame for the virtual demo board
- * 
- * This class sets and controls the main frame. From the main frame events are handled
- * to any interested observer, however the subject itself is the virtual demo board.
- * This class shall only handle events coming through the wxWidgets event handling.
- * 
- */
-class cMainFrame : public wxFrame
-{
-    private:
-    static const int cLeftPanelOffset = 10;
-    static const int cMinWidthSize    = 750;
-    static const int cMinHeightSize   = 600;
-    static const int cStartButtonID   = 100;
-    static const int cResetButtonID    = 101;
-    static const int cStopButtonID   = 102;
-    // static const int cResumeButtonID  = 103;
-
-    cSubject* _subject;
-    
-    wxSplitterWindow* _mySplitterWindow = new wxSplitterWindow{this, wxID_ANY};
-    wxPanel* _leftPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
-    wxPanel* _rightPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
-
-    wxMediaPlayPauseButton* _startButton;
-    wxMediaStopButton* _stopButton;
-    wxMediaPowerButton* _resetButton;
-
-    std::vector<cVirtualLed*> ledInstances;
-    std::vector<cGuiVDBComponent*> vdbInstances;
-
-    public:
-    cMainFrame(cSubject* aSubject);
-    ~cMainFrame()
+    union uRGBValue
     {
-
+        uint32_t asInt;
+        struct
+        {
+            uint8_t blue;
+            uint8_t green;
+            uint8_t red;
+            uint8_t alpha;
+        };
     };
 
-    void OnExit(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
+    struct sVgaData
+    {
+        uint32_t horizontalLines;
+        uint32_t verticalLines;
+        uRGBValue* dataArray;    
+    };
 
-    void onButtonStart(wxCommandEvent& event);
-    void onButtonReset(wxCommandEvent& event);
-    void onButtonStop(wxCommandEvent& event);
-    // void onButtonResume(wxCommandEvent& event);
+    /**
+     * @class cVdbVGAMonitor
+     * @author Bjorn Schouteten
+     * @brief VGA virtual development board component
+     * 
+     * @details
+     * This class communicates with the verilator component, any
+     * class that wants to listen to it should register itself through
+     * the subject-observer pattern.
+     * 
+     * This class sents one event, the vgaDataReady event. It passes 
+     * data according to the sVgaData structure. Which passes the number
+     * of horizontal and vertical lines. The data array is build up as a single
+     * array with a size of horizontal lines * vertical lines. All the horizontal
+     * lines are appended after each other.
+     * 
+     */
+    class cVdbVGAMonitor : public cVDBCommon
+    {
+        private:
+        struct sVdbVGAMap
+        {
+            svScope scope;
+            cVdbVGAMonitor* reference;
+        };
 
-    //void onStatusChange(wxCommandEvent& event);
+        static std::vector<sVdbVGAMap> _referencePointers;
+        static void registerVirtualVGA(sVdbVGAMap reference);
 
-    void onAddLed(wxCommandEvent& event);
-    void onAddVdb(wxCommandEvent& event);
-};
+        public:
+        static const size_t cMaxHorizontalLines = 1024;
+        static const size_t cMaxVerticalLines = 768;
+        enum class eVgaEvent
+        {
+            vsync,
+            hsync
+        };
 
+        // Function to call for going from static scope to class scope
+        static void processVGAEvent(svScope scope, eVgaEvent event);
+
+        private:
+        cTimeInterface* _timeInterface;   //!< Pointer to the time interface for retrieving the current time
+        cClock* _pixelClock;              //!< Pointer to the pixel clock, which must be generated within this class
+        svScope _myScope;                 //!< The scope of the verilated context
+        simtime_t _previousVSyncTime;     //!< Previous time that a VSYNC occured
+        uint8_t _currentSetting = 0xff;   //!< Current lookup table setting, 0xff means no element found
+        sVgaData _myEventData;            //!< Event data element which is passed in any of the events
+
+        //!< The VGA data array buffer allocated in the verilog code, used as reference to show the data on screen
+        VlUnpacked<unsigned int, cMaxVerticalLines*cMaxHorizontalLines>& _myFramebuffer;
+
+        public:
+        cVdbVGAMonitor(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock,
+                VlUnpacked<unsigned int, cMaxVerticalLines*cMaxHorizontalLines>& framebuffer);
+
+        ~cVdbVGAMonitor();
+
+        void handleVsync();
+    };
+
+}
+}
 
 #endif

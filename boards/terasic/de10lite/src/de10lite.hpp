@@ -72,6 +72,7 @@ using namespace tasks;
 using namespace clock;
 using namespace GUI;
 using namespace observer;
+using namespace vdb;
 
 enum class eRunState
 {
@@ -106,7 +107,7 @@ class cDE10Lite : public cTestBench<Vde10lite_verilator_wrapper>, public cObserv
         cClock* clk_vga;
         uint8_t& key;
 
-        cVdbVGA* _vgaController;
+        cVdbVGAMonitor* _vgaController;
 
         std::atomic<eRunState> _returnState = eRunState::completed;
         std::atomic<eSystemState> _myState = eSystemState::idle;

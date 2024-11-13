@@ -98,9 +98,10 @@ module vdbVGAMonitor
   // Typedefs
   //
   typedef struct {
-    bit [7:0] front_porch,
-              sync,
-              back_porch;
+    bit [10:0] active;
+    bit [ 7:0] front_porch,
+               sync,
+               back_porch;
   } sync_t;
 
   typedef struct packed {
@@ -111,18 +112,20 @@ module vdbVGAMonitor
   //-----------------------
   // DPI Functions
   //
-  import "DPI-C" context function void vdbVGAMonitorHSYNC(int ID);
+  //import "DPI-C" context function void vdbVGAMonitorHSYNC(int ID);
   import "DPI-C" context function void vdbVGAMonitorVSYNC(int ID);
 
   export "DPI-C" task vdbVGAMonitorSetHorizontalTiming;
-  task vdbVGAMonitorSetHorizontalTiming (input bit [7:0] fp, input bit [7:0] sync, input bit [7:0] bp);
+  task vdbVGAMonitorSetHorizontalTiming (input bit [10:0] pixels, input bit [7:0] fp, input bit [7:0] sync, input bit [7:0] bp);
+      vertical.active        = pixels;
       horizontal.front_porch = fp;
       horizontal.sync        = sync;
       horizontal.back_porch  = bp;
   endtask
 
   export "DPI-C" task vdbVGAMonitorSetVerticalTiming;
-  task vdbVGAMonitorSetVerticalTiming (input bit [7:0] fp, input bit [7:0] sync, input bit [7:0] bp);
+  task vdbVGAMonitorSetVerticalTiming (input bit [10:0] pixels, input bit [7:0] fp, input bit [7:0] sync, input bit [7:0] bp);
+      vertical.active      = pixels;
       vertical.front_porch = fp;
       vertical.sync        = sync;
       vertical.back_porch  = bp;
@@ -133,14 +136,19 @@ module vdbVGAMonitor
     return framebuffer[line][pixel];
   endfunction
 
+  export "DPI-C" function vdbVGAMonitorGetLineCnt;
+  function int vdbVGAMonitorGetLineCnt;
+    return stored_line_cnt;
+  endfunction
 
   //-----------------------
   // Constants
   //
-  localparam int MAX_PIXELS = 1024;
-  localparam int MAX_LINES  = 768;
-  localparam int PIXELS_LEN = $clog2(MAX_PIXELS);
-  localparam int LINES_LEN  = $clog2(MAX_LINES );
+  localparam int MAX_PIXELS   = 1024;
+  localparam int MAX_LINES    = 768;
+  localparam int LINES_LEN    = $clog2(MAX_LINES);
+  localparam int TOTAL_PIXELS = MAX_LINES * MAX_PIXELS;
+  localparam int PIXELS_LEN   = $clog2(TOTAL_PIXELS);
 
 
   //-----------------------
@@ -152,81 +160,138 @@ module vdbVGAMonitor
   logic                  hsync_trigger, vsync_trigger;
 
   sync_t                 horizontal;
-  sync_t                 horizontal_cnt;
-  logic [PIXELS_LEN-1:0] pixel_cnt;
-  logic [           7:0] hback_porch_cnt;
+  logic [           8:0] hblank_cnt;
+  logic [          10:0] hactive_cnt;
+  logic                  hactive_video;
 
   sync_t                 vertical;
-  logic [LINES_LEN -1:0] line_cnt;
-  logic [           7:0] vback_porch_cnt;
+  logic [           5:0] vblank_cnt;
+  logic [           9:0] vactive_cnt;
+  logic                  vactive_video;
 
   logic                  active_video;
+  logic [PIXELS_LEN-1:0] pixel_cnt;
+  logic [LINES_LEN -1:0] line_cnt, stored_line_cnt;
 
-  rgb_t                  framebuffer [MAX_LINES][MAX_PIXELS];
+  rgb_t                  framebuffer [TOTAL_PIXELS] /*verilator public*/;
 
 
   //-----------------------
   // Module body
   //
-
   initial
   begin
+      horizontal.active      = HOR_ACT;
       horizontal.front_porch = HOR_FP;
       horizontal.sync        = HOR_SYNC;
       horizontal.back_porch  = HOR_BP;
 
+      vertical.active        = VERT_ACT;
       vertical.front_porch   = VERT_FP;
       vertical.sync          = VERT_SYNC;
       vertical.back_porch    = VERT_BP;
+
+      line_cnt               = 0;
   end
 
-  //Notify C++ HSYNC/VSYNC
-  always @(negedge hsync) vdbVGAMonitorHSYNC(ID);
+  /**
+     Callback to C++ each VSYNC
+  */
   always @(negedge vsync) vdbVGAMonitorVSYNC(ID);
 
 
-  //HSYNC/VSYNC triggers (end of HSYNC/VSYNC)
+  /**
+     HSYNC/VSYNC triggers (end of HSYNC/VSYNC)
+  */
   always @(posedge pixel_clk)
     hsync_dly <= hsync;
 
   always @(posedge pixel_clk)
-    if (hsync_trigger) vsync_dly <= vsync;
+    vsync_dly <= vsync;
 
-  assign hsync_trigger = hsync & ~hsync_dly;
-  assign vsync_trigger = vsync & ~vsync_dly;
+  assign hsync_trigger = ~hsync & hsync_dly;
+  assign vsync_trigger = ~vsync & vsync_dly;
 
-  
-  //Time keeping
+
+  /**
+     Line Count
+     Don't use pixel_clk, because pixel_clk might not be available yet
+  */
+  always @(negedge hsync) line_cnt++;
+  always @(negedge vsync)
+  begin
+      stored_line_cnt = line_cnt;
+      line_cnt        = 0;
+  end
+
+ 
+  /**
+     Time keeping
+  */
+  assign active_video = vactive_video & hactive_video;
+
   always @(posedge pixel_clk)
     begin
+        if (active_video) pixel_cnt <= pixel_cnt +1;
+
+        /**
+            Horizontal
+        */
         if (hsync_trigger)
         begin
-            hback_porch_cnt <= horizontal.back_porch;
-            pixel_cnt       <= {PIXELS_LEN{1'b0}};
-
-            if (vsync_trigger)
-            begin
-                vback_porch_cnt <= vertical.back_porch;
-                line_cnt        <= {LINES_LEN{1'b0}};
-            end
-            else
-            begin
-                if (vback_porch_cnt == 0) line_cnt        <= line_cnt +1;
-                else                      vback_porch_cnt <= vback_porch_cnt -1;
-            end
+            hactive_cnt   <= horizontal.active;
+            hactive_video <= 1'b0;
+            hblank_cnt    <= horizontal.sync + horizontal.back_porch -1;
         end
         else
         begin
-            if (hback_porch_cnt == 0) pixel_cnt       <= pixel_cnt +1;
-            else                      hback_porch_cnt <= hback_porch_cnt -1;
+            if (hblank_cnt != 0)
+            begin
+                hblank_cnt <= hblank_cnt -1;
+            end
+            else if (hactive_cnt != 0)
+            begin
+                hactive_video <= 1'b1;
+                hactive_cnt   <= hactive_cnt -1;
+            end
+            else
+            begin
+                hactive_video <= 1'b0;
+            end
+        end
+
+        /**
+            Vertical
+        */
+        if (vsync_trigger)
+        begin
+            vactive_cnt   <= vertical.active;
+            vactive_video <= 1'b0;
+            vblank_cnt    <= vertical.sync + vertical.back_porch -1;
+            pixel_cnt     <= {PIXELS_LEN{1'b0}};
+        end
+        else if (hsync_trigger)
+        begin
+            if (vblank_cnt != 0)
+            begin
+                vblank_cnt <= vblank_cnt -1;
+            end
+            else if (vactive_cnt != 0)
+            begin
+                vactive_video <= 1'b1;
+                vactive_cnt   <= vactive_cnt -1;
+            end
+            else
+            begin
+                vactive_video <= 1'b0;
+            end
         end
     end
 
 
-  assign active_video = (hback_porch_cnt == 0) & (vback_porch_cnt == 0);
-
-  //store RGB value in frame buffer
+  /**
+     store RGB value in frame buffer
+  */
   always @(posedge pixel_clk)
-    if (active_video) framebuffer[line_cnt][pixel_cnt] <= {r,g,b};
- 
+    if (active_video) framebuffer[pixel_cnt] <= {r,g,b};
 endmodule

@@ -47,9 +47,11 @@
 #define GUI_INTERFACE_HPP
 
 #include "subject.hpp"
+#include "vdbCommon.hpp"
 
 namespace RoaLogic {
     using namespace observer;
+    using namespace vdb;
 namespace GUI {
 
     /**
@@ -82,7 +84,40 @@ namespace GUI {
         //virtual void setCurrentStatus(eSystemState state) = 0;
         
         virtual void addVirtualLED(size_t numLeds) = 0;
-        virtual void addVirtualVGA() = 0;
+        virtual void addVirtualVGA(cVDBCommon* cdbComponent) = 0;
+    };
+
+    /**
+     * @class cGuiVDBComponent
+     * @author Bjorn Schouteten
+     * @brief GUI virtual development board component
+     * @version 0.1
+     * @date 03-nov-2024
+     * @details
+     * This class is a base class for any GUI element which implements
+     * a verilated vdb component. It makes sure that all events from the
+     * verilated vdb component are passed through the notify function.
+     * 
+     * @todo: Add a method to sent data from the GUI to the verilated design
+     */
+    class cGuiVDBComponent : public cObserver
+    {
+        private:
+        cVDBCommon* _myVDBComponent;
+
+        public:
+        cGuiVDBComponent(cVDBCommon* myVDBComponent) :
+            _myVDBComponent(myVDBComponent)
+        {
+            myVDBComponent->registerObserver(this);
+        }
+
+        ~cGuiVDBComponent()
+        {
+            _myVDBComponent->removeObserver(this);
+        }
+
+        virtual void notify(eEvent aEvent, void* data) = 0;
     };
 
 }}

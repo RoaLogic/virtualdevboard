@@ -50,7 +50,6 @@
 #include <wx/wx.h>
 #include <wx/splitter.h>
 
-#include "gui_interface.hpp"
 #include "wxWidgetsMainFrame.hpp"
 
 using namespace RoaLogic::observer;
@@ -87,8 +86,7 @@ class cVirtualDemoBoard : public wxApp, public cGuiInterface
     void init(int argc, char** argv);
 
     void addVirtualLED(size_t numLeds);
-    void addVirtualVGA();
-    //void setCurrentStatus(eSystemState state);
+    void addVirtualVGA(cVDBCommon* vdbComponent);
 };
 
 

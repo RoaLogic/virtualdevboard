@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    Virtual Devboard VGA Monitor Verilator C++ header file       //
+//    Virtual Devboard common C++ header file                      //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,81 +43,51 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#include <vector>
 //include Dpi headers, required to link verilator model to C++
 #include "vdb__Dpi.h"
 
-// #include <wx/wx.h>
-// #include "wx/event.h"
-// #include "wx/bitmap.h"
-
 #include "log.hpp"
 #include "testbench.hpp"
+#include "subject.hpp"
 
-#ifndef VDB_VGA_HPP
-#define VDB_VGA_HPP
+#ifndef VDB_COMMON_HPP
+#define VDB_COMMON_HPP
 
-//wxDECLARE_EVENT(wxEVT_VGA, wxCommandEvent);
-
-using namespace RoaLogic::testbench;
-
-enum class eVgaEvent
+namespace RoaLogic
 {
-    vsync,
-    hsync
-};
-
-class cVdbVGA
+    using namespace observer;
+namespace vdb
 {
-    private:
-    struct sVdbVGAMap
+    /**
+     * @class cVDBCommon
+     * @author Bjorn Schouteten
+     * @brief Common virtual development board component
+     * @details
+     * 
+     * This is the common class for a virtual development board component. It 
+     * holds the base for the system to interact with all the components in the
+     * same matter.
+     * 
+     * It inherits the cSubject so that each component can notifyObservers through
+     * the corresponding function. All events must be defined in the eventDefinition.hpp,
+     * together with the structures of data that are sent over the events. For each
+     * virtual development board component it doesn't matter who is listening, it
+     * just sents the event. 
+     * 
+     * @todo: Add a way to receive events from the outside
+     */
+    class cVDBCommon : public cSubject
     {
-        svScope scope;
-        cVdbVGA* reference;
+        private:
+
+        public:
+        // void notify(eEvent aEvent, void* data)
+        // {
+
+        // }
     };
 
-    union uRGBValue
-    {
-        uint32_t asInt;
-        struct
-        {
-            uint8_t red;
-            uint8_t green;
-            uint8_t blue;
-            uint8_t unused;
-        };
-    };
-
-    static std::vector<sVdbVGAMap> _referencePointers;
-    static void registerVirtualVGA(sVdbVGAMap reference);
-
-    public:
-    // Function to call for going from static scope to class scope
-    static void processVGAEvent(svScope scope, eVgaEvent event);
-
-    private:
-    cTimeInterface* _timeInterface;
-    cClock* _pixelClock;
-    svScope _myScope;
-    size_t _numHsync = 0;
-    simtime_t _previousVSyncTime;
-    simtime_t _timeBetweenVsync;
-    bool _settingFound = false;
-    uint8_t _currentSetting = 0xff;
-    //wxFrame* _myFrame;
-    //wxBitmap _myBitmap;
-    // wxStaticBitmap* _myStaticBitmap;
-    // wxImage newImage;
-    // uint32_t currentRow = 0;
-
-    public:
-    //cVdbVGA(std::string scopeName, wxEvtHandler* aParent, int id);
-    cVdbVGA(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock);
-    ~cVdbVGA();
-
-    void show(bool show);
-    void handleVsync();
-    void handleHsync();
-};
+}
+}
 
 #endif

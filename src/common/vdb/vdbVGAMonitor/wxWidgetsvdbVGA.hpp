@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    WX widgets main frame definition                             //
+//    WX widgets virtual Devboard VGA Monitor C++ header file      //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,110 +43,62 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#ifndef WXWIDGETS_MAIN_FRAME_HPP
-#define WXWIDGETS_MAIN_FRAME_HPP
+#ifndef WX_WIDGETS_VDB_VGA_HPP
+#define WX_WIDGETS_VDB_VGA_HPP
 
 #include <wx/wxprec.h>
 #include <wx/wx.h>
-#include <wx/splitter.h>
-#include "wxMediaButton.hpp"
 
-#include "eventDefinition.hpp"
-#include "subject.hpp"
 #include "gui_interface.hpp"
+#include "vdbVGAMonitor.hpp"
+#include <semaphore>
 
-#include "vdbLED.hpp"
+wxDECLARE_EVENT(wxEVT_VGA, wxCommandEvent);
 
-using namespace RoaLogic::observer;
-using namespace RoaLogic::GUI;
-using namespace RoaLogic::vdb;
+namespace RoaLogic {
+    using namespace observer;
+    using namespace vdb;
+namespace GUI {
 
-wxDECLARE_EVENT(wxEVT_STATUS, wxCommandEvent);
-wxDECLARE_EVENT(wxEVT_ADD_LED, wxCommandEvent);
-wxDECLARE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
-
-struct sSystemStateEvent : public wxClientData
-{
-    eSystemState state;
-};
-
-struct sAddLedEvent : public wxClientData
-{
-    size_t numLeds;
-};
-
-enum class eVdbComponentType
-{
-    vdbLed,
-    vdbVGA,
-    vdb7seg
-};
-
-struct sAddVdbComponent : public wxClientData
-{
-    eVdbComponentType type;
-    uint8_t numComponents;
-    cVDBCommon* vdbComponent;
-};
-
-/**
- * @class cMainFrame
- * @author Bjorn Schouteten
- * @brief Main frame
- * @version 0.1
- * @date 19-okt-2024
- *
- * @details This class is the definition of the main frame for the virtual demo board
- * 
- * This class sets and controls the main frame. From the main frame events are handled
- * to any interested observer, however the subject itself is the virtual demo board.
- * This class shall only handle events coming through the wxWidgets event handling.
- * 
- */
-class cMainFrame : public wxFrame
-{
-    private:
-    static const int cLeftPanelOffset = 10;
-    static const int cMinWidthSize    = 750;
-    static const int cMinHeightSize   = 600;
-    static const int cStartButtonID   = 100;
-    static const int cResetButtonID    = 101;
-    static const int cStopButtonID   = 102;
-    // static const int cResumeButtonID  = 103;
-
-    cSubject* _subject;
-    
-    wxSplitterWindow* _mySplitterWindow = new wxSplitterWindow{this, wxID_ANY};
-    wxPanel* _leftPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
-    wxPanel* _rightPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
-
-    wxMediaPlayPauseButton* _startButton;
-    wxMediaStopButton* _stopButton;
-    wxMediaPowerButton* _resetButton;
-
-    std::vector<cVirtualLed*> ledInstances;
-    std::vector<cGuiVDBComponent*> vdbInstances;
-
-    public:
-    cMainFrame(cSubject* aSubject);
-    ~cMainFrame()
+    /**
+     * @class cVdbVGAMonitor
+     * @author Bjorn Schouteten
+     * @brief VGA virtual development board component
+     * 
+     * @details
+     * This class communicates with the verilator component, any
+     * class that wants to listen to it should register itself through
+     * the subject-observer pattern.
+     * 
+     * It receives the vgaDataReady event and copies the data into the
+     * _copyArray. By doing this the verilated context can continue and the 
+     * GUI thread can do the work of placing the data into a wxImage and show
+     * it on the screen. 
+     * 
+     * @attention The notify function runs in the verilated context, where
+     * the onVGAEvent runs in the GUI context.
+     */
+    class cWXvdbVGAMonitor : public cGuiVDBComponent, private wxFrame
     {
+        private:
+        static const size_t _cDefaultWidth = 640;   //!< Default image width to start with
+        static const size_t _cDefaultHeight = 480;  //!< Default image height to start with
+        wxEvtHandler* _evtHandler;                  //!< The event handler of this frame
+        wxStaticBitmap* _myStaticBitmap;            //!< Pointer to the handler for the bitmap
+        wxImage _myImage;                           //!< Temporary image, used to create a new bitmap       
+        std::binary_semaphore _copySemaphore;       //!< Semaphore to protect the copy array
+        //!< Temporary array with the maximum size possible, used to copy data between threads.
+        uRGBValue _copyArray[cVdbVGAMonitor::cMaxVerticalLines * cVdbVGAMonitor::cMaxHorizontalLines];
 
+        void notify(eEvent aEvent, void* data);
+
+        void onVGAEvent(wxCommandEvent& event);
+
+        public:
+            cWXvdbVGAMonitor(cVDBCommon* myVDBComponent, wxEvtHandler* myEvtHandler);
+            ~cWXvdbVGAMonitor();
     };
 
-    void OnExit(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
-
-    void onButtonStart(wxCommandEvent& event);
-    void onButtonReset(wxCommandEvent& event);
-    void onButtonStop(wxCommandEvent& event);
-    // void onButtonResume(wxCommandEvent& event);
-
-    //void onStatusChange(wxCommandEvent& event);
-
-    void onAddLed(wxCommandEvent& event);
-    void onAddVdb(wxCommandEvent& event);
-};
-
+}}
 
 #endif

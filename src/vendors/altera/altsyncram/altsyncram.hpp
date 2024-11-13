@@ -60,6 +60,7 @@ std::vector<std::string> split(const std::string& str, const char delim);
 
 //function declarations
 int altsyncram_initialize(std::string instance, std::string fileName);
+int altsyncram_initializeScope(svScope scope, std::string fileName);
 int altsyncram_initializeFromHex(svScope scope, std::string fileName);
 int altsyncram_initializeFromMif(svScope scope, std::string fileName);
 int altsyncram_initializeFromVerilog(svScope scope, std::string fileName);

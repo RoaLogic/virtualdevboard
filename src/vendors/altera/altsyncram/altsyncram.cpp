@@ -72,19 +72,28 @@ std::vector<std::string> split(const std::string& str, const char delim)
 
 /**
  * @brief altsyncram DPI-C callback
- * @details This function can be called from inside Verilog and acts as a callback back into C++
+ * @details This function can be called from inside Verilog and acts as a callback back into C++ to initialize the altsyncram instance
  * 
  */
-void altsyncram_registerInstance()
+void altsyncram_initializeInstance(const char* init_file_charptr, const char* init_file_layout_charptr)
 {
+    std::string init_file(init_file_charptr);
+    std::string init_file_layout(init_file_layout_charptr);
+
     //get instance scope
     svScope scope = svGetScope();
 
-    //get hierarchical name
-    const char* scopeName = svGetNameFromScope(scope);
-
-    //report progress
-    INFO << "Registered altsyncram " << scopeName << "\n";
+    //checks
+    if (init_file_layout != "UNUSED" ||
+        init_file_layout != "PORT_A")
+    {
+        ERROR << "Only init_file_layout == PORT_A or init_file_layout == UNUSED is currently supported\n";
+    }
+    else
+    {
+        //initilize altsyncram
+        altsyncram_initializeScope(scope, init_file);
+    }
 }
 
 
@@ -107,7 +116,17 @@ int altsyncram_initialize(std::string instance, std::string fileName)
         return -1;
     }
 
+    return altsyncram_initializeScope(scope, fileName);
+}
 
+
+/**
+ * @brief Initialize altsyncram
+ * @details Initialize altsyncram with scope <scope> with contents from <fileName>
+ *
+ */
+int altsyncram_initializeScope(svScope scope, std::string fileName)
+{
     //Which file-type is this?
     //Look at extension to select
     std::filesystem::path filepath = fileName;
