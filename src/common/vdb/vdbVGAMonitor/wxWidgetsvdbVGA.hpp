@@ -87,15 +87,18 @@ namespace GUI {
         wxStaticBitmap* _myStaticBitmap;            //!< Pointer to the handler for the bitmap
         wxImage _myImage;                           //!< Temporary image, used to create a new bitmap       
         std::binary_semaphore _copySemaphore;       //!< Semaphore to protect the copy array
+        bool close = false;
         //!< Temporary array with the maximum size possible, used to copy data between threads.
         uRGBValue _copyArray[cVdbVGAMonitor::cMaxVerticalLines * cVdbVGAMonitor::cMaxHorizontalLines];
 
         void notify(eEvent aEvent, void* data);
+        void onClose();
 
         void onVGAEvent(wxCommandEvent& event);
+        void closeEvt(wxCloseEvent& event);
 
         public:
-            cWXvdbVGAMonitor(cVDBCommon* myVDBComponent, wxEvtHandler* myEvtHandler);
+            cWXvdbVGAMonitor(cVDBCommon* myVDBComponent, int id, wxEvtHandler* myEvtHandler);
             ~cWXvdbVGAMonitor();
     };
 

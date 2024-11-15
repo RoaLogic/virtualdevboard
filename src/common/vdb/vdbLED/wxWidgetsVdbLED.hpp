@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    WX widgets GUI implementation                                //
+//    WX widgets virtual Devboard LED C++ header file              //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,55 +43,60 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#include "wxWidgetsImplementation.hpp"
+#ifndef WX_WIDGETS_VDB_LED_HPP
+#define WX_WIDGETS_VDB_LED_HPP
 
-DECLARE_APP(cVirtualDemoBoard)
-IMPLEMENT_APP_NO_MAIN(cVirtualDemoBoard)
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+#include "wx/event.h"
+#include <wx/graphics.h>
 
-cVirtualDemoBoard::cVirtualDemoBoard()
-{
-    wxApp::SetInstance(this);
-}
+#include "gui_interface.hpp"
+#include "vdbLED.hpp"
 
-cVirtualDemoBoard::~cVirtualDemoBoard()
-{
-    notifyObserver(eEvent::close);
-}
+wxDECLARE_EVENT(wxEVT_LED, wxCommandEvent);
 
-bool cVirtualDemoBoard::OnInit()
-{
-    _mainFrame = new cMainFrame(this);
-    _mainFrame->Show(true);
+namespace RoaLogic {
+    using namespace observer;
+    using namespace vdb;
+namespace GUI {
 
-    return true;
-}
+    /**
+     * @class cWXVdbLed
+     * @author Bjorn Schouteten
+     * @brief LED virtual development board component
+     * 
+     * @details
+     * This class subscribes to it's VDB component and awaits any events.
+     * Corresponding events are received in the notify function, which runs in
+     * the verilated context. GUI adjustments have to be done in the GUI thread,
+     * so a wxEvent is sent and following the thread switch then processed in the
+     * onLedEvent function.
+     * 
+     * The LED is drawn in the OnPaint function, which also defines how the LED looks like
+     * 
+     * @todo: Adjust the LED layout
+     */
+    class cWXVdbLed : public cGuiVDBComponent, public wxWindow
+    {
+        private:
+        wxEvtHandler* _evtHandler;                  //!< The event handler of this frame
+        char _color;
+        int x0,y0,x1,y1,D1,D2;
+        bool FlagStatus = false;
 
-void cVirtualDemoBoard::init(int argc, char** argv)
-{
-    wxEntry(argc, argv);
-}
+        void notify(eEvent aEvent, void* data);
 
-void cVirtualDemoBoard::addVirtualLED(cVDBCommon* vdbComponent, char color)
-{
-    wxCommandEvent statusEvent{wxEVT_ADD_VDB};
-    sAddVdbComponent* const eventData{ new sAddVdbComponent};
+        void onLEDEvent(wxCommandEvent& event);
 
-    eventData->type = eVdbComponentType::vdbLed;
-    eventData->vdbComponent = vdbComponent;
-    eventData->information = color;
+        public:
+        cWXVdbLed(cVDBCommon* myVDBComponent, int id, wxEvtHandler* myEvtHandler, wxWindow* windowParent, wxPoint Position, int Size, char color);
+        ~cWXVdbLed();
 
-    statusEvent.SetClientObject(eventData);
-    wxPostEvent(_mainFrame, statusEvent);
-}
+        void OnPaint(wxPaintEvent& event);
+        void SetColor(char color);
+    };
 
-void cVirtualDemoBoard::addVirtualVGA(cVDBCommon* vdbComponent)
-{
-    wxCommandEvent statusEvent{wxEVT_ADD_VDB};
-    sAddVdbComponent* const eventData{ new sAddVdbComponent};
+}}
 
-    eventData->type = eVdbComponentType::vdbVGA;
-    eventData->vdbComponent = vdbComponent;
-
-    statusEvent.SetClientObject(eventData);
-    wxPostEvent(_mainFrame, statusEvent);
-}
+#endif

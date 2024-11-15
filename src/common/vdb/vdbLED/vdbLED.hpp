@@ -46,82 +46,49 @@
 #ifndef VDB_LED_HPP
 #define VDB_LED_HPP
 
-#include <vector>
+#include "vdbCommon.hpp"
 
-//include Dpi headers, required to link verilator model to C++
-#include "vdb__Dpi.h"
-
-#include <wx/wx.h>
-#include "wx/event.h"
-
-#include "log.hpp"
-
-wxDECLARE_EVENT(wxEVT_LED, wxCommandEvent);
-
-/**
- * @class cVirtualLed
- * @author Bjorn Schouteten
- * @brief Virtual GUI LED controlled by verilog instance
- * @version 0.1
- * @date 13-oct-2024
- *
- * @details This class creates a virtual LED on a GUI, where it's state is controlled by
- * the verilated design. 
- * 
- * The verilated design must use the DPI functions defined in vdbLED.sv. Those events are
- * captured in static C++ functions, void vdbLedOff(int id) and void vdbLedOn(int id). From
- * those functions we can at that point post an event to the GUI thread, where we can say what 
- * happend (LED on or LED off). From the verilog design it also passes the ID of the LED,
- * which must translate to a LED in the GUI. If this is not the case a notification will
- * pop up.
- * 
- * First part of the class definition is static, this is used from the verilated context.
- * It will construct an event to the GUI class, which is handled in the OnLedEvent(). This
- * will send the received event to the corresponding virtual led and handle it correspondingly.
- * This is constructed in the last part of the class.
- * 
- * The OnLedFunction will traverse all the reference pointers and check to see if it finds the corresponding ID. 
- * When this ID is found it will call the SetStatus() function to change the LED state.
- * 
- * @attention Make sure that the verilated instance is running in a seperate thread,
- *            class internally this is properly handled.
- */
-class cVirtualLed : public wxWindow
+namespace RoaLogic
 {
-    private:
-    struct sVirtualLedMap
+namespace vdb
+{
+
+    /**
+     * @class cVdbLed
+     * @author Bjorn Schouteten
+     * @brief Virtual GUI LED controlled by verilog instance
+     * @version 0.1
+     * @date 13-oct-2024
+     * 
+     * @details This class controls a verilated LED instance.
+     * 
+     * It takes the verilator event through the verilator callback and notifies
+     * anyone listening to this led. This class fully runs in the verilated context.
+     * The base is the cVDBCommon class which does all the low level handling and 
+     * setting up the callback mechanism for any DPI functions. The user shall call
+     * the cVDBCommon::processVerilatorEvent with the scope and the eventual event.
+     * 
+     */
+    class cVdbLed : public cVDBCommon
     {
-        int ID;
-        cVirtualLed* ledReference;
+        public:
+        enum class eVdbLedEvent
+        {
+            ledOn,
+            ledOff
+        };
+
+        private:
+        uint8_t _myID;
+        svScope _myScope;                 //!< The scope of the verilated context
+
+        void verilatorCallback(uint32_t event);
+
+        public:
+        cVdbLed(std::string scopeName, uint8_t id);
+        ~cVdbLed();
     };
-
-    struct sEventData : public wxClientData
-    {
-        int id;
-        bool on;
-    };
-
-    static wxEvtHandler* _parent;
-    static std::vector<sVirtualLedMap> _referencePointers;
-    static void registerVirtualLed(sVirtualLedMap map, wxEvtHandler* aParent);
-
-    public:
-    
-    static void SendLedEvent(int ledID, bool state); // Function to push the event from verilator thread
-    static void OnLedEvent(wxCommandEvent& event); // Function to retrieve event and handle it to the GUI
-
-    private:
-    wxWindow* _windowParent;
-    char _color;
-    int x0,y0,x1,y1,D1,D2;
-    bool FlagStatus = false;
-
-    public:
-    cVirtualLed(wxEvtHandler* aParent, int id, wxWindow *parent, wxPoint Position, int Size, char color);
-
-    void OnPaint(wxPaintEvent& event);
-    void SetColor(char color);
-    void SetStatus(bool status);
-};
+}
+}
 
 #endif

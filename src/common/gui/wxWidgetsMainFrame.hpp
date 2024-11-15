@@ -62,30 +62,12 @@ using namespace RoaLogic::GUI;
 using namespace RoaLogic::vdb;
 
 wxDECLARE_EVENT(wxEVT_STATUS, wxCommandEvent);
-wxDECLARE_EVENT(wxEVT_ADD_LED, wxCommandEvent);
 wxDECLARE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
-
-struct sSystemStateEvent : public wxClientData
-{
-    eSystemState state;
-};
-
-struct sAddLedEvent : public wxClientData
-{
-    size_t numLeds;
-};
-
-enum class eVdbComponentType
-{
-    vdbLed,
-    vdbVGA,
-    vdb7seg
-};
 
 struct sAddVdbComponent : public wxClientData
 {
     eVdbComponentType type;
-    uint8_t numComponents;
+    char information;
     cVDBCommon* vdbComponent;
 };
 
@@ -110,9 +92,8 @@ class cMainFrame : public wxFrame
     static const int cMinWidthSize    = 750;
     static const int cMinHeightSize   = 600;
     static const int cStartButtonID   = 100;
-    static const int cResetButtonID    = 101;
-    static const int cStopButtonID   = 102;
-    // static const int cResumeButtonID  = 103;
+    static const int cResetButtonID   = 101;
+    static const int cStopButtonID    = 102;
 
     cSubject* _subject;
     
@@ -124,15 +105,11 @@ class cMainFrame : public wxFrame
     wxMediaStopButton* _stopButton;
     wxMediaPowerButton* _resetButton;
 
-    std::vector<cVirtualLed*> ledInstances;
     std::vector<cGuiVDBComponent*> vdbInstances;
 
     public:
     cMainFrame(cSubject* aSubject);
-    ~cMainFrame()
-    {
-
-    };
+    ~cMainFrame();
 
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
@@ -140,11 +117,7 @@ class cMainFrame : public wxFrame
     void onButtonStart(wxCommandEvent& event);
     void onButtonReset(wxCommandEvent& event);
     void onButtonStop(wxCommandEvent& event);
-    // void onButtonResume(wxCommandEvent& event);
 
-    //void onStatusChange(wxCommandEvent& event);
-
-    void onAddLed(wxCommandEvent& event);
     void onAddVdb(wxCommandEvent& event);
 };
 

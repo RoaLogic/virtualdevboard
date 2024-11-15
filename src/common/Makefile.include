@@ -54,6 +54,7 @@ TB_CXX  +=$(PWD)submodules/Verilator-simulation/common/uniqueid.cpp				\
 	  $(PWD)gui/wxWidgetsImplementation.cpp 						\
 	  $(PWD)gui/wxWidgetsMainFrame.cpp 							\
 	  $(PWD)vdb/vdbLED/vdbLED.cpp								\
+	  $(PWD)vdb/vdbLED/wxWidgetsVdbLED.cpp 						\
 	  $(PWD)vdb/vdbVGAMonitor/vdbVGAMonitor.cpp							\
 	  $(PWD)vdb/vdbVGAMonitor/wxWidgetsvdbVGA.cpp 					\
 	  $(PWD)vdb/vdb7SegmentDisplay/vdb7SegmentDisplay.cpp

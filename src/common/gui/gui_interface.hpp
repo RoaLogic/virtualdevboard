@@ -54,6 +54,13 @@ namespace RoaLogic {
     using namespace vdb;
 namespace GUI {
 
+    enum class eVdbComponentType
+    {
+        vdbLed,
+        vdbVGA,
+        vdb7seg
+    };
+
     /**
      * @class cGuiInterface
      * @author Bjorn Schouteten
@@ -80,10 +87,8 @@ namespace GUI {
      */
     class cGuiInterface : public cSubject
     {
-        public:
-        //virtual void setCurrentStatus(eSystemState state) = 0;
-        
-        virtual void addVirtualLED(size_t numLeds) = 0;
+        public:        
+        virtual void addVirtualLED(cVDBCommon* vdbComponent, char color) = 0;
         virtual void addVirtualVGA(cVDBCommon* cdbComponent) = 0;
     };
 
@@ -105,9 +110,13 @@ namespace GUI {
         private:
         cVDBCommon* _myVDBComponent;
 
+        protected:
+        uint32_t _myID;
+
         public:
-        cGuiVDBComponent(cVDBCommon* myVDBComponent) :
-            _myVDBComponent(myVDBComponent)
+        cGuiVDBComponent(cVDBCommon* myVDBComponent, uint32_t id) :
+            _myVDBComponent(myVDBComponent),
+            _myID(id)
         {
             myVDBComponent->registerObserver(this);
         }
@@ -117,6 +126,12 @@ namespace GUI {
             _myVDBComponent->removeObserver(this);
         }
 
+        void removeObserver()
+        {
+            _myVDBComponent->removeObserver(this);
+        }
+
+        virtual void onClose(){};
         virtual void notify(eEvent aEvent, void* data) = 0;
     };
 

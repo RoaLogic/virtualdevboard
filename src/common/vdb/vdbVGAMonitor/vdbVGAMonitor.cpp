@@ -45,10 +45,10 @@
 
 #include "vdbVGAMonitor.hpp"
 
-#define DBG_VDB_VGA
+//#define DBG_VDB_VGA
 
 using namespace RoaLogic::vdb;
-#define DBG_MEASURE_VDB_VGA
+//#define DBG_MEASURE_VDB_VGA
 
 #ifdef DBG_MEASURE_VDB_VGA
 #include <chrono>
@@ -103,9 +103,6 @@ static const sVGATiming cVGATiming[] =
  */
 static const size_t cVGATimingSize = sizeof(cVGATiming) / sizeof(cVGATiming[0]);
 
-//!< Static internal references for mapping scopes to cVdbVGA instances
-std::vector<cVdbVGAMonitor::sVdbVGAMap> cVdbVGAMonitor::_referencePointers; 
-
 /**
  * @brief VGA Monitor VSYNC DPI-C callback
  * @details This function gets called when the VGA Monitor detects a VSYNC
@@ -120,7 +117,7 @@ void vdbVGAMonitorVSYNC(int id)
     auto start =steady_clock::now();
     #endif
     // Get the scope of the current call and pass this into the processing function
-    cVdbVGAMonitor::processVGAEvent(svGetScope(), cVdbVGAMonitor::eVgaEvent::vsync);
+    cVDBCommon::processVerilatorEvent(svGetScope(), 1);
 
     #ifdef DBG_MEASURE_VDB_VGA
     auto stop = steady_clock::now();
@@ -135,56 +132,6 @@ namespace RoaLogic
     using namespace observer;
 namespace vdb
 {
-    /**
-     * @brief Register a new virtual VGA class 
-     * @details This function registers a new virtual VGA class with the static modules.
-     * 
-     * It stores the reference information into the vector and stores the global parent variabele
-     * 
-     * @note Static function used by each VGA object
-     * 
-     * @param[in] reference       The reference information to store
-     */
-    void cVdbVGAMonitor::registerVirtualVGA(sVdbVGAMap reference)
-    {
-        _referencePointers.push_back(reference);
-    }
-
-    /**
-     * @brief Process a VGA event from the verilated class
-     * @details This function processes a VGA event from the verilated context.
-     * 
-     * It checks in the reference pointers if it finds the corresponding ID. When
-     * found it will call the corresponding function of the event.
-     * 
-     * @note Static function used by each VGA object
-     * 
-     * @param[in] scope       The scope of the VGA event
-     * @param[in] event       The VGA event which occured
-     */
-    void cVdbVGAMonitor::processVGAEvent(svScope scope, eVgaEvent event)
-    {
-        bool found = false;
-
-        for (const sVdbVGAMap& ref : _referencePointers)
-        {
-            if(ref.scope == scope)
-            {
-                if(event == eVgaEvent::vsync)
-                {
-                    ref.reference->handleVsync();
-                }
-                found = true;
-                break;
-            }
-        }
-
-        if(!found)
-        {
-            WARNING << "VGA: Event on non found module: " << svGetNameFromScope(scope) << " \n";
-        }
-    }
-
     /**
      * @brief Construct a new cVdbVGAMonitor class
      * @details This function is the constructor of the cVdbVGAMonitor class
@@ -215,7 +162,7 @@ namespace vdb
         assert(_myScope != nullptr);
 
         // Store this class instance in the gloval class instances
-        registerVirtualVGA(sVdbVGAMap{_myScope, this});
+        registerVdb(sVdbMap{_myScope, this});
 
         _myEventData.horizontalLines = 0;
         _myEventData.verticalLines = 0;
@@ -230,7 +177,7 @@ namespace vdb
      */
     cVdbVGAMonitor::~cVdbVGAMonitor()
     {
-
+        unregisterVdb(sVdbMap{_myScope, this});
     }
 
     /**
@@ -256,7 +203,7 @@ namespace vdb
      * @note The passed data is a pointer that is continously updated, make sure that the
      * data abstraction is thread safe.
      */
-    void cVdbVGAMonitor::handleVsync()
+    void cVdbVGAMonitor::verilatorCallback(uint32_t event)
     {
         simtime_t currentVSyncTime = _timeInterface->getTime();
         simtime_t timeBetweenVsync = currentVSyncTime - _previousVSyncTime;

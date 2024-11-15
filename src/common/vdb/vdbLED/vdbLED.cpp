@@ -45,16 +45,9 @@
 
 #include "vdbLED.hpp"
 
-#include <wx/graphics.h>
+using namespace RoaLogic::vdb;
 
 //#define DBG_VDB_LED
-
-// Define the wxEVT_LED, which is special within this class
-wxDEFINE_EVENT(wxEVT_LED, wxCommandEvent);
-
-wxEvtHandler* cVirtualLed::_parent; // The parent handler for the LED events
-// Internal reference for mapping ID's to cVirtualLed instances
-std::vector<cVirtualLed::sVirtualLedMap> cVirtualLed::_referencePointers; 
 
 /**
  * @brief LED-On DPI-C callback
@@ -68,13 +61,11 @@ std::vector<cVirtualLed::sVirtualLedMap> cVirtualLed::_referencePointers;
  */
 void vdbLedOn(int id)
 {
-    //get instance scope
-    //svScope scope = svGetScope();
-
-    //get hierarchical name
-    //const char* scopeName = svGetNameFromScope(scope);
-
-    cVirtualLed::SendLedEvent(id, true);
+    #ifdef DBG_VDB_LED
+    INFO << "LED: On event: " << svGetScope() << "\n";
+    #endif
+    // Get the scope of the current call and pass this into the processing function
+    cVDBCommon::processVerilatorEvent(svGetScope(), static_cast<uint32_t>(cVdbLed::eVdbLedEvent::ledOn));
 }
 
 /**
@@ -89,207 +80,85 @@ void vdbLedOn(int id)
  */
 void vdbLedOff(int id)
 {
-    //get instance scope
-    //svScope scope = svGetScope();
-
-    //get hierarchical name
-    //const char* scopeName = svGetNameFromScope(scope);
-
-    cVirtualLed::SendLedEvent(id, false);
+    #ifdef DBG_VDB_LED
+    INFO << "LED: Off event: " << svGetScope() << "\n";
+    #endif
+    // Get the scope of the current call and pass this into the processing function
+    cVDBCommon::processVerilatorEvent(svGetScope(), static_cast<uint32_t>(cVdbLed::eVdbLedEvent::ledOff));
 }
 
-/**
- * @brief Send a LED event in the verilator thread
- * @details Send a event from any LED
- * 
- * Within this function we create a event which is sent to the GUI
- * thread. It holds the LED ID and the state of the LED. Those are
- * packed in a sEventData structure and then posted to the event
- * handling system
- * 
- * @attention This function runs in the verilator thread context
- * 
- * @param[in] ledID     The ID of the LED which had the event
- * @param[in] state     The new state of the LED
- */
-void cVirtualLed::SendLedEvent(int ledID, bool state)
-{
-    wxCommandEvent testEvent{wxEVT_LED};
-    sEventData* const eventData{ new sEventData};
 
-    if(_parent)
+namespace RoaLogic
+{
+    using namespace observer;
+namespace vdb
+{
+    /**
+     * @brief Construct a new cVdbLed object
+     * @details This constructer creates a new cVdbLed object
+     * 
+     * First the scope is set according to the given name, where it is 
+     * also checkd that the scope exists. When this is ok, it registers
+     * this class for any verilator actions.
+     * 
+     * @param[in] scopeName     Scope of this LED
+     * @param[in] id            Optional ID of this led (mainly used for debugging)
+     */
+    cVdbLed::cVdbLed(std::string scopeName, uint8_t id) :
+        _myID(id)
     {
-        eventData->id = ledID;
-        eventData->on = state;
+        // Get the scope according to the given name
+        _myScope = svGetScopeFromName(scopeName.c_str());
+        svSetScope(_myScope);
 
         #ifdef DBG_VDB_LED
-        INFO << "Received led " << eventData->id << " state: " << eventData->on << " Thread: " <<  wxThread::GetCurrentId() << "\n";
+        INFO << "LED: Create: ID " << id << " Scope: "<< svGetScope() << "\n";
         #endif
 
-        testEvent.SetClientObject(eventData);
-        wxPostEvent(_parent, testEvent);
+        // Make sure that the scope is not a nullpointer
+        assert(_myScope != nullptr);
+
+        // Store this class instance in the gloval class instances
+        registerVdb(sVdbMap{_myScope, this});
     }
-}
 
-/**
- * @brief Handle a led event in the GUI thread
- * @details 
- * Within this function a LED event from the system is handled. 
- * 
- * @attention This function runs in the GUI thread context
- * 
- * @param[in] event     The event which happend
- */
-void cVirtualLed::OnLedEvent(wxCommandEvent& event)
-{
-    sEventData* eventData = reinterpret_cast<sEventData*>(event.GetClientObject());
-
-    for (const sVirtualLedMap& ref : _referencePointers)
+    /**
+     * @brief destruct the cVdbLed object
+     * 
+     * Unregister this class so that it's not called anymore
+     */
+    cVdbLed::~cVdbLed()
     {
-        if(ref.ID == eventData->id)
-        {
-            ref.ledReference->SetStatus(eventData->on);
-
-            #ifdef DBG_VDB_LED
-            INFO << "Processed led " << eventData->id << " state: " << eventData->on << " Thread: " << wxThread::GetCurrentId() <<"\n";
-            #endif
-        }
+        unregisterVdb(sVdbMap{_myScope, this});
     }
-}
 
-/**
- * @brief Register a new virtual LED class 
- * @details This function registers a new virtual LED class with the static modules.
- * 
- * It stores the mapping information into the vector and stores the global parent variabele
- * 
- * @param[in] map       The mapping information to store
- * @param[in] aParent   A pointer to the GUI parent
- */
-void cVirtualLed::registerVirtualLed(sVirtualLedMap map, wxEvtHandler* aParent)
-{
-    _referencePointers.push_back(map);
-    _parent = aParent;
-}
-
-/**
- * @brief Constructor of a new virtual LED
- * 
- * @param[in] aParent       Pointer to the parent event handler
- * @param[in] id            ID of the LED
- * @param[in] windowParent  Pointer to the parent window
- * @param[in] Position      Relative position on the parent window
- * @param[in] Size          The size of the LED
- * @param[in] color         The led color
- */
-cVirtualLed::cVirtualLed(wxEvtHandler* aParent, int id, wxWindow* windowParent, wxPoint Position, int Size, char color) :
-    wxWindow(windowParent, wxID_ANY, Position, wxSize(Size,Size), wxTRANSPARENT_WINDOW, 'R'),
-    _windowParent(windowParent),
-    _color(color)
-{
-    registerVirtualLed(sVirtualLedMap{id, this},  aParent);
-    aParent->Bind(wxEVT_LED, cVirtualLed::OnLedEvent);
-    Connect(wxEVT_PAINT, wxPaintEventHandler(cVirtualLed::OnPaint));
-}
-
-/**
- * @brief 
- * 
- * @param event 
- */
-void cVirtualLed::OnPaint(wxPaintEvent& event)
-{
-    wxPaintDC dc(this);
-
-    wxGraphicsContext *gc = wxGraphicsContext::Create(dc);
-
-    D1 = GetClientSize().GetX();
-
-    // Generar paradas de la gradiente
-    wxGraphicsGradientStops stops;
-
-    if(FlagStatus)
+    /**
+     * @brief Callback function for a verilated LED event
+     * @details This function handles the LED on and off events coming
+     * from the verilated design. It checks if the event is alright and
+     * then notifies all classes which are registered to it.
+     * 
+     * @param[in] event     The event which occured, shall be a eVdbLedEvent type
+     */
+    void cVdbLed::verilatorCallback(uint32_t event)
     {
-        switch(_color)
+        #ifdef DBG_VDB_LED
+        INFO << "LED: Received led " << _myID << " event: " << event << "\n";
+        #endif
+
+        switch (static_cast<eVdbLedEvent>(event))
         {
-            case 'r':
-            case 'R':   stops.Add(wxColor(255,255,255),0.0f);
-                        stops.Add(wxColor(255,0,0),1.0f);
-                        break;
-
-            case 'g':
-            case 'G':   stops.Add(wxColor(255,255,255),0.0f);
-                        stops.Add(wxColor(0,255,0),1.0f);
-                        break;
-
-            case 'b':
-            case 'B':   stops.Add(wxColor(255,255,255),0.0f);
-                        stops.Add(wxColor(0,0,255),1.0f);
-                        break;
-
-            case 'y':
-            case 'Y':   stops.Add(wxColor(255,255,255),0.0f);
-                        stops.Add(wxColor(255,255,0),1.0f);
-                        break;
-
-            default :   stops.Add(wxColor(255,255,255),0.0f);
-                        stops.Add(wxColor(255,0,0),1.0f);
-                        break;
-        }
-    }
-    else
-    {
-        switch(_color)
-        {
-            case 'r':
-            case 'R':   stops.Add(wxColor(128,0,0),0.0f);
-                        stops.Add(wxColor(0,0,0),1.0f);
-                        break;
-
-            case 'g':
-            case 'G':   stops.Add(wxColor(0,128,0),0.0f);
-                        stops.Add(wxColor(0,0,0),1.0f);
-                        break;
-
-            case 'b':
-            case 'B':   stops.Add(wxColor(0,0,128),0.0f);
-                        stops.Add(wxColor(0,0,0),1.0f);
-                        break;
-
-            case 'y':
-            case 'Y':   stops.Add(wxColor(128,128,0),0.0f);
-                        stops.Add(wxColor(0,0,0),1.0f);
-                        break;
-
-            default :   stops.Add(wxColor(128,0,0),0.0f);
-                        stops.Add(wxColor(0,0,0),1.0f);
-                        break;
+        case eVdbLedEvent::ledOn:
+            notifyObserver(eEvent::ledChangedOn, nullptr);
+            break;
+        case eVdbLedEvent::ledOff:
+            notifyObserver(eEvent::ledChangedOff, nullptr);
+            break;
+        
+        default:
+            break;
         }
     }
 
-    // Dibujar led
-    gc->SetPen(wxPen(wxColor(0,0,0), 1, wxTRANSPARENT));
-    gc->SetBrush(gc->CreateLinearGradientBrush(0,0,D1,D1,wxColor(35,35,35),wxColor(180,180,180)));
-    gc->DrawEllipse(0,0,D1,D1);
-
-    D2 = (2*D1)/3;
-    x1 = D1/6;
-    y1 = x1;
-
-    gc->SetBrush(gc->CreateRadialGradientBrush(D1/2,D1/2,D1/2,D1/2,D2/2,stops));
-    gc->DrawEllipse(x1,y1,D2,D2);
-
-    delete gc;
 }
-
-void cVirtualLed::SetStatus(bool status)
-{
-    FlagStatus = status;    
-    Refresh();
-}
-
-void cVirtualLed::SetColor(char color)
-{
-    _color = color;
-    Refresh();
 }
