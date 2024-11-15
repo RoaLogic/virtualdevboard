@@ -64,12 +64,6 @@ class wxMediaButton : public wxWindow
 
     public:
     /**
-     * @brief Default ctor
-     */
-    wxMediaButton();
-
-
-    /**
      * @brief Constructor, create and show the button
      * @details wxMediaButton constructor with same parameter as wxButton for compatibility reasons
      */
@@ -160,12 +154,6 @@ class wxMediaPlayPauseButton : public wxMediaButton
 
     public:
     /**
-      * @brief Default ctor
-      */
-    wxMediaPlayPauseButton();
-
-
-    /**
      * @brief Constructor, creating and showing the button
      * @details Construct and draw the wxPlayPauseButton
                 Same parameters as wxButton for compatibility reasons
@@ -221,12 +209,6 @@ class wxMediaStopButton : public wxMediaButton
 {
     public:
     /**
-      * @brief Default ctor
-      */
-    wxMediaStopButton();
-
-
-    /**
      * @brief Constructor, creating and showing the button
      * @details Construct and draw the wxPlayPauseButton
                 Same parameters as wxButton for compatibility reasons
@@ -269,12 +251,6 @@ class wxMediaStopButton : public wxMediaButton
 class wxMediaPowerButton : public wxMediaButton
 {
     public:
-    /**
-      * @brief Default ctor
-      */
-    wxMediaPowerButton();
-
-
     /**
      * @brief Constructor, creating and showing the button
      * @details Construct and draw the wxPlayPauseButton
