@@ -103,7 +103,7 @@ class cMainFrame : public wxFrame
 
     wxMediaPlayPauseButton* _startButton;
     wxMediaStopButton* _stopButton;
-    wxMediaPowerButton* _resetButton;
+    wxMediaResetButton* _resetButton;
 
     std::vector<cGuiVDBComponent*> vdbInstances;
 

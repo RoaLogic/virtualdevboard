@@ -88,7 +88,7 @@ cMainFrame::cMainFrame(cSubject* aSubject) :
     _startButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonStart, this);
     _stopButton  = new wxMediaStopButton(_leftPanel, cStopButtonID, wxT("Stop"));
     _stopButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonStop, this);
-    _resetButton   = new wxMediaPowerButton(_leftPanel, cResetButtonID , wxT("Reset"));
+    _resetButton   = new wxMediaResetButton(_leftPanel, cResetButtonID , wxT("Reset"));
     _resetButton->Bind(wxEVT_BUTTON, &cMainFrame::onButtonReset, this);
 
     leftPanelSizer->Add(_startButton, 0, wxALIGN_CENTER, cLeftPanelOffset);
