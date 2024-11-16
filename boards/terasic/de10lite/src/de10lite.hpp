@@ -64,6 +64,7 @@
 #include "altsyncram.hpp"
 
 #include "vdbVGAMonitor.hpp"
+#include "vdbLED.hpp"
 
 
 using namespace RoaLogic;
@@ -99,6 +100,7 @@ enum class eRunState
 class cDE10Lite : public cTestBench<Vde10lite_verilator_wrapper>, public cObserver
 {
     private:
+        static const uint8_t _cNumLed = 10;
         cGuiInterface* _myGUI = nullptr;
         //DE10-Lite ports. Standard ports are of type uint8_t
         cClock* clk_50;
@@ -108,6 +110,7 @@ class cDE10Lite : public cTestBench<Vde10lite_verilator_wrapper>, public cObserv
         uint8_t& key;
 
         cVdbVGAMonitor* _vgaController;
+        cVdbLed* _ledInstances[_cNumLed];
 
         std::atomic<eRunState> _returnState = eRunState::completed;
         std::atomic<eSystemState> _myState = eSystemState::idle;

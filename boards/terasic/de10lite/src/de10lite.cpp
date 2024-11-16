@@ -136,7 +136,15 @@ eRunState cDE10Lite::run()
 {
     if(_myGUI)
     {
-        _myGUI->addVirtualLED(8);
+        for(size_t i = 0; i < _cNumLed; i++)
+        {
+            _ledInstances[i] = new cVdbLed("TOP.de10lite_verilator_wrapper.gen_vdbLED[" + 
+                                                std::to_string(i) + 
+                                                "].LED_inst", i);
+
+            _myGUI->addVirtualLED(_ledInstances[i], 'G');
+        }
+        //_myGUI->addVirtualLED(8);
         _vgaController = new cVdbVGAMonitor("TOP.de10lite_verilator_wrapper.vgaMonitor_inst", this, clk_vga,
                                             _core->de10lite_verilator_wrapper->vgaMonitor_inst->framebuffer);
         _myGUI->addVirtualVGA(_vgaController);

@@ -78,15 +78,63 @@ namespace vdb
      */
     class cVDBCommon : public cSubject
     {
-        private:
+        protected:
+        struct sVdbMap
+        {
+            svScope scope;
+            cVDBCommon* reference;
+        };
+
+        static void registerVdb(sVdbMap map)
+        {
+            _referencePointers.push_back(map);
+        }
+
+        static void unregisterVdb(sVdbMap map)
+        {
+            uint32_t iterator = 0;
+
+            for(auto ref : _referencePointers)
+            {
+                if(ref.reference == map.reference)
+                {
+                    // Found the right observer, remove it and break out of the for loop
+                    _referencePointers.erase(_referencePointers.begin() + iterator);
+                    break;
+                }
+
+                iterator++;
+            }
+        }
 
         public:
-        // void notify(eEvent aEvent, void* data)
-        // {
+        static void processVerilatorEvent(svScope scope, uint32_t event)
+        {
+            bool found = false;
 
-        // }
+            for (const sVdbMap& ref : _referencePointers)
+            {
+                if(ref.scope == scope)
+                {
+                    ref.reference->verilatorCallback(event);
+                    found = true;
+                    break;
+                }
+            }
+
+            if(!found)
+            {
+                WARNING << "VGA: Event on non found module: " << svGetNameFromScope(scope) << " \n";
+            }
+        }
+
+        virtual void verilatorCallback(uint32_t event) = 0;
+
+        private:
+        static std::vector<sVdbMap> _referencePointers;
     };
 
+    inline std::vector<cVDBCommon::sVdbMap> cVDBCommon::_referencePointers;
 }
 }
 

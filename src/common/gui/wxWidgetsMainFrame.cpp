@@ -45,9 +45,9 @@
 
 #include "wxWidgetsMainFrame.hpp"
 #include "wxWidgetsvdbVGA.hpp"
+#include "wxWidgetsVdbLED.hpp"
 
 wxDEFINE_EVENT(wxEVT_STATUS, wxCommandEvent);
-wxDEFINE_EVENT(wxEVT_ADD_LED, wxCommandEvent);
 wxDEFINE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
 
 cMainFrame::cMainFrame(cSubject* aSubject) :
@@ -110,14 +110,24 @@ cMainFrame::cMainFrame(cSubject* aSubject) :
     SetSizerAndFit(topSizer);
     SetMinSize(wxSize(cMinWidthSize, cMinHeightSize));
 
-    //Bind(wxEVT_STATUS, &cMainFrame::onStatusChange, this, wxID_ANY);
-    Bind(wxEVT_ADD_LED, &cMainFrame::onAddLed, this, wxID_ANY);
     Bind(wxEVT_ADD_VDB, &cMainFrame::onAddVdb, this, wxID_ANY);
+}
+
+cMainFrame::~cMainFrame()
+{
+    for(cGuiVDBComponent* vdb : vdbInstances)
+    {
+        // Remove observer at this point, so we don't receive any events anymore
+        // The components are deleted in a different constructor
+        vdb->removeObserver();
+        vdb->onClose();
+    }
 }
 
 void cMainFrame::OnExit(wxCommandEvent& event)
 {
     _subject->notifyObserver(eEvent::close);
+
     Close(true);
 }
 
@@ -129,20 +139,6 @@ void cMainFrame::OnAbout(wxCommandEvent& event)
 void cMainFrame::onButtonStart(wxCommandEvent& event)
 {
     _subject->notifyObserver(eEvent::stateChange);
-/*
-    if(_startButton->GetLabel() == wxT("Start"))
-    {
-        _startButton->SetLabel("Pause");
-    }
-    else if(_startButton->GetLabel() == wxT("Pause"))
-    {
-        _startButton->SetLabel("Resume");
-    }
-    else if(_startButton->GetLabel() == wxT("Resume"))
-    {
-        _startButton->SetLabel("Pause");
-    }
-*/
 }
 
 void cMainFrame::onButtonReset(wxCommandEvent& event)
@@ -160,51 +156,33 @@ void cMainFrame::onButtonStop(wxCommandEvent& event)
     {
         delete vdb;
     }
-    vdbInstances.clear();
-
-    for(const cVirtualLed* led : ledInstances)
-    {
-        delete led;
-    }
-    ledInstances.clear();
-    
-}
-
-void cMainFrame::onAddLed(wxCommandEvent& event)
-{
-    sAddLedEvent* eventData = reinterpret_cast<sAddLedEvent*>(event.GetClientObject());
-
-    if(eventData)
-    {
-        wxBoxSizer* rightPanelSizer = new wxBoxSizer(wxHORIZONTAL);
-
-        for (size_t i = 0; i < eventData->numLeds; i++)
-        {
-            cVirtualLed* newLed = new cVirtualLed(_mySplitterWindow, i, _rightPanel, wxPoint( (50*i) , 0), 50 , 'g');
-            ledInstances.push_back(newLed);
-            rightPanelSizer->Add(newLed, 0, wxLEFT, 100);
-            _mySplitterWindow->SplitVertically(_leftPanel, _rightPanel, 120);
-        }
-
-        Refresh();
-    }
 }
 
 void cMainFrame::onAddVdb(wxCommandEvent& event)
 {
+    static uint8_t offset = 0;
     sAddVdbComponent* eventData = reinterpret_cast<sAddVdbComponent*>(event.GetClientObject());
 
     if(eventData)
     {
         switch (eventData->type)
         {
+            case eVdbComponentType::vdbLed :
+            {
+                cWXVdbLed* newLED = new cWXVdbLed(eventData->vdbComponent, offset, this, _rightPanel, 
+                                               wxPoint( (50*offset) , 0), 50 , eventData->information);
+                vdbInstances.push_back(newLED);
+
+                offset++;
+                break;
+            }
             case eVdbComponentType::vdbVGA :
             {
-                cWXvdbVGAMonitor* newVGA = new cWXvdbVGAMonitor(eventData->vdbComponent, this);
+                cWXvdbVGAMonitor* newVGA = new cWXvdbVGAMonitor(eventData->vdbComponent, 0, this);
                 vdbInstances.push_back(newVGA);
                 break;
             }
-        
+
         default:
             ERROR << "Unknown vdb component type registered \n";
             break;

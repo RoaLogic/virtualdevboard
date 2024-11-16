@@ -63,9 +63,9 @@ namespace GUI {
      * Also the default image is filled with a predefined message,
      * which is passed to the monitor and shown.
      */
-    cWXvdbVGAMonitor::cWXvdbVGAMonitor(cVDBCommon* myVDBComponent, wxEvtHandler* myEvtHandler) :
+    cWXvdbVGAMonitor::cWXvdbVGAMonitor(cVDBCommon* myVDBComponent, int id, wxEvtHandler* myEvtHandler) :
         wxFrame(NULL, wxID_ANY, wxT("VGA monitor")),
-        cGuiVDBComponent(myVDBComponent),
+        cGuiVDBComponent(myVDBComponent, id),
         _evtHandler(myEvtHandler),
         _myImage(_cDefaultWidth, _cDefaultHeight, false),
         _copySemaphore(1)
@@ -113,6 +113,8 @@ namespace GUI {
 
         Show(true);
 
+        //myEvtHandler->Bind(wxEVT_CLOSE_WINDOW, [&](wxCloseEvent& event){Show(false);});
+        Bind(wxEVT_CLOSE_WINDOW, std::bind(&cWXvdbVGAMonitor::closeEvt, this, std::placeholders::_1));
         // Use a specific Bind due to bug inside of wxWidgets, see 
         // https://stackoverflow.com/questions/38833116/conversion-in-derived-class-inaccessible-if-base-class-is-protected
         myEvtHandler->Bind(wxEVT_VGA, std::bind(&cWXvdbVGAMonitor::onVGAEvent, this, std::placeholders::_1));
@@ -128,19 +130,47 @@ namespace GUI {
     }
 
     /**
+     * @brief close event from the cGuiVDBComponent
+     * @details This function closes this window in the correct way
+     */
+    void cWXvdbVGAMonitor::onClose()
+    {
+        close = true;
+        this->Close();
+    }
+
+    /**
+     * @brief close event from the UI
+     * @details This function handles the close event from wxWidgets.
+     * 
+     * Depending on the close state we either hide the panel or close it,
+     * this is done by skipping the event and the default close is called.
+     */
+    void cWXvdbVGAMonitor::closeEvt(wxCloseEvent& event)
+    {
+        if(close)
+        {
+            event.Skip();
+        }
+        else
+        {
+            Show(false);
+        }
+    }
+
+
+    /**
      * @brief notify function from the vdb component
      * @details This function receives events from the component
      * it is registered to. This shall be the vdbVGAMonitor and the 
-     * received events are vgaData and vgaDataReady. 
+     * received events is vgaDataReady. 
      * 
      * When the horizontalLines and verticalLines are 0 the image size
      * is still unknown
      * 
-     * First check that the image is still the same as the data received,
-     * if this is not the case, resize the image. Following this add the
-     * data into the image. 
-     * 
-     * When the data is complete, sent the wxVGA_EVT.
+     * First check that the image size is still the same as the data received,
+     * if this is not the case, resize the image. Following this copy the data 
+     * in the temporary buffer before secind the wxVGA_EVT
      * 
      * @note this function runs in the verilated context.
      * 
@@ -184,14 +214,15 @@ namespace GUI {
      * @details This function handles the wxEVT_VGA event
      * 
      * The event is sent when we need to update the image,
-     * data is already set, so only set the new bitmap image.
+     * data is in the copy buffer, which we now have to put
+     * into the wxImage. This is done here and at the end
+     * the image is placed inside the bitmap viewer.
      * 
      * @note This function runs in the GUI thread
      * 
      */
     void cWXvdbVGAMonitor::onVGAEvent(wxCommandEvent& event)
     {
-        size_t imageWidth = _myImage.GetWidth();
         size_t currentOffset = 0;
 
         // Make sure we are not writing data into the array when we read it

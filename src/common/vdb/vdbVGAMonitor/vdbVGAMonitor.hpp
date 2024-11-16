@@ -94,27 +94,9 @@ namespace vdb
      */
     class cVdbVGAMonitor : public cVDBCommon
     {
-        private:
-        struct sVdbVGAMap
-        {
-            svScope scope;
-            cVdbVGAMonitor* reference;
-        };
-
-        static std::vector<sVdbVGAMap> _referencePointers;
-        static void registerVirtualVGA(sVdbVGAMap reference);
-
         public:
         static const size_t cMaxHorizontalLines = 1024;
         static const size_t cMaxVerticalLines = 768;
-        enum class eVgaEvent
-        {
-            vsync,
-            hsync
-        };
-
-        // Function to call for going from static scope to class scope
-        static void processVGAEvent(svScope scope, eVgaEvent event);
 
         private:
         cTimeInterface* _timeInterface;   //!< Pointer to the time interface for retrieving the current time
@@ -127,13 +109,14 @@ namespace vdb
         //!< The VGA data array buffer allocated in the verilog code, used as reference to show the data on screen
         VlUnpacked<unsigned int, cMaxVerticalLines*cMaxHorizontalLines>& _myFramebuffer;
 
+        // Function to call for going from static scope to class scope
+        void verilatorCallback(uint32_t event);
+
         public:
         cVdbVGAMonitor(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock,
                 VlUnpacked<unsigned int, cMaxVerticalLines*cMaxHorizontalLines>& framebuffer);
 
         ~cVdbVGAMonitor();
-
-        void handleVsync();
     };
 
 }

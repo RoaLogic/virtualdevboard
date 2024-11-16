@@ -54,8 +54,9 @@ enum class eEvent
     reset,
     stop,
     stateChange,
-    vgaData,
-    vgaDataReady
+    vgaDataReady,
+    ledChangedOn,
+    ledChangedOff
 };
 
 enum class eSystemState
