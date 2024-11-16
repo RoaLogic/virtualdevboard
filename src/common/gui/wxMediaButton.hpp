@@ -60,7 +60,8 @@ class wxMediaButton : public wxWindow
 {
     protected:
     double scale = 0.8;
-
+    static inline wxColour wxMediaButtonColourLight = wxColour(230,250,230);
+    static inline wxPen    wxMediaButtonDefaultPen  = wxPen(wxMediaButtonColourLight, 1);
 
     public:
     /**
@@ -101,6 +102,20 @@ class wxMediaButton : public wxWindow
         get a per-monitor DPI specific size.
     */
     static wxSize GetDefaultSize(wxWindow* win = NULL) { return wxSize(50,50); }
+
+
+    /**
+     * @brief Return button radius
+     * @details Returns the radius of the buttons
+    */
+    int GetRadius() const { return GetClientSize().GetX() / 2; }
+
+
+
+    /**
+     * @brief Draw the button's layout (i.e. circle)
+     */
+    virtual void DrawLayout(wxDC& dc, const wxColour& colour);
 
 
     /**
@@ -210,7 +225,7 @@ class wxMediaStopButton : public wxMediaButton
     public:
     /**
      * @brief Constructor, creating and showing the button
-     * @details Construct and draw the wxPlayPauseButton
+     * @details Construct and draw the wxStopButton
                 Same parameters as wxButton for compatibility reasons
      */
     wxMediaStopButton(wxWindow* parent, wxWindowID id,
@@ -253,7 +268,7 @@ class wxMediaPowerButton : public wxMediaButton
     public:
     /**
      * @brief Constructor, creating and showing the button
-     * @details Construct and draw the wxPlayPauseButton
+     * @details Construct and draw the wxPowerButton
                 Same parameters as wxButton for compatibility reasons
      */
     wxMediaPowerButton(wxWindow* parent, wxWindowID id,
@@ -276,6 +291,49 @@ class wxMediaPowerButton : public wxMediaButton
      * @see SetLabel()
      */
     wxString GetLabel() const { return "Power"; }
+
+
+    /**
+     * @brief Draw the button
+     */
+    void Draw(wxDC& dc);
+};
+
+
+
+
+/**
+ * @brief wxMediaResetButton class
+ * @details Draws and handles the Reset media button
+ */
+class wxMediaResetButton : public wxMediaButton
+{
+    public:
+    /**
+     * @brief Constructor, creating and showing the button
+     * @details Construct and draw the wxResetButton
+                Same parameters as wxButton for compatibility reasons
+     */
+    wxMediaResetButton(wxWindow* parent, wxWindowID id,
+                       const wxString& label = wxEmptyString,
+                       const wxPoint& pos = wxDefaultPosition,
+                       const wxSize& size = wxDefaultSize,
+                       long style = 0,
+                       const wxValidator& validator = wxDefaultValidator,
+                       const wxString& name = wxButtonNameStr);
+
+
+    /**
+     * @brief Destructor
+     */
+    ~wxMediaResetButton() {}
+
+
+    /**
+     * @brief Returns the string label for the button. Always returns "Reset"
+     * @see SetLabel()
+     */
+    wxString GetLabel() const { return "Reset"; }
 
 
     /**

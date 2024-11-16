@@ -71,6 +71,18 @@ wxMediaButton::wxMediaButton(wxWindow* parent, wxWindowID id,
 
 
 /**
+ * @brief Draw button layout
+ * @details Draws the button's layout; i.e. the circle 
+ */
+void wxMediaButton::DrawLayout(wxDC& dc, const wxColour& colour)
+{
+    dc.SetBrush   (colour);
+    dc.SetPen     (wxMediaButtonDefaultPen);
+    dc.DrawCircle (GetRadius(), GetRadius(), GetRadius() * scale);
+}
+
+
+/**
  * @brief Draw button
  * @details Empty method, must be overridden by child class 
  */
@@ -233,27 +245,24 @@ void wxMediaPlayPauseButton::SetLabel(const wxString& label)
  */
 void wxMediaPlayPauseButton::Draw(wxDC& dc)
 {
-    dc.Clear();
+    const int radius = GetRadius();
 
-    int width = GetClientSize().GetX();                   //unscaled widget width
-    int offset = ((1.0-scale) * width)/2;
+    dc.Clear();
 
     if (phase == PLAY)
     {
         /** Draw PLAY button
         */
         //Draw background circle
-        dc.SetBrush    (wxColor(44,179,29) );             //green
-        dc.SetPen      (wxPen(wxColor(230,250,230),1));   //light line, 1 pixels thick
-        dc.DrawCircle  (width/2, width/2, width/2*scale);
+	DrawLayout(dc, wxColour(44,179,29));              //green
 
         //Draw triangle
         dc.SetBrush(wxColor(20,82,13) );
-        dc.SetPen  (wxPen(wxColor(230,250,230),1));
+        dc.SetPen  (wxMediaButtonDefaultPen);
         wxPointList *points = new wxPointList();
-        wxPoint *pt1 = new wxPoint(width*0.3 +offset, width*0.2 +offset);
-        wxPoint *pt2 = new wxPoint(width*0.8 -offset, width/2.0        );
-        wxPoint *pt3 = new wxPoint(width*0.3 +offset, width*0.8 -offset);
+        wxPoint *pt1 = new wxPoint(radius -10*scale, radius -15*scale);
+        wxPoint *pt2 = new wxPoint(radius +15*scale, radius           );
+        wxPoint *pt3 = new wxPoint(radius -10*scale, radius +15*scale);
         points->Append(pt1);
         points->Append(pt2);
         points->Append(pt3);
@@ -264,14 +273,12 @@ void wxMediaPlayPauseButton::Draw(wxDC& dc)
         /** Draw PAUSE button
         */
         //Draw background circle
-        dc.SetBrush   (wxColor(2,2,252));                //Blue
-        dc.SetPen     (wxPen(wxColor(230,250,230),1));   //light line, 1 pixels thick
-        dc.DrawCircle (width/2, width/2, width/2*scale);
+        DrawLayout(dc, wxColor(2,2,252));                 //Blue
 
         //Draw double lines
         dc.SetPen  (wxPen(wxColor(1,1,74),5*scale));      //dark blue
-        dc.DrawLine(width/2 -5*scale, width*0.3 +offset, width/2 -5*scale, width*0.7 -offset);
-        dc.DrawLine(width/2 +5*scale, width*0.3 +offset, width/2 +5*scale, width*0.7 -offset);
+        dc.DrawLine(radius -5*scale, radius -10*scale, radius -5*scale, radius +10*scale);
+        dc.DrawLine(radius +5*scale, radius -10*scale, radius +5*scale, radius +10*scale);
     }
 }
 
@@ -313,20 +320,17 @@ wxMediaStopButton::wxMediaStopButton(wxWindow* parent, wxWindowID id,
  */
 void wxMediaStopButton::Draw(wxDC& dc)
 {
+    const int radius = GetRadius();
+
     dc.Clear();
 
-    int width = GetClientSize().GetX();                   //unscaled widget width
-    int offset = ((1.0-scale) * width)/2;
-
     //Draw background circle
-    dc.SetBrush     (wxColor(173,5,5));                   //Dark Red
-    dc.SetPen       (wxPen(wxColor(230,250,230),1));      //light line, 1 pixels thick
-    dc.DrawCircle   (width/2, width/2, width/2*scale);
+    DrawLayout      (dc, wxColor(173,5,5));               //Dark Red
 
     //Draw box
     dc.SetBrush     (wxColor(107,2,2));                   //Dark dark red
-    dc.SetPen       (wxPen(wxColor(230,250,230),1));
-    dc.DrawRectangle(width/2 -12*scale, width/2 -12*scale, 25*scale, 25*scale);
+    dc.SetPen       (wxMediaButtonDefaultPen);
+    dc.DrawRectangle(radius -12*scale, radius -12*scale, 25*scale, 25*scale);
 }
 
 
@@ -351,20 +355,59 @@ wxMediaPowerButton::wxMediaPowerButton(wxWindow* parent, wxWindowID id,
  */
 void wxMediaPowerButton::Draw(wxDC& dc)
 {
+    const int radius = GetRadius();
+
     dc.Clear();
 
-    int width = GetClientSize().GetX();                   //unscaled widget width
-
     //Draw background circle
-    dc.SetBrush       (wxColor(164,28,237));               //Purple
-    dc.SetPen         (wxPen(wxColor(230,250,230),1));     //light line, 1 pixels thick
-    dc.DrawCircle     (width/2, width/2, width/2*scale);
+    DrawLayout        (dc, wxColor(164,28,237));               //Purple
 
     //Draw arc
     dc.SetPen         (wxPen(wxColor(250,140,5),3));
-    dc.DrawEllipticArc(width/2 -12*scale, width/2 -12*scale, 25*scale, 25*scale, //rectangle that contains arc
-		       135, 45);
+    dc.DrawEllipticArc(radius -12*scale, radius -12*scale, 25*scale, 25*scale, //rectangle that contains arc
+		       135, 45);                                               //start/stop angles of arc from 3'clock
     //Draw line
-    dc.DrawLine       (width/2, width/2, width/2, width/2 -15*scale);
+    dc.DrawLine       (radius, radius, radius, radius -15*scale);
+}
+
+
+
+
+/**************************************
+ *
+ * wxResetButton class
+ *
+ */
+wxMediaResetButton::wxMediaResetButton(wxWindow* parent, wxWindowID id,
+    const wxString& label, const wxPoint& pos, const wxSize& size,
+    long style, const wxValidator& validator, const wxString& name) :
+  wxMediaButton(parent, id, GetLabel(), pos, GetDefaultSize(), style, validator, name)
+{
+}
+
+
+/**
+ * @brief Draw button
+ * @details This method draws the button, scaled accordingly to 'scale' ensuring the button is always in the center of the widget 
+ */
+void wxMediaResetButton::Draw(wxDC& dc)
+{
+    const int arrowSize = 5;
+    const int arrowCorrection = 2;
+    const int radius = GetRadius();
+
+    dc.Clear();
+
+    //Draw background circle
+    DrawLayout  (dc, wxColor(45,45,45));
+
+    //Draw arrow
+    //Draw arc
+    dc.DrawEllipticArc(radius -12*scale, radius -12*scale, 25*scale, 25*scale, //rectangle that contains arc
+		       180, 135);                                              //start/stop angles of the arc, from 3'clock
+
+    //Draw lines
+    dc.DrawLine       (radius -13*scale, radius, radius -(12+arrowSize-arrowCorrection)*scale, radius +(arrowSize+arrowCorrection)*scale);
+    dc.DrawLine       (radius -13*scale, radius, radius -(12-arrowSize                )*scale, radius +(arrowSize-arrowCorrection)*scale);
 }
 
