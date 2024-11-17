@@ -86,6 +86,10 @@ cDE10Lite::cDE10Lite(VerilatedContext* context, bool traceActive, cGuiInterface*
  */
 cDE10Lite::~cDE10Lite()
 {
+    if(_myGUI)
+    {
+        _myGUI->removeObserver(this);
+    }
 }
 
 

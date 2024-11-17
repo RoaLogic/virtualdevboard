@@ -148,14 +148,21 @@ void cMainFrame::onButtonReset(wxCommandEvent& event)
 
 void cMainFrame::onButtonStop(wxCommandEvent& event)
 {
-    _subject->notifyObserver(eEvent::stop);
     _startButton->SetLabel("Start");
 
-    // Clear all the GUI elements, since those will be newly constructed
-    for(const cGuiVDBComponent* vdb : vdbInstances)
+    for(cGuiVDBComponent* vdb : vdbInstances)
     {
-        delete vdb;
+        // Remove observer at this point, so we don't receive any events anymore
+        // The components are deleted in a different constructor
+        vdb->removeObserver();
+        vdb->onClose();
     }
+
+    _rightPanel->DestroyChildren();
+
+    vdbInstances.erase(vdbInstances.begin(), vdbInstances.end());
+
+    _subject->notifyObserver(eEvent::stop);
 }
 
 void cMainFrame::onAddVdb(wxCommandEvent& event)

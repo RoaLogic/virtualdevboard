@@ -96,7 +96,7 @@ namespace GUI {
      */
     void cWXVdbLed::notify(eEvent aEvent, void* data)
     {
-        wxCommandEvent ledEvent{wxEVT_LED, _myID};
+        wxCommandEvent ledEvent{wxEVT_LED, static_cast<int>(_myID)};
         ledEvent.SetInt(static_cast<int>(aEvent));
         wxPostEvent(_evtHandler, ledEvent);
     }
