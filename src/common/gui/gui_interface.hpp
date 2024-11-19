@@ -58,7 +58,7 @@ namespace GUI {
     {
         vdbLed,
         vdbVGA,
-        vdb7seg
+        vdb7SegmentDisplay
     };
 
     /**
@@ -89,7 +89,8 @@ namespace GUI {
     {
         public:        
         virtual void addVirtualLED(cVDBCommon* vdbComponent, char color) = 0;
-        virtual void addVirtualVGA(cVDBCommon* cdbComponent) = 0;
+        virtual void addVirtualVGA(cVDBCommon* vdbComponent) = 0;
+        virtual void addVirtual7SegmentDisplay(cVDBCommon* vdbComponent) =0;
     };
 
     /**

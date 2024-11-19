@@ -87,6 +87,7 @@ class cVirtualDemoBoard : public wxApp, public cGuiInterface
 
     void addVirtualLED(cVDBCommon* vdbComponent, char color);
     void addVirtualVGA(cVDBCommon* vdbComponent);
+    void addVirtual7SegmentDisplay(cVDBCommon* vdbComponent);
 };
 
 

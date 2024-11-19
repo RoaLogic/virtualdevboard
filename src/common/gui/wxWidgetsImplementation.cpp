@@ -95,3 +95,16 @@ void cVirtualDemoBoard::addVirtualVGA(cVDBCommon* vdbComponent)
     statusEvent.SetClientObject(eventData);
     wxPostEvent(_mainFrame, statusEvent);
 }
+
+void cVirtualDemoBoard::addVirtual7SegmentDisplay(cVDBCommon* vdbComponent)
+{
+    wxCommandEvent statusEvent{wxEVT_ADD_VDB};
+    sAddVdbComponent* const eventData{ new sAddVdbComponent};
+
+    eventData->type = eVdbComponentType::vdb7SegmentDisplay;
+    eventData->vdbComponent = vdbComponent;
+
+    statusEvent.SetClientObject(eventData);
+    wxPostEvent(_mainFrame, statusEvent);
+}
+
