@@ -54,10 +54,11 @@ TB_CXX  +=$(PWD)submodules/Verilator-simulation/common/uniqueid.cpp				\
 	  $(PWD)gui/wxWidgetsImplementation.cpp 						\
 	  $(PWD)gui/wxWidgetsMainFrame.cpp 							\
 	  $(PWD)vdb/vdbLED/vdbLED.cpp								\
-	  $(PWD)vdb/vdbLED/wxWidgetsVdbLED.cpp 						\
-	  $(PWD)vdb/vdbVGAMonitor/vdbVGAMonitor.cpp							\
-	  $(PWD)vdb/vdbVGAMonitor/wxWidgetsvdbVGA.cpp 					\
-	  $(PWD)vdb/vdb7SegmentDisplay/vdb7SegmentDisplay.cpp
+	  $(PWD)vdb/vdbLED/wxWidgetsVdbLED.cpp 							\
+	  $(PWD)vdb/vdbVGAMonitor/vdbVGAMonitor.cpp						\
+	  $(PWD)vdb/vdbVGAMonitor/wxWidgetsvdbVGA.cpp						\
+	  $(PWD)vdb/vdb7SegmentDisplay/vdb7SegmentDisplay.cpp					\
+	  $(PWD)vdb/vdb7SegmentDisplay/wxWidgetsVdb7SegmentDisplay.cpp
 
 INCDIRS +=$(PWD)lexer										\
           $(PWD)parser										\
@@ -66,12 +67,12 @@ INCDIRS +=$(PWD)lexer										\
           $(PWD)submodules/Verilator-simulation/testbench					\
           $(PWD)submodules/Verilator-simulation/common						\
           $(PWD)submodules/Verilator-simulation/common/programOptions				\
-		  $(PWD)vdb											\
-	  $(PWD)vdb/vdbLED										\
-	  $(PWD)vdb/vdbVGAMonitor									\
+	  $(PWD)vdb										\
+	  $(PWD)vdb/vdbLED									\
+	  $(PWD)vdb/vdbVGAMonitor								\
 	  $(PWD)vdb/vdb7SegmentDisplay
 
-RTL_VERILOG +=$(PWD)vdb/vdbLED/vdbLED.sv								\
+RTL_VERILOG +=$(PWD)vdb/vdbLED/vdbLED.sv							\
 	      $(PWD)vdb/vdbVGAMonitor/vdbVGAMonitor.sv						\
 	      $(PWD)vdb/vdb7SegmentDisplay/vdb7SegmentDisplay.sv
 
