@@ -150,6 +150,7 @@ namespace GUI {
     {
         if(close)
         {
+            // By skipping the event the destroy method shall be called
             event.Skip();
         }
         else
