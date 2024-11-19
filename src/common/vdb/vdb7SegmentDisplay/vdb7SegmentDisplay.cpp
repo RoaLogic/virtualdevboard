@@ -63,8 +63,8 @@ void vdb7SegmentDisplayUpdate(int id, const svBitVecVal* val)
     INFO << "7-Segment display: Update event: " << svGetScope() << "\n";
     #endif
     // Get the scope of the current call and pass this into the processing function
-    // Pass the pointer to the 7-Segment Display value alongside it
-    cVDBCommon::processVerilatorEvent(svGetScope(), val);
+    // Pass the value of the 7-Segment Display alongside it
+    cVDBCommon::processVerilatorEvent(svGetScope(), *val);
 }
 
 
@@ -126,7 +126,7 @@ namespace vdb
         INFO << "7Segment: Received ID " << _myID << " event: " << event << "\n";
         #endif
 
-        notifyObserver(eEvent::7SegmentUpdate, event);
+        notifyObserver(eEvent::sevenSegmentUpdate, &event);
     }
 
 }

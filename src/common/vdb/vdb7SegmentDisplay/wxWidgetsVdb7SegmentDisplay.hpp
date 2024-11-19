@@ -86,10 +86,10 @@ namespace GUI {
         static inline wxColour colBackground = wxColour(138,150,168); //Grey-blue
         static inline wxColour colLedOn      = wxColour(255,0,0);     //Red
         static inline wxColour colLedOff     = wxColour(255,223,223); //light Red
-        static int deviceWidth   = 300;                               //300mil wide
-        static int deviceHeight  = 500;                               //500mil tall
-        static int ledWidth      =  15;                               //15mil LED width
-        static int ledLength     = 165;                               //165mil LED lenght
+        static const  int deviceWidth   = 300;                               //300mil wide
+        static const  int deviceHeight  = 500;                               //500mil tall
+        static const  int ledWidth      =  15;                               //15mil LED width
+        static const  int ledLength     = 165;                               //165mil LED lenght
 
         void notify(eEvent aEvent, void* data);
         void onEvent(wxCommandEvent& event);
