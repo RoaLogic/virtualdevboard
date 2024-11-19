@@ -124,7 +124,7 @@ namespace vdb
 
             if(!found)
             {
-                WARNING << "VGA: Event on non found module: " << svGetNameFromScope(scope) << " \n";
+                WARNING << "VDB: Event on non registered module: " << svGetNameFromScope(scope) << " \n";
             }
         }
 
