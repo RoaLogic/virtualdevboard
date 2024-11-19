@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    Virtual Devboard 7-Segment Display Verilator C++ wrapper     //
+//    wxWidgets virtual Devboard 7-Segment Display C++ header file //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,91 +43,66 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
+#ifndef WX_WIDGETS_VDB_7SEGMENT_HPP
+#define WX_WIDGETS_VDB_7SEGMENT_HPP
+
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+#include "wx/event.h"
+#include <wx/graphics.h>
+
+#include "gui_interface.hpp"
 #include "vdb7SegmentDisplay.hpp"
 
-using namespace RoaLogic::vdb;
+wxDECLARE_EVENT(wxEVT_7Segment, wxCommandEvent);
 
-/**
- * @brief 7-Segment Display Update DPI-C callback
- * @details This function gets called when the 7-Segment Display
- * state in the design changes.
- * 
- * It will pass it's event to the handleLedEvent so that it 
- * can be processed correctly within the virtual 7-Segment Display class.
- * 
- * @attention This function runs in the verilator thread context
- */
-void vdb7SegmentDisplayUpdate(int id, const svBitVecVal* val)
-{
-    #ifdef DBG_VDB_7SEGMENT
-    INFO << "7-Segment display: Update event: " << svGetScope() << "\n";
-    #endif
-    // Get the scope of the current call and pass this into the processing function
-    // Pass the pointer to the 7-Segment Display value alongside it
-    cVDBCommon::processVerilatorEvent(svGetScope(), val);
-}
-
-
-namespace RoaLogic
-{
+namespace RoaLogic {
     using namespace observer;
-namespace vdb
-{
-    /**
-     * @brief Construct a new cVdb7SegmentDisplay object
-     * @details This constructer creates a new cVdb7SegmentDisplay object
-     *
-     * First the scope is set according to the given name, where it is
-     * also checked that the scope exists. When this is ok, it registers
-     * this class for any verilator actions.
-     *
-     * @param[in] scopeName     Scope of this 7-Segment Display
-     * @param[in] id            Optional ID of this led (mainly used for debugging)
-     */
-    cVdb7SegmentDisplay::cVdb7SegmentDisplay(std::string scopeName, uint8_t id) :
-        _myID(id)
-    {
-        // Get the scope according to the given name
-        _myScope = svGetScopeFromName(scopeName.c_str());
-        svSetScope(_myScope);
-
-        #ifdef DBG_VDB_7SEGMENT
-        INFO << "7-Segment: Create: ID " << id << " Scope: "<< svGetScope() << "\n";
-        #endif
-
-        // Make sure that the scope is not a nullpointer
-        assert(_myScope != nullptr);
-
-        // Store this class instance in the gloval class instances
-        registerVdb(sVdbMap{_myScope, this});
-    }
+    using namespace vdb;
+namespace GUI {
 
     /**
-     * @brief destruct the cVdb7SegmentDisplay object
-     *
-     * Unregister this class so that it's not called anymore
+     * @class cWXVdb7Segment
+     * @author Richard Herveille
+     * @brief 7-Segment Display virtual development board component
+     * 
+     * @details
+     * This class subscribes to it's VDB component and awaits any events.
+     * Corresponding events are received in the notify function, which runs in
+     * the verilated context. GUI adjustments have to be done in the GUI thread,
+     * so a wxEvent is sent and following the thread switch then processed in the
+     * on7SegmentEvent function.
+     * 
+     * The 7-Segment Display is drawn in the OnPaint function, which also defines
+     *  what the 7-Segment Display looks like
      */
-    cVdb7SegmentDisplay::~cVdb7SegmentDisplay()
+    class cWXVdb7SegmentDisplay : public cGuiVDBComponent, public wxWindow
     {
-        unregisterVdb(sVdbMap{_myScope, this});
-    }
+        private:
+        wxEvtHandler* _evtHandler;                  //!< The event handler of this frame
+        char _color;
+        uint8_t _value;
 
-    /**
-     * @brief Callback function for a verilated 7-Segment Display event
-     * @details This function handles the 7-Segment Display update events coming
-     * from the verilated design. It checks if the event is alright and
-     * then notifies all classes which are registered to it.
-     *
-     * @param[in] event The new value of the 7-Segment Display
-     */
-    void cVdb7SegmentDisplay::verilatorCallback(uint32_t event)
-    {
-        #ifdef DBG_VDB_7SEGMENT
-        INFO << "7Segment: Received ID " << _myID << " event: " << event << "\n";
-        #endif
+        static inline wxColour colBackground = wxColour(138,150,168); //Grey-blue
+        static inline wxColour colLedOn      = wxColour(255,0,0);     //Red
+        static inline wxColour colLedOff     = wxColour(255,223,223); //light Red
+        static int deviceWidth   = 300;                               //300mil wide
+        static int deviceHeight  = 500;                               //500mil tall
+        static int ledWidth      =  15;                               //15mil LED width
+        static int ledLength     = 165;                               //165mil LED lenght
 
-        notifyObserver(eEvent::7SegmentUpdate, event);
-    }
+        void notify(eEvent aEvent, void* data);
+        void onEvent(wxCommandEvent& event);
 
-}
-}
+        bool bitSet(int bit) const { return (_value >> bit) & 1; }
+
+        public:
+        cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, int id, wxEvtHandler* myEvtHandler, wxWindow* windowParent, wxPoint Position, int Size, char Color);
+        ~cWXVdb7SegmentDisplay();
+
+        void OnPaint(wxPaintEvent& event);
+    };
+
+}}
+
+#endif

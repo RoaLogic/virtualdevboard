@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    Virtual Devboard 7-segment display Verilator C++ header file //
+//    Virtual Devboard 7-Segment Display Verilator C++ header file //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -46,9 +46,41 @@
 #ifndef VDB_7SEGMENT_HPP
 #define VDB_7SEGMENT_HPP
 
-//include Dpi headers, required to link verilator model to C++
-#include "vdb__Dpi.h"
+#include "vdbCommon.hpp"
 
-#include "log.hpp"
+namespace RoaLogic
+{
+namespace vdb
+{
+
+    /**
+     * @class cVdb7SegmentDisplay
+     * @author Bjorn Schouteten
+     * @brief Virtual GUI 7-Segment Display controlled by verilog instance
+     * @version 0.1
+     * @date 16-nov-2024
+     *
+     * @details This class controls a verilated 7-Segment Display instance.
+     *
+     * It takes the verilator event through the verilator callback and notifies
+     * anyone listening to this led. This class fully runs in the verilated context.
+     * The base is the cVDBCommon class which does all the low level handling and 
+     * setting up the callback mechanism for any DPI functions. The user shall call
+     * the cVDBCommon::processVerilatorEvent with the scope and the eventual event.
+     */
+    class cVdb7SegmentDisplay : public cVDBCommon
+    {
+        private:
+        uint8_t _myID;
+        svScope _myScope;                 //!< The scope of the verilated context
+
+        void verilatorCallback(uint32_t event);
+
+        public:
+        cVdb7SegmentDisplay(std::string scopeName, uint8_t id);
+        ~cVdb7SegmentDisplay();
+    };
+}
+}
 
 #endif
