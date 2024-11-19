@@ -57,7 +57,7 @@ enum class eEvent
     vgaDataReady,
     ledChangedOn,
     ledChangedOff,
-    7SegmentUpdate
+    sevenSegmentUpdate
 };
 
 enum class eSystemState
