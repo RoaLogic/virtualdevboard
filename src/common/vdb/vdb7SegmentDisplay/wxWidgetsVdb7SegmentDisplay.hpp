@@ -83,18 +83,23 @@ namespace GUI {
         char _color;
         uint8_t _value;
 
-        static inline wxColour colBackground = wxColour(138,150,168); //Grey-blue
-        static inline wxColour colLedOn      = wxColour(255,0,0);     //Red
-        static inline wxColour colLedOff     = wxColour(255,223,223); //light Red
-        static const  int deviceWidth   = 300;                               //300mil wide
-        static const  int deviceHeight  = 500;                               //500mil tall
-        static const  int ledWidth      =  15;                               //15mil LED width
-        static const  int ledLength     = 165;                               //165mil LED lenght
+        static inline    wxColour colBackground = wxColour(138,150,168); //Grey-blue
+        static inline    wxColour colLedOn      = wxColour(255,0,0);     //Red
+        static inline    wxColour colLedOff     = wxColour(255,223,223); //light Red
+        static const     int      deviceWidth   = 300;                   //300mil wide
+        static const     int      deviceHeight  = 500;                   //500mil tall
+        static const     int      ledWidth      =  30;                   //30mil LED width
+        static const     int      ledLength     = 165;                   //165mil LED lenght
+        static constexpr float    ledOffset     = ledLength * 0.176;     //led-length * tan(10)
+
+        bool bitSet      (int   bit  )  const { return (_value >> bit) & 1; }
+        int  scaleWidth  (int   width)  const { return width  * GetDPI().GetWidth()  /1000; }
+        int  scaleWidth  (float width)  const { return width  * GetDPI().GetWidth()  /1000.0; }
+        int  scaleHeight (int   height) const { return height * GetDPI().GetHeight() /1000; }
+        int  scaleHeight (float height) const { return height * GetDPI().GetHeight() /1000.0; }
 
         void notify(eEvent aEvent, void* data);
         void onEvent(wxCommandEvent& event);
-
-        bool bitSet(int bit) const { return (_value >> bit) & 1; }
 
         public:
         cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, int id, wxEvtHandler* myEvtHandler, wxWindow* windowParent, wxPoint Position, int Size, char Color);

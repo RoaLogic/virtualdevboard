@@ -125,9 +125,11 @@ namespace GUI {
         const wxSize dpi = GetDPI();
 	const int dpi_height = dpi.GetHeight();
 	const int dpi_width  = dpi.GetWidth();
+
+        const float xMin = (deviceWidth - ledLength)/2.0;
+        const float xMax = (deviceWidth + ledLength)/2.0;
         wxPen penLed;
         wxPaintDC dc(this);
-        int x, y;
 
         //draw outline
         dc.SetBrush(wxColour(138,150,168)); //grey-blue
@@ -145,76 +147,58 @@ namespace GUI {
         {
             switch (bit)
             {
-                case 0: if (bitSet(bit)) {
-                            penLed = wxPen(colLedOn, ledWidth * dpi_height /1000);
-                        } else {
-                            penLed = wxPen(colLedOff, ledWidth * dpi_height /1000);
-                        }
-                        dc.DrawLine((deviceWidth -ledLength/2 +15) * dpi_width /1000, 100 * dpi_height /1000,
-                                    (deviceWidth +ledLength/2 +15) * dpi_width /1000, 100 * dpi_height /1000);
+                case 0: penLed = bitSet(bit) ? wxPen(colLedOn , scaleHeight(ledWidth))
+                                             : wxPen(colLedOff, scaleHeight(ledWidth));
+                        dc.SetPen(penLed);
+                        dc.DrawLine(scaleWidth(xMin + ledOffset), scaleHeight(100),
+                                    scaleWidth(xMax + ledOffset), scaleHeight(100));
                         break;
 
-                case 1: if (bitSet(bit)) {
-                            penLed = wxPen(colLedOn, ledWidth * dpi_width /1000);
-                        } else {
-                            penLed = wxPen(colLedOff, ledWidth * dpi_width /1000);
-                        }
-                        dc.DrawLine((deviceWidth +ledLength/2    ) * dpi_width /1000, 250 * dpi_height /1000,
-                                    (deviceWidth +ledLength/2 +15) * dpi_width /1000, 100 * dpi_height /1000);
+                case 1: penLed = bitSet(bit) ? wxPen(colLedOn , scaleWidth(ledWidth))
+                                             : wxPen(colLedOff, scaleWidth(ledWidth));
+                        dc.SetPen(penLed);
+                        dc.DrawLine(scaleWidth(xMax            ), scaleHeight(250),
+                                    scaleWidth(xMax + ledOffset), scaleHeight(100));
                         break;
 
-                case 2: if (bitSet(bit)) {
-                            penLed = wxPen(colLedOn, ledWidth * dpi_width /1000);
-                        } else {
-                            penLed = wxPen(colLedOff, ledWidth * dpi_width /1000);
-                        }
-                        dc.DrawLine((deviceWidth +ledLength/2    ) * dpi_width /1000, 250 * dpi_height /1000,
-                                    (deviceWidth +ledLength/2 -15) * dpi_width /1000, 400 * dpi_height /1000);
+                case 2: penLed = bitSet(bit) ? wxPen(colLedOn , scaleWidth(ledWidth))
+                                             : wxPen(colLedOff, scaleWidth(ledWidth));
+                        dc.SetPen(penLed);
+                        dc.DrawLine(scaleWidth(xMax            ), scaleHeight(250),
+                                    scaleWidth(xMax - ledOffset), scaleHeight(400));
                         break;
 
-                case 3: if (bitSet(bit)) {
-                            penLed = wxPen(colLedOn, ledWidth * dpi_height /1000);
-                        } else {
-                            penLed = wxPen(colLedOff, ledWidth * dpi_height /1000);
-                        }
-                        dc.DrawLine((deviceWidth -ledLength/2 -15) * dpi_width /1000, 400 * dpi_height /1000,
-                                    (deviceWidth +ledLength/2 -15) * dpi_width /1000, 400 * dpi_height /1000);
+                case 3: penLed = bitSet(bit) ? wxPen(colLedOn , scaleHeight(ledWidth))
+                                             : wxPen(colLedOff, scaleHeight(ledWidth));
+                        dc.SetPen(penLed);
+                        dc.DrawLine(scaleWidth(xMin - ledOffset), scaleHeight(400),
+                                    scaleWidth(xMax - ledOffset), scaleHeight(400));
                         break;
 
-                case 4: if (bitSet(bit)) {
-                            penLed = wxPen(colLedOn, ledWidth * dpi_width /1000);
-                        } else {
-                            penLed = wxPen(colLedOff, ledWidth * dpi_width /1000);
-                        }
-                        dc.DrawLine((deviceWidth -ledLength/2    ) * dpi_width /1000, 250 * dpi_height /1000,
-                                    (deviceWidth -ledLength/2 -15) * dpi_width /1000, 400 * dpi_height /1000);
+                case 4: penLed = bitSet(bit) ? wxPen(colLedOn , scaleWidth(ledWidth))
+                                             : wxPen(colLedOff, scaleWidth(ledWidth));
+                        dc.DrawLine(scaleWidth(xMin            ), scaleHeight(250),
+                                    scaleWidth(xMin - ledOffset), scaleHeight(400));
                         break;
 
-                case 5: if (bitSet(bit)) {
-                            penLed = wxPen(colLedOn, ledWidth * dpi_width /1000);
-                        } else {
-                            penLed = wxPen(colLedOff, ledWidth * dpi_width /1000);
-                        }
-                        dc.DrawLine((deviceWidth -ledLength/2    ) * dpi_width /1000, 250 * dpi_height /1000,
-                                    (deviceWidth -ledLength/2 +15) * dpi_width /1000, 100 * dpi_height /1000);
+                case 5: penLed = bitSet(bit) ? wxPen(colLedOn , scaleWidth(ledWidth))
+                                             : wxPen(colLedOff, scaleWidth(ledWidth));
+                        dc.SetPen(penLed);
+                        dc.DrawLine(scaleWidth(xMin            ), scaleHeight(250),
+                                    scaleWidth(xMin + ledOffset), scaleHeight(100));
                         break;
 
-                case 6: if (bitSet(bit)) {
-                            penLed = wxPen(colLedOn, ledWidth * dpi_height /1000);
-                        } else {
-                            penLed = wxPen(colLedOff, ledWidth * dpi_height /1000);
-                        }
-                        dc.DrawLine((deviceWidth -ledLength/2) * dpi_width /1000, 250 * dpi_height /1000,
-                                    (deviceWidth +ledLength/2) * dpi_width /1000, 250 * dpi_height /1000);
+                case 6: penLed = bitSet(bit) ? wxPen(colLedOn , scaleHeight(ledWidth))
+                                             : wxPen(colLedOff, scaleHeight(ledWidth));
+                        dc.DrawLine(scaleWidth(xMin), scaleHeight(250),
+                                    scaleWidth(xMax), scaleHeight(250));
                         break;
 
-                case 7: if (bitSet(bit)) {
-                            penLed = wxPen(colLedOn, ledWidth * dpi_height /1000);
-                        } else {
-                            penLed = wxPen(colLedOff, ledWidth * dpi_height /1000);
-                        }
-                        dc.DrawLine((deviceWidth +ledLength/2 +15 +ledWidth) * dpi_width /1000, 400 * dpi_height /1000,
-                                    (deviceWidth +ledLength/2 +15 -ledWidth) * dpi_width /1000, 400 * dpi_height /1000);
+                case 7: penLed = bitSet(bit) ? wxPen(colLedOn , scaleHeight(ledWidth))
+                                             : wxPen(colLedOff, scaleHeight(ledWidth));
+                        dc.SetPen(penLed);
+                        dc.DrawLine(scaleWidth(xMax + ledOffset + ledWidth), scaleHeight(400),
+                                    scaleWidth(xMax + ledOffset - ledWidth), scaleHeight(400));
                         break;
             }
         }
