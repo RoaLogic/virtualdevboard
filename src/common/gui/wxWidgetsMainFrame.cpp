@@ -169,7 +169,8 @@ void cMainFrame::onButtonStop(wxCommandEvent& event)
 
 void cMainFrame::onAddVdb(wxCommandEvent& event)
 {
-    static uint8_t offset = 0;
+    static uint8_t ledOffset = 0;
+    static uint8_t seg7Offset = 0;
     sAddVdbComponent* eventData = reinterpret_cast<sAddVdbComponent*>(event.GetClientObject());
 
     if(eventData)
@@ -178,20 +179,20 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
         {
             case eVdbComponentType::vdbLed :
             {
-                cWXVdbLed* newLED = new cWXVdbLed(eventData->vdbComponent, offset, this, _rightPanel, 
-                                               wxPoint( (50*offset) , 0), 50 , eventData->information);
+                cWXVdbLed* newLED = new cWXVdbLed(eventData->vdbComponent, ledOffset, this, _rightPanel, 
+                                               wxPoint( (50*ledOffset) , 0), 50 , eventData->information);
                 vdbInstances.push_back(newLED);
 
-                offset++;
+                ledOffset++;
                 break;
             }
             case eVdbComponentType::vdb7SegmentDisplay :
             {
-                cWXVdb7SegmentDisplay* new7SegmentDisplay = new cWXVdb7SegmentDisplay(eventData->vdbComponent, offset, this, _rightPanel,
-                                                                      wxPoint( (300*offset) , 100), 50 , eventData->information);
+                cWXVdb7SegmentDisplay* new7SegmentDisplay = new cWXVdb7SegmentDisplay(eventData->vdbComponent, seg7Offset, this, _rightPanel,
+                                                                      wxPoint( (50*seg7Offset) , 100), 50 , eventData->information);
                 vdbInstances.push_back(new7SegmentDisplay);
 
-                offset++;
+                seg7Offset++;
                 break;
             }
             case eVdbComponentType::vdbVGA :

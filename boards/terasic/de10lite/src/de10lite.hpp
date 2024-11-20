@@ -65,6 +65,7 @@
 
 #include "vdbVGAMonitor.hpp"
 #include "vdbLED.hpp"
+#include "vdb7SegmentDisplay.hpp"
 
 
 using namespace RoaLogic;
@@ -101,6 +102,7 @@ class cDE10Lite : public cTestBench<Vde10lite_verilator_wrapper>, public cObserv
 {
     private:
         static const uint8_t _cNumLed = 10;
+        static const uint8_t _cNum7Seg = 6;
         cGuiInterface* _myGUI = nullptr;
         //DE10-Lite ports. Standard ports are of type uint8_t
         cClock* clk_50;
@@ -111,6 +113,7 @@ class cDE10Lite : public cTestBench<Vde10lite_verilator_wrapper>, public cObserv
 
         cVdbVGAMonitor* _vgaController;
         cVdbLed* _ledInstances[_cNumLed];
+        cVdb7SegmentDisplay* _7segInstances[_cNum7Seg];
 
         std::atomic<eRunState> _returnState = eRunState::completed;
         std::atomic<eSystemState> _myState = eSystemState::idle;
