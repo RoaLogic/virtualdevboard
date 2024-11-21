@@ -80,8 +80,8 @@ namespace GUI {
     {
         private:
         wxEvtHandler* _evtHandler;                  //!< The event handler of this frame
-        char _color;
-        uint8_t _value;
+        char    _color;                             //currently unused
+	uint8_t _value;
 
         static inline    wxColour colBackground = wxColour(138,150,168); //Grey-blue
         static inline    wxColour colLedOn      = wxColour(255,0,0);     //Red
@@ -90,21 +90,63 @@ namespace GUI {
         static const     int      deviceHeight  = 500;                   //500mil tall
         static const     int      ledWidth      =  30;                   //30mil LED width
         static const     int      ledLength     = 165;                   //165mil LED lenght
-        static constexpr float    ledOffset     = ledLength * 0.176;     //led-length * tan(10)
+        static constexpr float    ledOffset     = (ledLength -2*ledWidth) * 0.176;     //led-length * tan(10)
 
+        /**
+         * @brief Returns true if bit @bit is set
+         * @details This helper function returns true if bit @bit is set in @_value, false otherwise
+         * @returns true if the bit is set, false otherwise
+         */
         bool bitSet      (int   bit  )  const { return (_value >> bit) & 1; }
+
+        /**
+         * @brief Helper functions to scale the widget
+         * @details Helper functions to scale the widget depending on the screen's DPI
+         */
         int  scaleWidth  (int   width)  const { return width  * GetDPI().GetWidth()  /1000; }
         int  scaleWidth  (float width)  const { return width  * GetDPI().GetWidth()  /1000.0; }
         int  scaleHeight (int   height) const { return height * GetDPI().GetHeight() /1000; }
         int  scaleHeight (float height) const { return height * GetDPI().GetHeight() /1000.0; }
 
+        /**
+         * @brief Default widget size
+         * @details Returns the default size for the widget.
+
+            The optional @a win argument is new since wxWidgets 3.1.3 and allows to
+            get a per-monitor DPI specific size.
+        */
+        static wxSize GetDefaultSize(wxWindow* win = NULL) { return wxSize(deviceWidth,deviceHeight); }
+
+        /**
+         * @brief notify function from the vdb component
+         * @details This function receives events from the component it is registered to.
+         * @note this function runs in the verilated context.
+         */
         void notify(eEvent aEvent, void* data);
+
+	/**
+         * @brief Handle the event
+         * @details This function handles the wxEVT_7SegmentDisplay event
+         * @note This function runs in the GUI thread
+         */
         void onEvent(wxCommandEvent& event);
 
         public:
+	/**
+	 * @brief Constructor
+	 */
         cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, int id, wxEvtHandler* myEvtHandler, wxWindow* windowParent, wxPoint Position, int Size, char Color);
+
+	/**
+	 * @brief Destructor
+	 */
         ~cWXVdb7SegmentDisplay();
 
+        /**
+	 * @brief Paint the widget
+	 * @details This function paints the widget. The 'LEDs' are turned on when
+	 *          the corresponding bits in @_value are set, otherwise the corresponding LEDs are turned off
+	 */
         void OnPaint(wxPaintEvent& event);
     };
 
