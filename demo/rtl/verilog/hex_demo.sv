@@ -91,7 +91,7 @@ module hex_demo
   //-------------------------------
   // constants
   //
-  localparam int HZ          = 26'd50_000; //_000 -1; //50 million ticks per second 
+  localparam int HZ          = 26'd50_000_00;//0 -1; //50 million ticks per second 
   localparam int SEC_PER_DAY = 60*60*24; 
 
   //-------------------------------
@@ -122,17 +122,24 @@ module hex_demo
   // Variables
   //
   logic [25:0] ena_1sec_cnt;
-  logic        ckena_1sec;
+  wire         ckena_1sec;
 
   logic [ 7:0] seconds;
   logic [ 7:0] minutes;
   logic [ 7:0] hours;
+
+  wire seconds_is59;
+  wire minutes_is59;
+  wire hours_is23;
 
 
   //-------------------------------
   // clock body
   //
   assign ckena_1sec = ~|ena_1sec_cnt;
+  assign seconds_is59 = (seconds[7:4] == 5) & (seconds[3:0] == 9);
+  assign minutes_is59 = (minutes[7:4] == 5) & (minutes[3:0] == 9);
+  assign hours_is23   = (hours  [3:0] == 2) & (hours  [3:0] == 3);
 
   always @(posedge CLK_50, negedge rst_ni)
     if      (!rst_ni    ) ena_1sec_cnt <= HZ;
@@ -142,25 +149,28 @@ module hex_demo
   always @(posedge CLK_50, negedge rst_ni)
     if      (!rst_ni    ) seconds <= 'h0;
     else if ( ckena_1sec)
-      if (seconds == 59)  seconds <= 'h0;
-      else                seconds <= seconds +'h1;
+      if      (seconds_is59     ) seconds <= 'h0;
+      else if (seconds[3:0] == 9) seconds <= seconds +'h7;
+      else                        seconds <= seconds +'h1;
 
 
   always @(posedge CLK_50, negedge rst_ni)
     if      (!rst_ni    ) minutes <= 'h0;
-    else if ( ckena_1sec   &&
-              seconds == 59)
-      if (minutes == 59)  minutes <= 'h0;
-      else                minutes <= minutes +'h1;
+    else if ( ckena_1sec  &&
+	      seconds_is59)
+      if      (minutes_is59     ) minutes <= 'h0;
+      else if (minutes[3:0] == 9) minutes <= minutes +'h7;
+      else                        minutes <= minutes +'h1;
 
 
   always @(posedge CLK_50, negedge rst_ni)
     if      (!rst_ni    ) hours <= 'h0;
-    else if ( ckena_1sec    &&
-              seconds == 59 &&
-              minutes == 59 )
-      if (hours   == 23)  hours <= 'h0;
-      else                hours <= hours +'h1;
+    else if ( ckena_1sec   &&
+	      seconds_is59 &&
+	      minutes_is59 )
+      if      (hours_is23     ) hours <= 'h0;
+      else if (hours[3:0] == 9) hours <= hours + 'h7;
+      else                      hours <= hours +'h1;
 
 
   //BCD
