@@ -43,9 +43,8 @@
 ##                                                                 ##
 #####################################################################
 
-ROOT_DIR:=../
-BOARDS_DIR:=$(ROOT_DIR)boards/
-SRC_DIR:=$(ROOT_DIR)src/
+BOARDS_DIR:=$(VDBDIR)/boards/
+SRC_DIR:=$(VDBDIR)/src/
 
 include $(BOARDS_DIR)common/Makefile.include
 
@@ -56,7 +55,7 @@ wrapper:=$(board)_verilator_wrapper
 ifeq ($(strip $(filelist)),)
   RTL_VERILOG:=
 else
-  RTL_VERILOG:=$(call load_filelist, $(CALLING_FROM)/$(filelist))
+  RTL_VERILOG:=$(call load_filelist, $(filelist))
 endif
 INCDIRS:=
 TB_CXX:=

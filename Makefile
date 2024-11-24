@@ -43,19 +43,19 @@
 ##                                                                 ##
 #####################################################################
 
-PWD:=$(dir $(lastword MAKEFILE_LIST))
+PWD:=$(dir $(lastword $(MAKEFILE_LIST)))
 BUILDDIR=build
+BOARDS=$(PWD)boards
 
 include $(PWD)boards/common/Makefile.include
 
 #get the vendors
-list_vendors=$(filter-out $1 common, $(subst /, ,$(call list_directories,$1)))
-vendors=$(call list_vendors,boards)
+list_vendors=$(filter-out $1 common, $(notdir $(call list_directories,$1)))
+vendors=$(call list_vendors,$(BOARDS))
 
 #get boards per vendor
-boards_list=$(foreach vendor,$(vendors),$(call list_directories,boards/$(vendor)))
-boards=$(filter-out boards $(vendors),$(subst /, ,$(boards_list)))
-
+boards_list=$(foreach vendor,$(vendors),$(call list_directories,$(BOARDS)/$(vendor)))
+boards=$(filter-out boards common $(vendors),$(notdir $(boards_list)))
 
 #####################################################################
 ## Boards                
@@ -65,8 +65,7 @@ boards=$(filter-out boards $(vendors),$(subst /, ,$(boards_list)))
 #Call the makefile in the <vendor>/<board>/<build> directory
 $(boards):
 	if [ ! -d $(BUILDDIR) ]; then mkdir $(BUILDDIR); fi
-	$(MAKE) -C $(BUILDDIR) -f "../$(filter %/$@/, $(boards_list))Makefile" $@ 	\
-		CALLING_FROM=$(abspath $(CURDIR))		\
+	$(MAKE) -C $(BUILDDIR) -f "$(filter %/$@, $(boards_list))/Makefile" $@ 	\
 		board=$@ filelist=$(filelist)
 
 clean:
@@ -82,7 +81,7 @@ distclean:
 
 demo:
 	echo "Building demo"
-	$(MAKE) de10lite filelist=demo/filelist.f
+	$(MAKE) de10lite filelist=$(realpath demo/filelist.f)
 
 
 #####################################################################

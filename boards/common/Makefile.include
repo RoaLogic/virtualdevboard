@@ -47,8 +47,7 @@
 # List of directories
 #
 #list_directories = $(filter-out $1,$(subst /, ,$(dir $(wildcard $1/*/.))))
-list_directories = $(dir $(wildcard $1/*/.))
-
+list_directories = $(abspath $(wildcard $1/*/.))
 
 ##
 # Filelist support
@@ -59,10 +58,22 @@ list_directories = $(dir $(wildcard $1/*/.))
 # @usage $(call file_exists, <filename>)
 file_exists = $(if $(wildcard $1),$(or $(info Reading $1),1),$(error File not found: $1))
 
+# @brief returns include file
+# @details $(filter ...) returns $1 if it starts with +include+, "" otherwise
+#          the $(subst ...) then removes the +include+ part
+_filelist_include = $(subst +include+,,$(filter +include+%,$1))
+
+# @brief Read filelist
+# @details Open <file> and return its contents
+# @usage myvar=$(call read_filelist, <file>)
+_filelist_readfile = $(foreach line,$(file < $1),$(if $(call _filelist_include,$(line)),$(call load_filelist,$(dir $1)$(call _filelist_include,$(line))),$(dir $1)$(line)))
+
 # @brief Load filelist
 # @details Open <filelist>, and return its contents
 # @usage myvar=$(call load_filelist, <file>)
-load_filelist = $(if $(call file_exists,$1),$(addprefix $(dir $1),$(file < $1)))
+#load_filelist = $(if $(call file_exists,$1),$(addprefix $(dir $1),$(file < $1)))
+load_filelist = $(if $(call file_exists,$1),$(call _filelist_readfile,$1))
+
 
 #TODO:
 #+incdir+
