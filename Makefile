@@ -43,18 +43,21 @@
 ##                                                                 ##
 #####################################################################
 
-PWD:=$(dir $(lastword $(MAKEFILE_LIST)))
-BUILDDIR=build
-BOARDS=$(PWD)boards
+default: help
 
-include $(PWD)boards/common/Makefile.include
+
+CWD:=$(dir $(lastword $(MAKEFILE_LIST)))
+BUILDDIR=build
+BOARDS_DIR=$(CWD)boards
+
+include $(CWD)boards/common/Makefile.include
 
 #get the vendors
 list_vendors=$(filter-out $1 common, $(notdir $(call list_directories,$1)))
-vendors=$(call list_vendors,$(BOARDS))
+vendors=$(call list_vendors,$(BOARDS_DIR))
 
 #get boards per vendor
-boards_list=$(foreach vendor,$(vendors),$(call list_directories,$(BOARDS)/$(vendor)))
+boards_list=$(foreach vendor,$(vendors),$(call list_directories,$(BOARDS_DIR)/$(vendor)))
 boards=$(filter-out boards common $(vendors),$(notdir $(boards_list)))
 
 #####################################################################
@@ -69,7 +72,7 @@ $(boards):
 		board=$@ filelist=$(filelist)
 
 clean:
-	$(MAKE) -C $(BUILDDIR) -f ../boards/common/Makefile.build clean
+	$(MAKE) -C $(BUILDDIR) -f $(abspath $(CWD)/boards/common/Makefile.build) clean
 
 distclean:
 	rm -rf $(BUILDDIR)/*
@@ -81,7 +84,7 @@ distclean:
 
 demo:
 	echo "Building demo"
-	$(MAKE) de10lite filelist=$(realpath demo/filelist.f)
+	$(MAKE) de10lite filelist=$(abspath demo/filelist.f)
 
 
 #####################################################################
