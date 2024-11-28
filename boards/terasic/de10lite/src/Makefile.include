@@ -43,11 +43,16 @@
 ##                                                                 ##
 #####################################################################
 
-PWD         := $(dir $(lastword $(MAKEFILE_LIST)))
+#save old CWD and get new one
+SAVE_CWD    :=$(CWD)
+CWD         := $(dir $(lastword $(MAKEFILE_LIST)))
 
-TB_CXX      += $(PWD)de10lite.cpp
-TB_CXX      += $(PWD)main.cpp
+TB_CXX      += $(CWD)de10lite.cpp
+TB_CXX      += $(CWD)main.cpp
 
-RTL_VERILOG += $(PWD)de10lite_verilator_wrapper.sv
+RTL_VERILOG += $(CWD)de10lite_verilator_wrapper.sv
 
-INCDIRS     += $(PWD)
+INCDIRS     += $(CWD)
+
+#restore CWD
+CWD:=$(SAVE_CWD)
