@@ -43,37 +43,41 @@
 ##                                                                 ##
 #####################################################################
 
-PWD := $(dir $(lastword $(MAKEFILE_LIST)))
+#Save CWD and get new one
+SAVE_CWD:=$(CWD)
+CWD     :=$(dir $(lastword $(MAKEFILE_LIST)))
 
 #TODO: automate this
-TB_CXX  +=$(PWD)submodules/Verilator-simulation/common/uniqueid.cpp				\
-          $(PWD)submodules/Verilator-simulation/common/log.cpp					\
-          $(PWD)submodules/Verilator-simulation/common/programOptions/programOptions.cpp	\
-	  $(PWD)observer/subject.cpp 								\
-	  $(PWD)gui/wxMediaButton.cpp								\
-	  $(PWD)gui/wxWidgetsImplementation.cpp 						\
-	  $(PWD)gui/wxWidgetsMainFrame.cpp 							\
-	  $(PWD)vdb/vdbLED/vdbLED.cpp								\
-	  $(PWD)vdb/vdbLED/wxWidgetsVdbLED.cpp 							\
-	  $(PWD)vdb/vdbVGAMonitor/vdbVGAMonitor.cpp						\
-	  $(PWD)vdb/vdbVGAMonitor/wxWidgetsvdbVGA.cpp						\
-	  $(PWD)vdb/vdb7SegmentDisplay/vdb7SegmentDisplay.cpp					\
-	  $(PWD)vdb/vdb7SegmentDisplay/wxWidgetsVdb7SegmentDisplay.cpp
+TB_CXX  +=$(CWD)submodules/Verilator-simulation/common/uniqueid.cpp				\
+          $(CWD)submodules/Verilator-simulation/common/log.cpp					\
+          $(CWD)submodules/Verilator-simulation/common/programOptions/programOptions.cpp	\
+	  $(CWD)observer/subject.cpp 								\
+	  $(CWD)gui/wxMediaButton.cpp								\
+	  $(CWD)gui/wxWidgetsImplementation.cpp 						\
+	  $(CWD)gui/wxWidgetsMainFrame.cpp 							\
+	  $(CWD)vdb/vdbLED/vdbLED.cpp								\
+	  $(CWD)vdb/vdbLED/wxWidgetsVdbLED.cpp 							\
+	  $(CWD)vdb/vdbVGAMonitor/vdbVGAMonitor.cpp						\
+	  $(CWD)vdb/vdbVGAMonitor/wxWidgetsvdbVGA.cpp						\
+	  $(CWD)vdb/vdb7SegmentDisplay/vdb7SegmentDisplay.cpp					\
+	  $(CWD)vdb/vdb7SegmentDisplay/wxWidgetsVdb7SegmentDisplay.cpp
 
-INCDIRS +=$(PWD)lexer										\
-          $(PWD)parser										\
-	  $(PWD)observer 									\
-	  $(PWD)gui										\
-          $(PWD)submodules/Verilator-simulation/testbench					\
-          $(PWD)submodules/Verilator-simulation/common						\
-          $(PWD)submodules/Verilator-simulation/common/programOptions				\
-	  $(PWD)vdb										\
-	  $(PWD)vdb/vdbLED									\
-	  $(PWD)vdb/vdbVGAMonitor								\
-	  $(PWD)vdb/vdb7SegmentDisplay
+INCDIRS +=$(CWD)lexer										\
+          $(CWD)parser										\
+	  $(CWD)observer 									\
+	  $(CWD)gui										\
+          $(CWD)submodules/Verilator-simulation/testbench					\
+          $(CWD)submodules/Verilator-simulation/common						\
+          $(CWD)submodules/Verilator-simulation/common/programOptions				\
+	  $(CWD)vdb										\
+	  $(CWD)vdb/vdbLED									\
+	  $(CWD)vdb/vdbVGAMonitor								\
+	  $(CWD)vdb/vdb7SegmentDisplay
 
-RTL_VERILOG +=$(PWD)vdb/vdbLED/vdbLED.sv							\
-	      $(PWD)vdb/vdbVGAMonitor/vdbVGAMonitor.sv						\
-	      $(PWD)vdb/vdb7SegmentDisplay/vdb7SegmentDisplay.sv
+RTL_VERILOG +=$(CWD)vdb/vdbLED/vdbLED.sv							\
+	      $(CWD)vdb/vdbVGAMonitor/vdbVGAMonitor.sv						\
+	      $(CWD)vdb/vdb7SegmentDisplay/vdb7SegmentDisplay.sv
 
 
+#Restore CWD
+CWD:=$(SAVE_CWD)
