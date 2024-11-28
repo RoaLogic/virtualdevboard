@@ -43,15 +43,18 @@
 ##                                                                 ##
 #####################################################################
 
-BOARDS_DIR:=$(VDBDIR)/boards/
-SRC_DIR:=$(VDBDIR)/src/
+SAVE_CWD:=$(CWD)
+CWD:=$(dir $(lastword $(MAKEFILE_LIST)))
+BOARDS_DIR:=$(CWD)../
+SRC_DIR:=$(CWD)../../src/
+CWD:=$(SAVE_CWD)
 
 include $(BOARDS_DIR)common/Makefile.include
 
 board:=$(call get_board)
 wrapper:=$(board)_verilator_wrapper
 
-#!! directly expanded variables for PWD
+#!! directly expanded variables for CWD
 ifeq ($(strip $(filelist)),)
   RTL_VERILOG:=
 else
