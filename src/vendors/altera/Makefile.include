@@ -43,14 +43,17 @@
 ##                                                                 ##
 #####################################################################
 
+#save old CWD and get new CWD
+SAVE_CWD:=$(CWD)
+CWD:=$(dir $(lastword $(MAKEFILE_LIST)))
 
-PWD :=$(dir $(lastword $(MAKEFILE_LIST)))
+RTL_VERILOG +=$(CWD)altsyncram/altsyncram.sv
 
-RTL_VERILOG +=$(PWD)altsyncram/altsyncram.sv
+TB_CXX  +=$(CWD)altsyncram/altsyncram.cpp
 
-TB_CXX  +=$(PWD)altsyncram/altsyncram.cpp
+INCDIRS +=$(CWD)altsyncram
 
-INCDIRS +=$(PWD)altsyncram
-
+#restore CWD
+CWD:=$(SAVE_CWD)
 
 
