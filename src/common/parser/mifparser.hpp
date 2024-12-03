@@ -137,7 +137,9 @@ namespace parser
                 }
                 catch(const std::ifstream::failure& e)
                 {
-                    throw ParserException(std::string("Failed to open %s", e.what()));
+                    std::string error="Failed to open file: ";
+                    error.append(fileName);
+                    throw ParserException(error);
                 }
             }
 
@@ -339,7 +341,8 @@ namespace parser
             * @brief Construct a new .mif parser object
             * @details This function constructs the object
             */
-            mifparser (std::string& fileName) : _filename(fileName)
+            mifparser (std::string& fileName) : 
+                _filename(fileName)
             {
                 addressRadix = 10;
                 dataRadix = 10;
