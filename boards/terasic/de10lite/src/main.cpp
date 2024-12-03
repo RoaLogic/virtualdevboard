@@ -108,7 +108,7 @@ int main(int argc, char** argv)
     if(optInitFile.value().find(':') != optInitFile.value().npos)
     {
       //split string at ':' to get <instance> : <initfile>
-      std::vector<string> ramString = split(optInitFile.value(), ':');
+      ramString = split(optInitFile.value(), ':');
     }
     else
     {
