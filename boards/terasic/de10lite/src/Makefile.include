@@ -44,7 +44,7 @@
 #####################################################################
 
 #save old CWD and get new one
-SAVE_CWD    :=$(CWD)
+SAVE_CWD    := $(CWD)
 CWD         := $(dir $(lastword $(MAKEFILE_LIST)))
 
 TB_CXX      += $(CWD)de10lite.cpp
