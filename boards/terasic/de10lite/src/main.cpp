@@ -81,6 +81,8 @@ int main(int argc, char** argv)
 {
   bool enableTrace = false;
   bool rerun = false;
+  bool start = true;
+  std::vector<string> ramString;
 
   //first setup the program options
   if (setupProgramOptions(argc,argv))
@@ -100,65 +102,78 @@ int main(int argc, char** argv)
   //parse Verilator options
   contextp->commandArgs(argc, argv);
 
-  if(!optNoGui.isSet())
+  //Initialize RAMs
+  if (optInitFile.isSet())
   {
-    // Create GUI and start it on different thread
-    demoBoard = new cVirtualDemoBoard;
-    threadGUI = std::thread(&cVirtualDemoBoard::init, demoBoard, argc, argv);
-    this_thread::sleep_for(chrono::seconds(1));// Give the GUI time to start, it has to be active before we can sent events to it
-  }
-
-  do
-  {
-    rerun = false;
-    //create testbench
-    cDE10Lite* de10lite = new cDE10Lite(contextp.get(), enableTrace, demoBoard);
-
-    //Open waveform dump file if enabled
-    if (enableTrace)
-    {
-      if (optWaveFile.isSet())
-      {
-        de10lite->opentrace(optWaveFile.value());
-      }
-      else
-      {
-        de10lite->opentrace("waves.vcd");
-      }
-    }
-
-    //Initialize RAMs
-    if (optInitFile.isSet())
+    if(optInitFile.value().find(':') != optInitFile.value().npos)
     {
       //split string at ':' to get <instance> : <initfile>
-      std::vector<string> split_string = split(optInitFile.value(), ':');
-
-      //initialise altsyncram instance
-      altsyncram_initialize(split_string[0], split_string[1]);
-    }
-
-    //Run the testbench
-    if(optNoGui.isSet())
-    {
-      de10lite->run(optNoGui.value());
+      std::vector<string> ramString = split(optInitFile.value(), ':');
     }
     else
     {
-      if(de10lite->run() == eRunState::restart)
-      {
-        rerun = true;
-      }
+      ERROR << "Wrong init file passed, missing delimiter\n";
+      start = false;
+    }
+  }
+
+  if(start)
+  {
+    if(!optNoGui.isSet())
+    {
+      // Create GUI and start it on different thread
+      demoBoard = new cVirtualDemoBoard;
+      threadGUI = std::thread(&cVirtualDemoBoard::init, demoBoard, argc, argv);
+      this_thread::sleep_for(chrono::seconds(1));// Give the GUI time to start, it has to be active before we can sent events to it
     }
 
-    //close testbench
-    delete de10lite;
-  } while (rerun);
-  
-  // Close GUI
-  if(threadGUI.joinable())
-  {
-    threadGUI.join();
+    do
+    {
+      rerun = false;
+      //create testbench
+      cDE10Lite* de10lite = new cDE10Lite(contextp.get(), enableTrace, demoBoard);
+
+      //initialise altsyncram instance
+      altsyncram_initialize(ramString[0], ramString[1]);
+
+      //Open waveform dump file if enabled
+      if (enableTrace)
+      {
+        if (optWaveFile.isSet())
+        {
+          de10lite->opentrace(optWaveFile.value());
+        }
+        else
+        {
+          de10lite->opentrace("waves.vcd");
+        }
+      }
+
+      //Run the testbench
+      if(optNoGui.isSet())
+      {
+        de10lite->run(optNoGui.value());
+      }
+      else
+      {
+        if(de10lite->run() == eRunState::restart)
+        {
+          rerun = true;
+        }
+      }
+
+      //close testbench
+      delete de10lite;
+    } while (rerun);
+    
+    // Close GUI
+    if(threadGUI.joinable())
+    {
+      threadGUI.join();
+    }
   }
+
+
 
   //close log
   cLog::getInstance()->close();
