@@ -84,10 +84,10 @@ void altsyncram_initializeInstance(const char* init_file_charptr, const char* in
     svScope scope = svGetScope();
 
     //checks
-    if (init_file_layout != "UNUSED" ||
+    if (init_file_layout != "UNUSED" &&
         init_file_layout != "PORT_A")
     {
-        ERROR << "Only init_file_layout == PORT_A or init_file_layout == UNUSED is currently supported\n";
+        ERROR << "Only init_file_layout == PORT_A or init_file_layout == UNUSED is currently supported. Got init_file_layout = " << init_file_layout << "\n";
     }
     else
     {
@@ -104,7 +104,6 @@ void altsyncram_initializeInstance(const char* init_file_charptr, const char* in
  */
 int altsyncram_initialize(std::string instance, std::string fileName)
 {
-    INFO << "Initializing " << instance << " from " << fileName << "\n";
 
     //first get verilator-scope from instance name
     svScope scope = svGetScopeFromName(instance.c_str());
@@ -132,6 +131,8 @@ int altsyncram_initializeScope(svScope scope, std::string fileName)
     std::filesystem::path filepath = fileName;
     std::string extension = filepath.extension();
 
+    INFO << "Initializing " << svGetNameFromScope(scope) << " from " << fileName << "\n";
+
     if (extension.compare(".hex") == 0 || extension.compare(".ihex") ==0)
         return altsyncram_initializeFromHex(scope, fileName);
 
@@ -155,7 +156,7 @@ int altsyncram_initializeScope(svScope scope, std::string fileName)
  */
 int altsyncram_initializeFromHex(svScope scope, std::string fileName)
 {
-    WARNING << "initialize from hex not implemented yet\n";
+    WARNING << "Initialize from hex not implemented yet\n";
     return -1;
 }
 
@@ -183,10 +184,21 @@ int altsyncram_initializeFromMif(svScope scope, std::string fileName)
     //Set scope
     svSetScope(scope);
 
+    //Get memory depth
+    uint32_t numWords = altsyncram_getNumwords_a();
+
+    //TODO check memory width
+    //uint32_t width = altsyncram_getWidth_a();
+
     //Iterate over the memory array
     svBitVecVal svData;
     for (parseData_t tuple : parser->data())
     {
+      if (tuple.address >= numWords)
+      {
+          WARNING << "More initialisation data than memory size permits. Ignoring additional data\n";
+	  return 0;
+      }
       svData = tuple.data;
       altsyncram_setMemory(tuple.address, &svData);
     }
@@ -202,7 +214,7 @@ int altsyncram_initializeFromMif(svScope scope, std::string fileName)
  */
 int altsyncram_initializeFromVerilog(svScope scope, std::string fileName)
 {
-    WARNING << "initialize from verilog not implemented yet\n";
+    WARNING << "Initialize from verilog not implemented yet\n";
     return -1;
 }
 
