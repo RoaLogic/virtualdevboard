@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    Virtual Devboard LED Verilator C++ header file               //
+//    GUI Dimension class                                          //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,51 +43,49 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#ifndef VDB_LED_HPP
-#define VDB_LED_HPP
+#ifndef GUI_DIMENSION_HPP
+#define GUI_DIMENSION_HPP
 
-#include "vdbCommon.hpp"
+namespace RoaLogic {
+namespace GUI {
 
-namespace RoaLogic
-{
-namespace vdb
-{
-
-    /**
-     * @class cVdbLed
-     * @author Bjorn Schouteten
-     * @brief Virtual GUI LED controlled by verilog instance
-     * @version 0.1
-     * @date 13-oct-2024
-     * 
-     * @details This class controls a verilated LED instance.
-     * 
-     * It takes the verilator event through the verilator callback and notifies
-     * anyone listening to this led. This class fully runs in the verilated context.
-     * The base is the cVDBCommon class which does all the low level handling and 
-     * setting up the callback mechanism for any DPI functions. The user shall call
-     * the cVDBCommon::processVerilatorEvent with the scope and the eventual event.
-     * 
-     */
-    class cVdbLed : public cVDBCommon
+    class cGuiDimension
     {
         public:
-        enum class eVdbLedEvent
-        {
-            ledOn,
-            ledOff
-        };
+        constexpr static double milsPerInch = 1000.0;
+        constexpr static double milsPerMM = 39.37;
+        constexpr static double milsPerCM = 393.7;
 
         private:
-        svScope _myScope;                 //!< The scope of the verilated context
-
-        void verilatorCallback(uint32_t event);
+        long double value = 0.0;
 
         public:
-        cVdbLed(std::string scopeName, uint8_t id);
-        ~cVdbLed();
+        cGuiDimension(){};
+        cGuiDimension(long double aValue) :
+            value(aValue)
+        {
+
+        }
+
+        ~cGuiDimension(){};
+
+        long double getMils(){return value;};
+        long double getInch(){return value / milsPerInch;};
+        long double getMM(){return value / milsPerMM;};
+        long double getCM(){return value / milsPerCM;};
     };
-}
-}
+
+    inline long double operator""_mils (long double val) { return val; }
+    inline long double operator""_inch (long double val) { return (val * cGuiDimension::milsPerInch  ); }
+    inline long double operator""_mm   (long double val) { return (val * cGuiDimension::milsPerMM); }
+    inline long double operator""_cm   (long double val) { return (val * cGuiDimension::milsPerCM  ); }
+
+    struct sVdbPoint
+    {
+        cGuiDimension xOffset;
+        cGuiDimension yOffset;
+    };
+
+}}
 
 #endif

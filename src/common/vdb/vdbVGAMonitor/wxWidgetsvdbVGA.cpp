@@ -63,9 +63,9 @@ namespace GUI {
      * Also the default image is filled with a predefined message,
      * which is passed to the monitor and shown.
      */
-    cWXvdbVGAMonitor::cWXvdbVGAMonitor(cVDBCommon* myVDBComponent, int id, wxEvtHandler* myEvtHandler) :
+    cWXvdbVGAMonitor::cWXvdbVGAMonitor(cVDBCommon* myVDBComponent, sVdbPoint position, wxEvtHandler* myEvtHandler) :
         wxFrame(NULL, wxID_ANY, wxT("VGA monitor")),
-        cGuiVDBComponent(myVDBComponent, id),
+        cGuiVDBComponent(myVDBComponent, position),
         _evtHandler(myEvtHandler),
         _myImage(_cDefaultWidth, _cDefaultHeight, false),
         _copySemaphore(1)

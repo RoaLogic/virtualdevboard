@@ -146,6 +146,7 @@ namespace vdb
      */
     cVdbVGAMonitor::cVdbVGAMonitor(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock,
                 VlUnpacked<unsigned int,cMaxVerticalLines*cMaxHorizontalLines>& framebuffer) :
+        cVDBCommon(0),
         _timeInterface(timeInterface),
         _pixelClock(pixelClock),
         _myFramebuffer(framebuffer)

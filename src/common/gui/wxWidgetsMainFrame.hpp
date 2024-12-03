@@ -49,26 +49,34 @@
 #include <wx/wxprec.h>
 #include <wx/wx.h>
 #include <wx/splitter.h>
+#include <wx/window.h>
 #include "wxMediaButton.hpp"
 
 #include "eventDefinition.hpp"
 #include "subject.hpp"
 #include "gui_interface.hpp"
 
-#include "vdbLED.hpp"
-
 using namespace RoaLogic::observer;
 using namespace RoaLogic::GUI;
 using namespace RoaLogic::vdb;
 
-wxDECLARE_EVENT(wxEVT_STATUS, wxCommandEvent);
+wxDECLARE_EVENT(wxEVT_CHANGE_FRAME, wxCommandEvent);
 wxDECLARE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
+
+struct sChangeFrameData : public wxClientData
+{
+    std::string applicationName;
+    std::string aboutTitle;
+    std::string aboutText;
+    sVdbPoint minimalScreenSize;
+    sColor backgroundColor;
+};
 
 struct sAddVdbComponent : public wxClientData
 {
     eVdbComponentType type;
-    char information;
     cVDBCommon* vdbComponent;
+    sVdbPoint placement;
 };
 
 /**
@@ -88,16 +96,24 @@ struct sAddVdbComponent : public wxClientData
 class cMainFrame : public wxFrame
 {
     private:
+    static const int cLeftPanelWidth  = 120;
     static const int cLeftPanelOffset = 10;
     static const int cMinWidthSize    = 750;
     static const int cMinHeightSize   = 600;
     static const int cStartButtonID   = 100;
     static const int cResetButtonID   = 101;
     static const int cStopButtonID    = 102;
+    
+    std::string _myApplicationName = "Virtual development board";
+    std::string _myAboutText = "Virtual development board";
+    std::string _myAboutTitle = "Virtual development board";
+
+    int _myBoardWidth = 0;
+    int _myBoardHeight = 0;
 
     cSubject* _subject;
-    
-    wxSplitterWindow* _mySplitterWindow = new wxSplitterWindow{this, wxID_ANY};
+
+    wxSplitterWindow* _mySplitterWindow = new wxSplitterWindow{this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxEXPAND};
     wxPanel* _leftPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
     wxPanel* _rightPanel = new wxPanel{_mySplitterWindow, wxID_ANY};
 
@@ -110,6 +126,9 @@ class cMainFrame : public wxFrame
     public:
     cMainFrame(cSubject* aSubject);
     ~cMainFrame();
+
+    void onChangeFrame(wxCommandEvent& event);
+    void onSize(wxSizeEvent& event);
 
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);

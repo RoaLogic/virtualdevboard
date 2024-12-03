@@ -98,7 +98,7 @@ namespace GUI {
         void closeEvt(wxCloseEvent& event);
 
         public:
-            cWXvdbVGAMonitor(cVDBCommon* myVDBComponent, int id, wxEvtHandler* myEvtHandler);
+            cWXvdbVGAMonitor(cVDBCommon* myVDBComponent, sVdbPoint position, wxEvtHandler* myEvtHandler);
             ~cWXvdbVGAMonitor();
     };
 

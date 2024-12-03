@@ -79,9 +79,8 @@ namespace GUI {
     class cWXVdb7SegmentDisplay : public cGuiVDBComponent, public wxWindow
     {
         private:
-        wxEvtHandler* _evtHandler;                  //!< The event handler of this frame
         char    _color;                             //currently unused
-	uint8_t _value;
+	    uint8_t _value;
 
         static inline    wxColour colBackground = wxColour(138,150,168); //Grey-blue
         static inline    wxColour colLedOn      = wxColour(255,0,0);     //Red
@@ -135,7 +134,7 @@ namespace GUI {
 	/**
 	 * @brief Constructor
 	 */
-        cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, int id, wxEvtHandler* myEvtHandler, wxWindow* windowParent, wxPoint Position, int Size, char Color);
+        cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, sVdbPoint position, wxWindow* windowParent, int Size, char Color);
 
 	/**
 	 * @brief Destructor

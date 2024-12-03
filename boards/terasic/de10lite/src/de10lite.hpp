@@ -119,6 +119,8 @@ class cDE10Lite : public cTestBench<Vde10lite_verilator_wrapper>, public cObserv
         std::atomic<eSystemState> _myState = eSystemState::idle;
         atomic_bool doReset = false;
 
+        void setupGUI();
+
     protected:
 
         sCoRoutineHandler<bool> Reset();

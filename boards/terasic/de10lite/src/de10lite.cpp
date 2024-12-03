@@ -61,11 +61,6 @@ cDE10Lite::cDE10Lite(VerilatedContext* context, bool traceActive, cGuiInterface*
   key(_core->KEY),
   _myGUI(aGUI)
 {
-    if(aGUI)
-    {
-        aGUI->registerObserver(this);
-    }
-
     /*
       define clocks
      */
@@ -78,8 +73,13 @@ cDE10Lite::cDE10Lite(VerilatedContext* context, bool traceActive, cGuiInterface*
       KEY
      */
     key = 0x3;        //KEY has pull-up
-}
 
+    // As last setup the GUI
+    if(aGUI)
+    {
+        setupGUI();
+    }
+}
 
 /**
  * @brief Destructor
@@ -92,6 +92,41 @@ cDE10Lite::~cDE10Lite()
     }
 }
 
+void cDE10Lite::setupGUI()
+{
+    if(_myGUI)
+    {
+        _myGUI->registerObserver(this);
+
+        _myGUI->setupGui("DE10lite virtual demo board", 
+                    "DE10lite", 
+                    "This is a virtual development board for the DE10lite",
+                    sVdbPoint(97.5_mm, 80.0_mm),
+                    sColor(4, 29, 102) );
+
+        for(size_t i = 0; i < _cNumLed; i++)
+        {
+            _ledInstances[i] = new cVdbLed("TOP.de10lite_verilator_wrapper.gen_vdbLED[" + 
+                                                std::to_string(i) + 
+                                                "].LED_inst", i);
+
+            _myGUI->addVdbComponent(eVdbComponentType::vdbLed, _ledInstances[i], sVdbPoint((10.0_mm + 10.0_mm*i), 10.0_mm));
+        }
+
+        for(size_t i = 0; i < _cNum7Seg; i++)
+        {
+            _7segInstances[i] = new cVdb7SegmentDisplay("TOP.de10lite_verilator_wrapper.gen_vdb7SegmentDisplay[" + 
+                                                std::to_string(i) + 
+                                                "].hex_inst", i);
+
+            _myGUI->addVdbComponent(eVdbComponentType::vdb7SegmentDisplay, _7segInstances[i], sVdbPoint((10.0_mm + 10.0_mm*i), 40.0_mm));
+        }
+
+        _vgaController = new cVdbVGAMonitor("TOP.de10lite_verilator_wrapper.vgaMonitor_inst", this, clk_vga,
+                                            _core->de10lite_verilator_wrapper->vgaMonitor_inst->framebuffer);
+        _myGUI->addVdbComponent(eVdbComponentType::vdbVGA, _vgaController, sVdbPoint(50.0_mm, 100.0_mm));
+    }
+}
 
 /**
  * @brief Generate reset
@@ -138,31 +173,6 @@ sCoRoutineHandler<bool> cDE10Lite::Reset()
  */
 eRunState cDE10Lite::run()
 {
-    if(_myGUI)
-    {
-        for(size_t i = 0; i < _cNumLed; i++)
-        {
-            _ledInstances[i] = new cVdbLed("TOP.de10lite_verilator_wrapper.gen_vdbLED[" + 
-                                                std::to_string(i) + 
-                                                "].LED_inst", i);
-
-            _myGUI->addVirtualLED(_ledInstances[i], 'G');
-        }
-
-        for(size_t i = 0; i < _cNum7Seg; i++)
-        {
-            _7segInstances[i] = new cVdb7SegmentDisplay("TOP.de10lite_verilator_wrapper.gen_vdb7SegmentDisplay[" + 
-                                                std::to_string(i) + 
-                                                "].hex_inst", i);
-
-            _myGUI->addVirtual7SegmentDisplay(_7segInstances[i]);
-        }
-
-        _vgaController = new cVdbVGAMonitor("TOP.de10lite_verilator_wrapper.vgaMonitor_inst", this, clk_vga,
-                                            _core->de10lite_verilator_wrapper->vgaMonitor_inst->framebuffer);
-        _myGUI->addVirtualVGA(_vgaController);
-    }
-
     //Reset core
     sCoRoutineHandler reset = Reset();
 

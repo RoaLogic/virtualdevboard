@@ -85,7 +85,7 @@ namespace vdb
      * @param[in] id            Optional ID of this led (mainly used for debugging)
      */
     cVdb7SegmentDisplay::cVdb7SegmentDisplay(std::string scopeName, uint8_t id) :
-        _myID(id)
+        cVDBCommon(id)
     {
         // Get the scope according to the given name
         _myScope = svGetScopeFromName(scopeName.c_str());

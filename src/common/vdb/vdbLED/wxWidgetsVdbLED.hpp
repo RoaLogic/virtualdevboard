@@ -80,7 +80,6 @@ namespace GUI {
     class cWXVdbLed : public cGuiVDBComponent, public wxWindow
     {
         private:
-        wxEvtHandler* _evtHandler;                  //!< The event handler of this frame
         char _color;
         int x0,y0,x1,y1,D1,D2;
         bool FlagStatus = false;
@@ -90,7 +89,7 @@ namespace GUI {
         void onLEDEvent(wxCommandEvent& event);
 
         public:
-        cWXVdbLed(cVDBCommon* myVDBComponent, int id, wxEvtHandler* myEvtHandler, wxWindow* windowParent, wxPoint Position, int Size, char color);
+        cWXVdbLed(cVDBCommon* myVDBComponent, sVdbPoint position, wxWindow* windowParent, int Size, char color);
         ~cWXVdbLed();
 
         void OnPaint(wxPaintEvent& event);

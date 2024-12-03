@@ -66,6 +66,7 @@ INCDIRS +=$(CWD)lexer										\
           $(CWD)parser										\
 	  $(CWD)observer 									\
 	  $(CWD)gui										\
+	  $(CWD)dimension								\
           $(CWD)submodules/Verilator-simulation/testbench					\
           $(CWD)submodules/Verilator-simulation/common						\
           $(CWD)submodules/Verilator-simulation/common/programOptions				\

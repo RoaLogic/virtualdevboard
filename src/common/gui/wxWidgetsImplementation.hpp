@@ -85,9 +85,8 @@ class cVirtualDemoBoard : public wxApp, public cGuiInterface
     ~cVirtualDemoBoard();
     void init(int argc, char** argv);
 
-    void addVirtualLED(cVDBCommon* vdbComponent, char color);
-    void addVirtualVGA(cVDBCommon* vdbComponent);
-    void addVirtual7SegmentDisplay(cVDBCommon* vdbComponent);
+    void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, sVdbPoint minimalScreenSize, sColor backgroundColor);
+    void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, sVdbPoint point);
 };
 
 

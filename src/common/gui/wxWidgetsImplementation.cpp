@@ -44,6 +44,7 @@
 /////////////////////////////////////////////////////////////////////
 
 #include "wxWidgetsImplementation.hpp"
+#include "wx/display.h"
 
 DECLARE_APP(cVirtualDemoBoard)
 IMPLEMENT_APP_NO_MAIN(cVirtualDemoBoard)
@@ -60,6 +61,12 @@ cVirtualDemoBoard::~cVirtualDemoBoard()
 
 bool cVirtualDemoBoard::OnInit()
 {
+    // for ( unsigned int i = 0; i < wxDisplay::GetCount(); ++i )
+    // {
+    //     const wxDisplay display(i);
+    //     INFO << "Display " << i << " PPI: " << display.GetPPI().x << "x" << display.GetPPI().y << ", scale factor: " << display.GetScaleFactor() << "\n";
+    // }
+
     _mainFrame = new cMainFrame(this);
     _mainFrame->Show(true);
 
@@ -71,40 +78,30 @@ void cVirtualDemoBoard::init(int argc, char** argv)
     wxEntry(argc, argv);
 }
 
-void cVirtualDemoBoard::addVirtualLED(cVDBCommon* vdbComponent, char color)
+void cVirtualDemoBoard::setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, sVdbPoint minimalScreenSize, sColor backgroundColor)
+{
+    wxCommandEvent changeFrameEvent{wxEVT_CHANGE_FRAME};
+    sChangeFrameData* const changeFrameData{ new sChangeFrameData};
+
+    changeFrameData->applicationName = applicationName;
+    changeFrameData->aboutTitle = aboutTitle;
+    changeFrameData->aboutText = aboutText;
+    changeFrameData->minimalScreenSize = minimalScreenSize;
+    changeFrameData->backgroundColor = backgroundColor;
+
+    changeFrameEvent.SetClientObject(changeFrameData);
+    wxPostEvent(_mainFrame, changeFrameEvent);
+}
+
+void cVirtualDemoBoard::addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, sVdbPoint point)
 {
     wxCommandEvent statusEvent{wxEVT_ADD_VDB};
     sAddVdbComponent* const eventData{ new sAddVdbComponent};
 
-    eventData->type = eVdbComponentType::vdbLed;
+    eventData->type = type;
     eventData->vdbComponent = vdbComponent;
-    eventData->information = color;
+    eventData->placement = point;
 
     statusEvent.SetClientObject(eventData);
     wxPostEvent(_mainFrame, statusEvent);
 }
-
-void cVirtualDemoBoard::addVirtualVGA(cVDBCommon* vdbComponent)
-{
-    wxCommandEvent statusEvent{wxEVT_ADD_VDB};
-    sAddVdbComponent* const eventData{ new sAddVdbComponent};
-
-    eventData->type = eVdbComponentType::vdbVGA;
-    eventData->vdbComponent = vdbComponent;
-
-    statusEvent.SetClientObject(eventData);
-    wxPostEvent(_mainFrame, statusEvent);
-}
-
-void cVirtualDemoBoard::addVirtual7SegmentDisplay(cVDBCommon* vdbComponent)
-{
-    wxCommandEvent statusEvent{wxEVT_ADD_VDB};
-    sAddVdbComponent* const eventData{ new sAddVdbComponent};
-
-    eventData->type = eVdbComponentType::vdb7SegmentDisplay;
-    eventData->vdbComponent = vdbComponent;
-
-    statusEvent.SetClientObject(eventData);
-    wxPostEvent(_mainFrame, statusEvent);
-}
-

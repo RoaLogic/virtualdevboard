@@ -48,6 +48,7 @@
 
 #include "subject.hpp"
 #include "vdbCommon.hpp"
+#include "guiDimension.hpp"
 
 namespace RoaLogic {
     using namespace observer;
@@ -59,6 +60,13 @@ namespace GUI {
         vdbLed,
         vdbVGA,
         vdb7SegmentDisplay
+    };
+
+    struct sColor
+    {
+        uint8_t red;
+        uint8_t green;
+        uint8_t blue;
     };
 
     /**
@@ -87,10 +95,9 @@ namespace GUI {
      */
     class cGuiInterface : public cSubject
     {
-        public:        
-        virtual void addVirtualLED(cVDBCommon* vdbComponent, char color) = 0;
-        virtual void addVirtualVGA(cVDBCommon* vdbComponent) = 0;
-        virtual void addVirtual7SegmentDisplay(cVDBCommon* vdbComponent) = 0;
+        public:
+        virtual void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, sVdbPoint minimalScreenSize, sColor backgroundColor) = 0;
+        virtual void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, sVdbPoint point) = 0;
     };
 
     /**
@@ -110,14 +117,12 @@ namespace GUI {
     {
         private:
         cVDBCommon* _myVDBComponent;
-
-        protected:
-        uint32_t _myID;
+        sVdbPoint _myScreenPosition;
 
         public:
-        cGuiVDBComponent(cVDBCommon* myVDBComponent, uint32_t id) :
+        cGuiVDBComponent(cVDBCommon* myVDBComponent, sVdbPoint myPosition) :
             _myVDBComponent(myVDBComponent),
-            _myID(id)
+            _myScreenPosition(myPosition)
         {
             myVDBComponent->registerObserver(this);
         }
@@ -130,6 +135,16 @@ namespace GUI {
         void removeObserver()
         {
             _myVDBComponent->removeObserver(this);
+        }
+
+        size_t getID()
+        {
+            return _myVDBComponent->getID();
+        }
+
+        int getIntID()
+        {
+            return static_cast<int>(_myVDBComponent->getID());
         }
 
         virtual void onClose(){};

@@ -108,6 +108,8 @@ namespace vdb
         }
 
         public:
+        cVDBCommon(size_t id) : _myID(id){};
+
         static void processVerilatorEvent(svScope scope, uint32_t event)
         {
             bool found = false;
@@ -130,8 +132,11 @@ namespace vdb
 
         virtual void verilatorCallback(uint32_t event) = 0;
 
+        size_t getID(){return _myID;};
+
         private:
         static std::vector<sVdbMap> _referencePointers;
+        size_t _myID;
     };
 
     inline std::vector<cVDBCommon::sVdbMap> cVDBCommon::_referencePointers;

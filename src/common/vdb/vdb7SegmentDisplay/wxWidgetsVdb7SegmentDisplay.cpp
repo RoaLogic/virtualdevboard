@@ -44,6 +44,7 @@
 /////////////////////////////////////////////////////////////////////
 
 #include "wxWidgetsVdb7SegmentDisplay.hpp"
+#include "wxGuiDimension.hpp"
 
 // Define the wxEVT_7SegmentDisplay, which is special within this class
 wxDEFINE_EVENT(wxEVT_7SegmentDisplay, wxCommandEvent);
@@ -59,18 +60,17 @@ namespace GUI {
      * Bind the onEvent function with the ID to a wxEVT_7SegmentDisplay event.
      * 
      */
-    cWXVdb7SegmentDisplay::cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, int id, wxEvtHandler* myEvtHandler, wxWindow* windowParent, wxPoint Position, int Size, char Color) :
-        cGuiVDBComponent(myVDBComponent, id),
-        wxWindow(windowParent, wxID_ANY, Position, wxSize(Size,Size), wxTRANSPARENT_WINDOW, Color),
-        _color(Color),
-        _evtHandler(myEvtHandler)
+    cWXVdb7SegmentDisplay::cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, sVdbPoint position, wxWindow* windowParent, int Size, char Color) :
+        cGuiVDBComponent(myVDBComponent, position),
+        wxWindow(windowParent, wxID_ANY, wxGuiDimension::convertPoint(position, windowParent), wxSize(Size,Size), wxTRANSPARENT_WINDOW, Color),
+        _color(Color)
     {
 
         Connect(wxEVT_PAINT, wxPaintEventHandler(cWXVdb7SegmentDisplay::OnPaint));
 
         // Use a specific Bind due to bug inside of wxWidgets, see 
         // https://stackoverflow.com/questions/38833116/conversion-in-derived-class-inaccessible-if-base-class-is-protected
-        myEvtHandler->Bind(wxEVT_7SegmentDisplay, std::bind(&cWXVdb7SegmentDisplay::onEvent, this, std::placeholders::_1), id);
+        windowParent->Bind(wxEVT_7SegmentDisplay, std::bind(&cWXVdb7SegmentDisplay::onEvent, this, std::placeholders::_1), myVDBComponent->getID());
     }
 
     /**
@@ -94,10 +94,9 @@ namespace GUI {
      */
     void cWXVdb7SegmentDisplay::notify(eEvent aEvent, void* data)
     {
-        uint8_t* valptr = reinterpret_cast<uint8_t*>(data);
-        _value = *valptr;
-        wxCommandEvent sevenSegmentDisplayEvent{wxEVT_7SegmentDisplay, static_cast<int>(_myID)};
-        wxPostEvent(_evtHandler, sevenSegmentDisplayEvent);
+        _value = *reinterpret_cast<uint8_t*>(data);
+        wxCommandEvent sevenSegmentDisplayEvent{wxEVT_7SegmentDisplay, getIntID()};
+        wxPostEvent(this, sevenSegmentDisplayEvent);
     }
 
     /**

@@ -43,17 +43,18 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
+#include "wxGuiDimension.hpp"
+
 #include "wxWidgetsMainFrame.hpp"
 #include "wxWidgetsvdbVGA.hpp"
 #include "wxWidgetsVdbLED.hpp"
 #include "wxWidgetsVdb7SegmentDisplay.hpp"
 
-
-wxDEFINE_EVENT(wxEVT_STATUS, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_CHANGE_FRAME, wxCommandEvent);
 wxDEFINE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
 
 cMainFrame::cMainFrame(cSubject* aSubject) :
-    wxFrame(nullptr, wxID_ANY, "Virtual DE10 demo board"),
+    wxFrame(nullptr, wxID_ANY, _myApplicationName.c_str()), //wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX)),
     _subject(aSubject)
 {
     /**********************************
@@ -75,7 +76,7 @@ cMainFrame::cMainFrame(cSubject* aSubject) :
 
     SetMenuBar(menuBar);
 
-    CreateStatusBar();
+    //CreateStatusBar();
 
     /*********************************
      * Setup left panel of the system
@@ -98,21 +99,21 @@ cMainFrame::cMainFrame(cSubject* aSubject) :
     leftPanelSizer->Add(_stopButton,  0, wxALIGN_CENTER, cLeftPanelOffset);
     _leftPanel->SetSizer(leftPanelSizer);
 
-
-    /*********************************
-     * Right panel
-     ********************************/
-
     /*********************************
      * Main screen setup
      ********************************/
-    _mySplitterWindow->SplitVertically(_leftPanel, _rightPanel, 120);
+    _mySplitterWindow->SetMinimumPaneSize(cLeftPanelWidth);
+    _mySplitterWindow->SplitVertically(_leftPanel, _rightPanel, cLeftPanelWidth);
+
     wxBoxSizer* topSizer = new wxBoxSizer(wxHORIZONTAL);
     topSizer->Add(_mySplitterWindow, 1, wxEXPAND);
-    SetSizerAndFit(topSizer);
-    SetMinSize(wxSize(cMinWidthSize, cMinHeightSize));
 
+    SetSizerAndFit(topSizer);
+    Centre();
+
+    Bind(wxEVT_CHANGE_FRAME, &cMainFrame::onChangeFrame, this, wxID_ANY);
     Bind(wxEVT_ADD_VDB, &cMainFrame::onAddVdb, this, wxID_ANY);
+    Bind(wxEVT_SIZE, &cMainFrame::onSize, this);
 }
 
 cMainFrame::~cMainFrame()
@@ -126,6 +127,54 @@ cMainFrame::~cMainFrame()
     }
 }
 
+void cMainFrame::onChangeFrame(wxCommandEvent& event)
+{
+    sChangeFrameData* eventData = reinterpret_cast<sChangeFrameData*>(event.GetClientObject());
+
+    _myApplicationName = eventData->applicationName;
+    _myAboutTitle = eventData->aboutTitle;
+    _myAboutText = eventData->aboutText;
+
+    this->SetLabel(_myApplicationName);
+
+    wxSize boardSize = wxGuiDimension::convertSize(eventData->minimalScreenSize, this);
+
+    _myBoardWidth  = boardSize.GetWidth() + cLeftPanelWidth;
+    _myBoardHeight = boardSize.GetHeight() + GetMenuBar()->GetSize().GetHeight();
+
+    _rightPanel->SetBackgroundColour(wxColour(eventData->backgroundColor.red, 
+                                              eventData->backgroundColor.green, 
+                                              eventData->backgroundColor.blue));
+
+    SetMinSize(FromDIP(wxSize(_myBoardWidth, _myBoardHeight)));
+}
+
+void cMainFrame::onSize(wxSizeEvent& event)
+{
+    int width = 0;
+    int height = 0;
+
+    if(event.GetSize().GetWidth() < _myBoardWidth)
+    {
+        width = _myBoardWidth;
+    }
+    else
+    {
+        width = event.GetSize().GetWidth();
+    }    
+
+    if( event.GetSize().GetHeight() < _myBoardHeight)
+    {
+        height = _myBoardHeight;
+    }
+    else
+    {
+        height = event.GetSize().GetHeight();
+    }
+
+    event.Skip();
+}
+
 void cMainFrame::OnExit(wxCommandEvent& event)
 {
     _subject->notifyObserver(eEvent::close);
@@ -135,7 +184,7 @@ void cMainFrame::OnExit(wxCommandEvent& event)
 
 void cMainFrame::OnAbout(wxCommandEvent& event)
 {
-    wxMessageBox("DE10 lite virtual demo board", "DE10 lite", wxOK | wxICON_INFORMATION);
+    wxMessageBox(_myAboutText.c_str(), _myAboutTitle.c_str(), wxOK | wxICON_INFORMATION);
 }
 
 void cMainFrame::onButtonStart(wxCommandEvent& event)
@@ -169,9 +218,12 @@ void cMainFrame::onButtonStop(wxCommandEvent& event)
 
 void cMainFrame::onAddVdb(wxCommandEvent& event)
 {
-    static uint8_t ledOffset = 0;
-    static uint8_t seg7Offset = 0;
     sAddVdbComponent* eventData = reinterpret_cast<sAddVdbComponent*>(event.GetClientObject());
+
+    if (_rightPanel == nullptr)
+    {
+        ERROR << "First call the setupGui method, before adding any VDB component";
+    }
 
     if(eventData)
     {
@@ -179,25 +231,19 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
         {
             case eVdbComponentType::vdbLed :
             {
-                cWXVdbLed* newLED = new cWXVdbLed(eventData->vdbComponent, ledOffset, this, _rightPanel, 
-                                               wxPoint( (50*ledOffset) , 0), 50 , eventData->information);
+                cWXVdbLed* newLED = new cWXVdbLed(eventData->vdbComponent, eventData->placement, _rightPanel, 50 , 'g');
                 vdbInstances.push_back(newLED);
-
-                ledOffset++;
                 break;
             }
             case eVdbComponentType::vdb7SegmentDisplay :
             {
-                cWXVdb7SegmentDisplay* new7SegmentDisplay = new cWXVdb7SegmentDisplay(eventData->vdbComponent, seg7Offset, this, _rightPanel,
-                                                                      wxPoint( (50*seg7Offset) , 100), 50 , eventData->information);
+                cWXVdb7SegmentDisplay* new7SegmentDisplay = new cWXVdb7SegmentDisplay(eventData->vdbComponent, eventData->placement, _rightPanel, 50 , 'g');
                 vdbInstances.push_back(new7SegmentDisplay);
-
-                seg7Offset++;
                 break;
             }
             case eVdbComponentType::vdbVGA :
             {
-                cWXvdbVGAMonitor* newVGA = new cWXvdbVGAMonitor(eventData->vdbComponent, 0, this);
+                cWXvdbVGAMonitor* newVGA = new cWXvdbVGAMonitor(eventData->vdbComponent, eventData->placement, this);
                 vdbInstances.push_back(newVGA);
                 break;
             }

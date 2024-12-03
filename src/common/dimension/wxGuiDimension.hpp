@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    Virtual Devboard LED Verilator C++ header file               //
+//    wxWidgets dimension class                                    //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,51 +43,42 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#ifndef VDB_LED_HPP
-#define VDB_LED_HPP
+#ifndef WX_GUI_DIMENSION_HPP
+#define WX_GUI_DIMENSION_HPP
 
-#include "vdbCommon.hpp"
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+#include "guiDimension.hpp"
 
-namespace RoaLogic
+using namespace RoaLogic::GUI;
+
+class wxGuiDimension
 {
-namespace vdb
-{
+    public:
+    static int scaleWidth  (int   width, wxWindow* window)  { return width  * (window->GetDPI().GetWidth()  /1000); }
+    static int scaleWidth  (float width, wxWindow* window)  { return width  * (window->GetDPI().GetWidth()  /1000.0); }
+    static int scaleHeight (int   height, wxWindow* window) { return height * (window->GetDPI().GetHeight() /1000); }
+    static int scaleHeight (float height, wxWindow* window) { return height * (window->GetDPI().GetHeight() /1000.0); }
 
-    /**
-     * @class cVdbLed
-     * @author Bjorn Schouteten
-     * @brief Virtual GUI LED controlled by verilog instance
-     * @version 0.1
-     * @date 13-oct-2024
-     * 
-     * @details This class controls a verilated LED instance.
-     * 
-     * It takes the verilator event through the verilator callback and notifies
-     * anyone listening to this led. This class fully runs in the verilated context.
-     * The base is the cVDBCommon class which does all the low level handling and 
-     * setting up the callback mechanism for any DPI functions. The user shall call
-     * the cVDBCommon::processVerilatorEvent with the scope and the eventual event.
-     * 
-     */
-    class cVdbLed : public cVDBCommon
+    static wxSize convertSize(sVdbPoint dimension, wxWindow* window)
     {
-        public:
-        enum class eVdbLedEvent
-        {
-            ledOn,
-            ledOff
-        };
+        wxSize newSize;
 
-        private:
-        svScope _myScope;                 //!< The scope of the verilated context
+        newSize.SetWidth(scaleWidth((float)dimension.xOffset.getMils(), window));
+        newSize.SetHeight(scaleHeight((float)dimension.yOffset.getMils(), window));
 
-        void verilatorCallback(uint32_t event);
+        return window->FromDIP(newSize);
+    }
 
-        public:
-        cVdbLed(std::string scopeName, uint8_t id);
-        ~cVdbLed();
-    };
-}
-}
+    static wxPoint convertPoint(sVdbPoint dimension, wxWindow* window)
+    {
+        wxPoint newPoint;
+
+        newPoint.x = scaleWidth((float)dimension.xOffset.getMils(), window);
+        newPoint.y = scaleHeight((float)dimension.yOffset.getMils(), window);
+
+        return newPoint;
+    }
+};
 
 #endif

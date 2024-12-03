@@ -44,6 +44,7 @@
 /////////////////////////////////////////////////////////////////////
 
 #include "wxWidgetsVdbLED.hpp"
+#include "wxGuiDimension.hpp"
 
 // Define the wxEVT_LED, which is special within this class
 wxDEFINE_EVENT(wxEVT_LED, wxCommandEvent);
@@ -59,18 +60,17 @@ namespace GUI {
      * onLedEvent function with the ID to a wxEVT_LED event.
      * 
      */
-    cWXVdbLed::cWXVdbLed(cVDBCommon* myVDBComponent, int id, wxEvtHandler* myEvtHandler, wxWindow* windowParent, wxPoint Position, int Size, char color) :
-        cGuiVDBComponent(myVDBComponent, id),
-        wxWindow(windowParent, wxID_ANY, Position, wxSize(Size,Size), wxTRANSPARENT_WINDOW, color),
-        _color(color),
-        _evtHandler(myEvtHandler)
+    cWXVdbLed::cWXVdbLed(cVDBCommon* myVDBComponent, sVdbPoint position, wxWindow* windowParent, int Size, char color) :
+        cGuiVDBComponent(myVDBComponent, position),
+        wxWindow(windowParent, wxID_ANY, wxGuiDimension::convertPoint(position, windowParent), wxSize(Size,Size), wxTRANSPARENT_WINDOW, color),
+        _color(color)
     {
 
         Connect(wxEVT_PAINT, wxPaintEventHandler(cWXVdbLed::OnPaint));
 
         // Use a specific Bind due to bug inside of wxWidgets, see 
         // https://stackoverflow.com/questions/38833116/conversion-in-derived-class-inaccessible-if-base-class-is-protected
-        myEvtHandler->Bind(wxEVT_LED, std::bind(&cWXVdbLed::onLEDEvent, this, std::placeholders::_1), id);
+        windowParent->Bind(wxEVT_LED, std::bind(&cWXVdbLed::onLEDEvent, this, std::placeholders::_1), myVDBComponent->getID());
         //myEvtHandler->Bind(wxEVT_LED, &cWXVdbLed::onLEDEvent, this, wxID_ANY);
     }
 
@@ -96,9 +96,9 @@ namespace GUI {
      */
     void cWXVdbLed::notify(eEvent aEvent, void* data)
     {
-        wxCommandEvent ledEvent{wxEVT_LED, static_cast<int>(_myID)};
+        wxCommandEvent ledEvent{wxEVT_LED, getIntID()};
         ledEvent.SetInt(static_cast<int>(aEvent));
-        wxPostEvent(_evtHandler, ledEvent);
+        wxPostEvent(this, ledEvent);
     }
 
     /**
