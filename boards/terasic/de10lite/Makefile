@@ -49,7 +49,7 @@ VDBDIR:=$(CWD)../../../
 #include common Virtual Devboard rules
 include $(VDBDIR)boards/common/Makefile.build
 
-#include de10lit specific rules
+#include de10lite specific rules
 include $(CWD)src/Makefile.include
 
 #include Altera source files
