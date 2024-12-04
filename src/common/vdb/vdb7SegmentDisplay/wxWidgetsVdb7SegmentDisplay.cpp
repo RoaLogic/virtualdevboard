@@ -44,7 +44,7 @@
 /////////////////////////////////////////////////////////////////////
 
 #include "wxWidgetsVdb7SegmentDisplay.hpp"
-#include "wxGuiDimension.hpp"
+#include "wxGuiDistance.hpp"
 
 // Define the wxEVT_7SegmentDisplay, which is special within this class
 wxDEFINE_EVENT(wxEVT_7SegmentDisplay, wxCommandEvent);
@@ -60,9 +60,9 @@ namespace GUI {
      * Bind the onEvent function with the ID to a wxEVT_7SegmentDisplay event.
      * 
      */
-    cWXVdb7SegmentDisplay::cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, sVdbPoint position, wxWindow* windowParent, int Size, char Color) :
+    cWXVdb7SegmentDisplay::cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, int Size, char Color) :
         cGuiVDBComponent(myVDBComponent, position),
-        wxWindow(windowParent, wxID_ANY, wxGuiDimension::convertPoint(position, windowParent), wxSize(Size,Size), wxTRANSPARENT_WINDOW, Color),
+        wxWindow(windowParent, wxID_ANY, wxGuiDistance::convertPoint(position, windowParent), wxSize(Size,Size), wxTRANSPARENT_WINDOW, Color),
         _color(Color)
     {
 
@@ -121,10 +121,6 @@ namespace GUI {
      */
     void cWXVdb7SegmentDisplay::OnPaint(wxPaintEvent& event)
     {
-        const wxSize dpi = GetDPI();
-	const int dpi_height = dpi.GetHeight();
-	const int dpi_width  = dpi.GetWidth();
-
         const float xMin = (deviceWidth - ledLength)/2.0;
         const float xMax = (deviceWidth + ledLength)/2.0;
         wxPen penLed;

@@ -78,7 +78,7 @@ void cVirtualDemoBoard::init(int argc, char** argv)
     wxEntry(argc, argv);
 }
 
-void cVirtualDemoBoard::setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, sVdbPoint minimalScreenSize, sColor backgroundColor)
+void cVirtualDemoBoard::setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distancePoint minimalScreenSize, sColor backgroundColor)
 {
     wxCommandEvent changeFrameEvent{wxEVT_CHANGE_FRAME};
     sChangeFrameData* const changeFrameData{ new sChangeFrameData};
@@ -93,7 +93,7 @@ void cVirtualDemoBoard::setupGui(std::string applicationName, std::string aboutT
     wxPostEvent(_mainFrame, changeFrameEvent);
 }
 
-void cVirtualDemoBoard::addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, sVdbPoint point)
+void cVirtualDemoBoard::addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point)
 {
     wxCommandEvent statusEvent{wxEVT_ADD_VDB};
     sAddVdbComponent* const eventData{ new sAddVdbComponent};

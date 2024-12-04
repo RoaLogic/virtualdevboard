@@ -59,6 +59,7 @@
 using namespace RoaLogic::observer;
 using namespace RoaLogic::GUI;
 using namespace RoaLogic::vdb;
+using namespace RoaLogic::Dimensions;
 
 wxDECLARE_EVENT(wxEVT_CHANGE_FRAME, wxCommandEvent);
 wxDECLARE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
@@ -68,7 +69,7 @@ struct sChangeFrameData : public wxClientData
     std::string applicationName;
     std::string aboutTitle;
     std::string aboutText;
-    sVdbPoint minimalScreenSize;
+    distancePoint minimalScreenSize;
     sColor backgroundColor;
 };
 
@@ -76,7 +77,7 @@ struct sAddVdbComponent : public wxClientData
 {
     eVdbComponentType type;
     cVDBCommon* vdbComponent;
-    sVdbPoint placement;
+    distancePoint placement;
 };
 
 /**

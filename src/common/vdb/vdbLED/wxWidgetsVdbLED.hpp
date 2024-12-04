@@ -81,18 +81,52 @@ namespace GUI {
     {
         private:
         char _color;
-        int x0,y0,x1,y1,D1,D2;
-        bool FlagStatus = false;
+        bool _status = false;
+        static constexpr float deviceWidth  = 3.5; //device width in mm
+        static constexpr float deviceHeight = 2.2; //device height in mm
 
+        /**
+         * @brief Helper functions to scale the widget
+         * @details Helper functions to scale the widget depending on the screen's DPI
+         */
+        int  scaleWidth  (int   width)  const { return width  * GetDPI().GetWidth()  /1000; }
+        int  scaleWidth  (float width)  const { return width  * GetDPI().GetWidth()  /1000.0; }
+        int  scaleHeight (int   height) const { return height * GetDPI().GetHeight() /1000; }
+        int  scaleHeight (float height) const { return height * GetDPI().GetHeight() /1000.0; }
+        float mm2mil     (float a     ) const { return a *1000.0 /25.4; }
+
+        /**
+         * @brief notify function from the vdb component
+         * @details This function receives events from the component it is registered to.
+         * @note this function runs in the verilated context.
+         */
         void notify(eEvent aEvent, void* data);
 
-        void onLEDEvent(wxCommandEvent& event);
+	/**
+         * @brief Handle the event
+         * @details This function handles the wxEVT_LED event
+         * @note This function runs in the GUI thread
+         */
+        void onEvent(wxCommandEvent& event);
 
         public:
-        cWXVdbLed(cVDBCommon* myVDBComponent, sVdbPoint position, wxWindow* windowParent, int Size, char color);
-        ~cWXVdbLed();
+	/**
+	 * @brief Constructor
+	 */
+        cWXVdbLed(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, int Size, char color);
 
+	/**
+	 * @brief Destructor
+	 */
+        ~cWXVdbLed() {}
+
+        /**
+	 * @brief Paint the widget
+	 * @details This function paints the widget. The 'LED' is turned on when _status=TRUE
+	 *          the corresponding bits in @_value are set, otherwise the corresponding LEDs are turned off
+	 */
         void OnPaint(wxPaintEvent& event);
+
         void SetColor(char color);
     };
 

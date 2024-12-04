@@ -54,6 +54,7 @@
 
 using namespace RoaLogic::observer;
 using namespace RoaLogic::GUI;
+using namespace RoaLogic::Dimensions;
 
 /**
  * @class cVirtualDemoBoard
@@ -85,8 +86,8 @@ class cVirtualDemoBoard : public wxApp, public cGuiInterface
     ~cVirtualDemoBoard();
     void init(int argc, char** argv);
 
-    void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, sVdbPoint minimalScreenSize, sColor backgroundColor);
-    void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, sVdbPoint point);
+    void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distancePoint minimalScreenSize, sColor backgroundColor);
+    void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point);
 };
 
 

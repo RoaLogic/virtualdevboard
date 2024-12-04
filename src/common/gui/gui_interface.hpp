@@ -48,11 +48,12 @@
 
 #include "subject.hpp"
 #include "vdbCommon.hpp"
-#include "guiDimension.hpp"
+#include "distance.hpp"
 
 namespace RoaLogic {
     using namespace observer;
     using namespace vdb;
+    using namespace Dimensions;
 namespace GUI {
 
     enum class eVdbComponentType
@@ -96,8 +97,8 @@ namespace GUI {
     class cGuiInterface : public cSubject
     {
         public:
-        virtual void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, sVdbPoint minimalScreenSize, sColor backgroundColor) = 0;
-        virtual void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, sVdbPoint point) = 0;
+        virtual void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distancePoint minimalScreenSize, sColor backgroundColor) = 0;
+        virtual void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point) = 0;
     };
 
     /**
@@ -116,11 +117,11 @@ namespace GUI {
     class cGuiVDBComponent : public cObserver
     {
         private:
-        cVDBCommon* _myVDBComponent;
-        sVdbPoint _myScreenPosition;
+        cVDBCommon*   _myVDBComponent;
+        distancePoint _myScreenPosition;
 
         public:
-        cGuiVDBComponent(cVDBCommon* myVDBComponent, sVdbPoint myPosition) :
+        cGuiVDBComponent(cVDBCommon* myVDBComponent, distancePoint myPosition) :
             _myVDBComponent(myVDBComponent),
             _myScreenPosition(myPosition)
         {

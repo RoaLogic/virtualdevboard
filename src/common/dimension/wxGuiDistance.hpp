@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    wxWidgets dimension class                                    //
+//    wxWidgets distance class                                     //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,39 +43,39 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#ifndef WX_GUI_DIMENSION_HPP
-#define WX_GUI_DIMENSION_HPP
+#ifndef WX_GUI_DISTANCE_HPP
+#define WX_GUI_DISTANCE_HPP
 
 #include <wx/wxprec.h>
 #include <wx/wx.h>
-#include "guiDimension.hpp"
+#include "distance.hpp"
 
-using namespace RoaLogic::GUI;
+using namespace RoaLogic::Dimensions;
 
-class wxGuiDimension
+class wxGuiDistance
 {
     public:
-    static int scaleWidth  (int   width, wxWindow* window)  { return width  * (window->GetDPI().GetWidth()  /1000); }
-    static int scaleWidth  (float width, wxWindow* window)  { return width  * (window->GetDPI().GetWidth()  /1000.0); }
-    static int scaleHeight (int   height, wxWindow* window) { return height * (window->GetDPI().GetHeight() /1000); }
-    static int scaleHeight (float height, wxWindow* window) { return height * (window->GetDPI().GetHeight() /1000.0); }
+    static int scaleWidth  (int   width, wxWindow* window)  { return width  * window->GetDPI().GetWidth(); }
+    static int scaleWidth  (float width, wxWindow* window)  { return width  * window->GetDPI().GetWidth(); }
+    static int scaleHeight (int   height, wxWindow* window) { return height * window->GetDPI().GetHeight(); }
+    static int scaleHeight (float height, wxWindow* window) { return height * window->GetDPI().GetHeight(); }
 
-    static wxSize convertSize(sVdbPoint dimension, wxWindow* window)
+    static wxSize convertSize(distancePoint point, wxWindow* window)
     {
         wxSize newSize;
 
-        newSize.SetWidth(scaleWidth((float)dimension.xOffset.getMils(), window));
-        newSize.SetHeight(scaleHeight((float)dimension.yOffset.getMils(), window));
+        newSize.SetWidth (point.x.pix(window->GetDPI().GetWidth ()));
+        newSize.SetHeight(point.y.pix(window->GetDPI().GetHeight()));
 
         return window->FromDIP(newSize);
     }
 
-    static wxPoint convertPoint(sVdbPoint dimension, wxWindow* window)
+    static wxPoint convertPoint(distancePoint point, wxWindow* window)
     {
         wxPoint newPoint;
 
-        newPoint.x = scaleWidth((float)dimension.xOffset.getMils(), window);
-        newPoint.y = scaleHeight((float)dimension.yOffset.getMils(), window);
+        newPoint.x = point.x.pix(window->GetDPI().GetWidth ());
+        newPoint.y = point.y.pix(window->GetDPI().GetHeight());
 
         return newPoint;
     }

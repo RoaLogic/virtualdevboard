@@ -101,7 +101,7 @@ void cDE10Lite::setupGUI()
         _myGUI->setupGui("DE10lite virtual demo board", 
                     "DE10lite", 
                     "This is a virtual development board for the DE10lite",
-                    sVdbPoint(97.5_mm, 80.0_mm),
+                    distancePoint(97.5_mm, 80.0_mm),
                     sColor(4, 29, 102) );
 
         for(size_t i = 0; i < _cNumLed; i++)
@@ -110,7 +110,7 @@ void cDE10Lite::setupGUI()
                                                 std::to_string(i) + 
                                                 "].LED_inst", i);
 
-            _myGUI->addVdbComponent(eVdbComponentType::vdbLed, _ledInstances[i], sVdbPoint((10.0_mm + 10.0_mm*i), 10.0_mm));
+            _myGUI->addVdbComponent(eVdbComponentType::vdbLed, _ledInstances[i], distancePoint((10.0_mm + 10.0_mm*i), 10.0_mm));
         }
 
         for(size_t i = 0; i < _cNum7Seg; i++)
@@ -119,12 +119,12 @@ void cDE10Lite::setupGUI()
                                                 std::to_string(i) + 
                                                 "].hex_inst", i);
 
-            _myGUI->addVdbComponent(eVdbComponentType::vdb7SegmentDisplay, _7segInstances[i], sVdbPoint((10.0_mm + 10.0_mm*i), 40.0_mm));
+            _myGUI->addVdbComponent(eVdbComponentType::vdb7SegmentDisplay, _7segInstances[i], distancePoint((10.0_mm + 10.0_mm*i), 40.0_mm));
         }
 
         _vgaController = new cVdbVGAMonitor("TOP.de10lite_verilator_wrapper.vgaMonitor_inst", this, clk_vga,
                                             _core->de10lite_verilator_wrapper->vgaMonitor_inst->framebuffer);
-        _myGUI->addVdbComponent(eVdbComponentType::vdbVGA, _vgaController, sVdbPoint(50.0_mm, 100.0_mm));
+        _myGUI->addVdbComponent(eVdbComponentType::vdbVGA, _vgaController, distancePoint(50.0_mm, 100.0_mm));
     }
 }
 

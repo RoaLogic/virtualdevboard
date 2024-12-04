@@ -43,7 +43,7 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#include "wxGuiDimension.hpp"
+#include "wxGuiDistance.hpp"
 
 #include "wxWidgetsMainFrame.hpp"
 #include "wxWidgetsvdbVGA.hpp"
@@ -137,7 +137,7 @@ void cMainFrame::onChangeFrame(wxCommandEvent& event)
 
     this->SetLabel(_myApplicationName);
 
-    wxSize boardSize = wxGuiDimension::convertSize(eventData->minimalScreenSize, this);
+    wxSize boardSize = wxGuiDistance::convertSize(eventData->minimalScreenSize, this);
 
     _myBoardWidth  = boardSize.GetWidth() + cLeftPanelWidth;
     _myBoardHeight = boardSize.GetHeight() + GetMenuBar()->GetSize().GetHeight();

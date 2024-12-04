@@ -44,7 +44,7 @@
 /////////////////////////////////////////////////////////////////////
 
 #include "wxWidgetsVdbLED.hpp"
-#include "wxGuiDimension.hpp"
+#include "wxGuiDistance.hpp"
 
 // Define the wxEVT_LED, which is special within this class
 wxDEFINE_EVENT(wxEVT_LED, wxCommandEvent);
@@ -60,9 +60,9 @@ namespace GUI {
      * onLedEvent function with the ID to a wxEVT_LED event.
      * 
      */
-    cWXVdbLed::cWXVdbLed(cVDBCommon* myVDBComponent, sVdbPoint position, wxWindow* windowParent, int Size, char color) :
+    cWXVdbLed::cWXVdbLed(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, int Size, char color) :
         cGuiVDBComponent(myVDBComponent, position),
-        wxWindow(windowParent, wxID_ANY, wxGuiDimension::convertPoint(position, windowParent), wxSize(Size,Size), wxTRANSPARENT_WINDOW, color),
+        wxWindow(windowParent, wxID_ANY, wxGuiDistance::convertPoint(position, windowParent), wxSize(Size,Size), wxTRANSPARENT_WINDOW, color),
         _color(color)
     {
 
@@ -70,16 +70,8 @@ namespace GUI {
 
         // Use a specific Bind due to bug inside of wxWidgets, see 
         // https://stackoverflow.com/questions/38833116/conversion-in-derived-class-inaccessible-if-base-class-is-protected
-        windowParent->Bind(wxEVT_LED, std::bind(&cWXVdbLed::onLEDEvent, this, std::placeholders::_1), myVDBComponent->getID());
+        windowParent->Bind(wxEVT_LED, std::bind(&cWXVdbLed::onEvent, this, std::placeholders::_1), myVDBComponent->getID());
         //myEvtHandler->Bind(wxEVT_LED, &cWXVdbLed::onLEDEvent, this, wxID_ANY);
-    }
-
-    /**
-     * @brief destructor
-     */
-    cWXVdbLed::~cWXVdbLed()
-    {
-
     }
 
     /**
@@ -112,18 +104,9 @@ namespace GUI {
      * 
      * @note This function runs in the GUI thread
      */
-    void cWXVdbLed::onLEDEvent(wxCommandEvent& event)
+    void cWXVdbLed::onEvent(wxCommandEvent& event)
     {
-
-        if(static_cast<eEvent>(event.GetInt()) == eEvent::ledChangedOn)
-        {
-            FlagStatus = true;
-        }
-        else if(static_cast<eEvent>(event.GetInt())  == eEvent::ledChangedOff)
-        {       
-            FlagStatus = false;
-        }
-        
+        _status = static_cast<eEvent>(event.GetInt()) == eEvent::ledChangedOn ? true : false;
         Refresh();
     }
 
@@ -135,86 +118,15 @@ namespace GUI {
      */
     void cWXVdbLed::OnPaint(wxPaintEvent& event)
     {
+        const int x = scaleWidth(mm2mil(deviceWidth));
+        const int y = scaleHeight(mm2mil(deviceHeight));
+
         wxPaintDC dc(this);
+        wxColour ledColour = _status ? wxColour(255,0,0) : wxColour(255,223,223);
 
-        wxGraphicsContext *gc = wxGraphicsContext::Create(dc);
-
-        D1 = GetClientSize().GetX();
-
-        // Generar paradas de la gradiente
-        wxGraphicsGradientStops stops;
-
-        if(FlagStatus)
-        {
-            switch(_color)
-            {
-                case 'r':
-                case 'R':   stops.Add(wxColor(255,255,255),0.0f);
-                            stops.Add(wxColor(255,0,0),1.0f);
-                            break;
-
-                case 'g':
-                case 'G':   stops.Add(wxColor(255,255,255),0.0f);
-                            stops.Add(wxColor(0,255,0),1.0f);
-                            break;
-
-                case 'b':
-                case 'B':   stops.Add(wxColor(255,255,255),0.0f);
-                            stops.Add(wxColor(0,0,255),1.0f);
-                            break;
-
-                case 'y':
-                case 'Y':   stops.Add(wxColor(255,255,255),0.0f);
-                            stops.Add(wxColor(255,255,0),1.0f);
-                            break;
-
-                default :   stops.Add(wxColor(255,255,255),0.0f);
-                            stops.Add(wxColor(255,0,0),1.0f);
-                            break;
-            }
-        }
-        else
-        {
-            switch(_color)
-            {
-                case 'r':
-                case 'R':   stops.Add(wxColor(128,0,0),0.0f);
-                            stops.Add(wxColor(0,0,0),1.0f);
-                            break;
-
-                case 'g':
-                case 'G':   stops.Add(wxColor(0,128,0),0.0f);
-                            stops.Add(wxColor(0,0,0),1.0f);
-                            break;
-
-                case 'b':
-                case 'B':   stops.Add(wxColor(0,0,128),0.0f);
-                            stops.Add(wxColor(0,0,0),1.0f);
-                            break;
-
-                case 'y':
-                case 'Y':   stops.Add(wxColor(128,128,0),0.0f);
-                            stops.Add(wxColor(0,0,0),1.0f);
-                            break;
-
-                default :   stops.Add(wxColor(128,0,0),0.0f);
-                            stops.Add(wxColor(0,0,0),1.0f);
-                            break;
-            }
-        }
-
-        gc->SetPen(wxPen(wxColor(0,0,0), 1, wxTRANSPARENT));
-        gc->SetBrush(gc->CreateLinearGradientBrush(0,0,D1,D1,wxColor(35,35,35),wxColor(180,180,180)));
-        gc->DrawEllipse(0,0,D1,D1);
-
-        D2 = (2*D1)/3;
-        x1 = D1/6;
-        y1 = x1;
-
-        gc->SetBrush(gc->CreateRadialGradientBrush(D1/2,D1/2,D1/2,D1/2,D2/2,stops));
-        gc->DrawEllipse(x1,y1,D2,D2);
-
-        delete gc;
+        dc.SetPen(wxPen(wxColour(0,0,0),1));
+        dc.SetBrush(ledColour);
+        dc.DrawRectangle(0,0,x,y);
     }
 
     void cWXVdbLed::SetColor(char color)

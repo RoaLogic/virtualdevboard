@@ -5,7 +5,7 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    GUI Dimension class                                          //
+//    Dimension-Distance class                                     //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
@@ -43,47 +43,97 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#ifndef GUI_DIMENSION_HPP
-#define GUI_DIMENSION_HPP
+#ifndef DIMENSIONS_DISTANCE_HPP
+#define DIMENSIONS_DISTANCE_HPP
 
 namespace RoaLogic {
-namespace GUI {
+namespace Dimensions {
 
-    class cGuiDimension
+    class cDistance
     {
-        public:
-        constexpr static double milsPerInch = 1000.0;
-        constexpr static double milsPerMM = 39.37;
-        constexpr static double milsPerCM = 393.7;
-
         private:
-        long double value = 0.0;
+        long double _distance;                        //distance in meter
 
         public:
-        cGuiDimension(){};
-        cGuiDimension(long double aValue) :
-            value(aValue)
-        {
+        /**
+         * Definitions
+         */
+        constexpr static double mmPerInch   = 25.4;   //definition of Inch
+        constexpr static double milsPerInch = 1000;   //definition of mil
+        constexpr static double inchPerFoot = 12;     //definition of foot
+        constexpr static double feetPerYard = 3;      //definition of yard
+        constexpr static double feetPerMile = 2580;   //definition of mile
 
-        }
+        /**
+         * @brief Constructor
+         */
+        cDistance() : _distance(0.0){};
 
-        ~cGuiDimension(){};
+        /**
+         * @brief Constructor
+         * @param val Initial value
+         */
+        cDistance(long double val) : _distance(val){}
 
-        long double getMils(){return value;};
-        long double getInch(){return value / milsPerInch;};
-        long double getMM(){return value / milsPerMM;};
-        long double getCM(){return value / milsPerCM;};
+        /**
+         * @brief Desctructor
+         */
+        ~cDistance(){};
+
+        /**
+         * Output formats
+         */
+
+        long double mils() const { return inch() * milsPerInch;  }
+        long double inch() const { return mm()   / mmPerInch;    }
+        long double feet() const { return inch() / inchPerFoot;  }
+        long double ft()   const { return feet();                }
+        long double yard() const { return feet() / feetPerYard;  }
+        long double yd()   const { return yard();                }
+        long double mile() const { return feet() / feetPerMile;  }
+        long double fm()   const { return _distance * 1.0E15;    }
+        long double pm()   const { return _distance * 1.0E12;    }
+        long double nm()   const { return _distance * 1.0E9;     }
+        long double um()   const { return _distance * 1.0E6;     }
+        long double mm()   const { return _distance * 1.0E3;     }
+        long double cm()   const { return _distance * 100.0;     }
+        long double dm()   const { return _distance * 10.0;      }
+        long double m()    const { return _distance;             }
+        long double dam()  const { return _distance / 10.0;      }
+        long double hm()   const { return _distance / 100.0;     }
+        long double km()   const { return _distance / 1.0E3;     }
+
+        //special case to convert _distance to pixels
+        int pix(int dpi)   const { return inch() * dpi; } 
     };
 
-    inline long double operator""_mils (long double val) { return val; }
-    inline long double operator""_inch (long double val) { return (val * cGuiDimension::milsPerInch  ); }
-    inline long double operator""_mm   (long double val) { return (val * cGuiDimension::milsPerMM); }
-    inline long double operator""_cm   (long double val) { return (val * cGuiDimension::milsPerCM  ); }
 
-    struct sVdbPoint
+    /**
+     * Units
+     */
+    inline long double operator""_mils (long double val) { return (val                          / cDistance::milsPerInch * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_inch (long double val) { return (val                                                   * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_feet (long double val) { return (val                          * cDistance::inchPerFoot * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_ft   (long double val) { return (val                          * cDistance::inchPerFoot * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_yard (long double val) { return (val * cDistance::feetPerYard * cDistance::inchPerFoot * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_yd   (long double val) { return (val * cDistance::feetPerYard * cDistance::inchPerFoot * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_mile (long double val) { return (val * cDistance::feetPerMile * cDistance::inchPerFoot * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_nm   (long double val) { return (val / 1.0E9); }
+    inline long double operator""_um   (long double val) { return (val / 1.0E6); }
+    inline long double operator""_mm   (long double val) { return (val / 1.0E3); }
+    inline long double operator""_cm   (long double val) { return (val / 100.0); }
+    inline long double operator""_dm   (long double val) { return (val / 10.0 ); }
+    inline long double operator""_m    (long double val) { return val;           }
+    inline long double operator""_dam  (long double val) { return (val * 10.0 ); }
+    inline long double operator""_hm   (long double val) { return (val * 100.0); }
+    inline long double operator""_km   (long double val) { return (val * 1.0E3); }
+
+    /**
+     * @brief point of distance units
+     */
+    struct distancePoint
     {
-        cGuiDimension xOffset;
-        cGuiDimension yOffset;
+        cDistance x,y;
     };
 
 }}
