@@ -70,7 +70,7 @@ struct sChangeFrameData : public wxClientData
     std::string aboutTitle;
     std::string aboutText;
     distancePoint minimalScreenSize;
-    sColor backgroundColor;
+    sRGBColor backgroundColor;
 };
 
 struct sAddVdbComponent : public wxClientData
@@ -78,6 +78,7 @@ struct sAddVdbComponent : public wxClientData
     eVdbComponentType type;
     cVDBCommon* vdbComponent;
     distancePoint placement;
+    void* componentDetails;
 };
 
 /**

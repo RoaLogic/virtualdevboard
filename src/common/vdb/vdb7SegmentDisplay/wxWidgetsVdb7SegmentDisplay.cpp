@@ -60,10 +60,10 @@ namespace GUI {
      * Bind the onEvent function with the ID to a wxEVT_7SegmentDisplay event.
      * 
      */
-    cWXVdb7SegmentDisplay::cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, int Size, char Color) :
+    cWXVdb7SegmentDisplay::cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdb7SegInformation* information) :
         cGuiVDBComponent(myVDBComponent, position),
-        wxWindow(windowParent, wxID_ANY, wxGuiDistance::convertPoint(position, windowParent), wxSize(Size,Size), wxTRANSPARENT_WINDOW, Color),
-        _color(Color)
+        wxWindow(windowParent, wxID_ANY, wxGuiDistance::convertPoint(position, windowParent), wxSize(50,50), wxTRANSPARENT_WINDOW),
+        _myInformation(information)
     {
 
         Connect(wxEVT_PAINT, wxPaintEventHandler(cWXVdb7SegmentDisplay::OnPaint));

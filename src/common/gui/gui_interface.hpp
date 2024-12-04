@@ -56,18 +56,91 @@ namespace RoaLogic {
     using namespace Dimensions;
 namespace GUI {
 
-    enum class eVdbComponentType
+    /** @struct sRGBColor
+     *  @brief RGB colour structure
+     *  @details This structure can be used to
+     * determine the colour according to the RGB value.
+     */
+    struct sRGBColor
     {
-        vdbLed,
-        vdbVGA,
-        vdb7SegmentDisplay
+        uint8_t red;        //!< Red value of RGB
+        uint8_t green;      //!< Green value of RGB
+        uint8_t blue;       //!< Blue value of RGB
     };
 
-    struct sColor
+    /** @enum eVdbComponentType
+     *  @brief Enum which defines all the different 
+     * virtual development board components.
+     * 
+     * @details This enumeration defines all possible
+     * virtual development board components which can be
+     * created in the system.
+     * 
+     * When a new component is added, this enum shall be 
+     * extended
+     */
+    enum class eVdbComponentType
     {
-        uint8_t red;
-        uint8_t green;
-        uint8_t blue;
+        //!< Led component, uses the sVdbLedInformation structure to handle it's layout
+        vdbLed,
+        //!< VGA component, does not take any information into it
+        vdbVGA,
+        //!< 7 segment component, uses the sVdb7SegInformation structure to handle it's layout
+        vdb7SegmentDisplay      
+    };
+
+    /** @enum eVdbLedType
+     *  @brief Define the LED type
+     */
+    enum class eVdbLedType
+    {
+        round10mm,  //!< Round through hole 10 mm led
+        round5mm,   //!< Round through hole 5 mm led
+        round3mm,   //!< Round through hole 3mm led
+        SMD1206,    //!< SMD led size 1206
+        SMD0805,    //!< SMD led size 0805
+        SMD0603,    //!< SMD led size 0603
+        SMD0402     //!< SMD led size 0402
+    };
+
+    /** @struct sVdbLedInformation
+     *  @brief virtual development board led information
+     *  @details This structure is used to design a
+     * virtual development board led.
+     * 
+     * The type of led is defined through the eVdbLedType 
+     * enumeration. Colour of the LED can be passed in as 
+     * RGB color through the red, green and blue values.
+     */
+    struct sVdbLedInformation
+    {
+        eVdbLedType type;   //!< The type of the LED
+        sRGBColor colour;   //!< Colour of the LED
+    };
+
+    /** @enum eVdb7SegType
+     *  @brief Define the 7 segment types
+     */
+    enum class eVdb7SegType
+    {
+        commonAnode,   //!< 7 Segment display which uses a common anode
+        commonCathode, //!< 7 Segment display which uses a common cathode
+    };
+
+
+    /** @struct sVdb7SegInformation
+     *  @brief virtual development board 7 segment information
+     *  @details This structure is used to design a
+     * virtual development board 7 segment display.
+     * 
+     * The type of 7segment is defined through the eVdb7SegType 
+     * enumeration. Color of the 7 segment can be passed in as 
+     * RGB color through the red, green and blue values.
+     */
+    struct sVdb7SegInformation
+    {
+        eVdb7SegType type;
+        sRGBColor colour;
     };
 
     /**
@@ -97,8 +170,8 @@ namespace GUI {
     class cGuiInterface : public cSubject
     {
         public:
-        virtual void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distancePoint minimalScreenSize, sColor backgroundColor) = 0;
-        virtual void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point) = 0;
+        virtual void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distancePoint minimalScreenSize, sRGBColor backgroundColor) = 0;
+        virtual void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point, void* information) = 0;
     };
 
     /**

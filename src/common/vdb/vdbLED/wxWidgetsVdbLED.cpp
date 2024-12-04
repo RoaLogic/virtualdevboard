@@ -60,10 +60,10 @@ namespace GUI {
      * onLedEvent function with the ID to a wxEVT_LED event.
      * 
      */
-    cWXVdbLed::cWXVdbLed(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, int Size, char color) :
+    cWXVdbLed::cWXVdbLed(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbLedInformation* ledInformation) :
         cGuiVDBComponent(myVDBComponent, position),
-        wxWindow(windowParent, wxID_ANY, wxGuiDistance::convertPoint(position, windowParent), wxSize(Size,Size), wxTRANSPARENT_WINDOW, color),
-        _color(color)
+        wxWindow(windowParent, wxID_ANY, wxGuiDistance::convertPoint(position, windowParent), wxSize(50,50), wxTRANSPARENT_WINDOW),
+        _myInformation(ledInformation)
     {
 
         Connect(wxEVT_PAINT, wxPaintEventHandler(cWXVdbLed::OnPaint));
@@ -128,11 +128,4 @@ namespace GUI {
         dc.SetBrush(ledColour);
         dc.DrawRectangle(0,0,x,y);
     }
-
-    void cWXVdbLed::SetColor(char color)
-    {
-        _color = color;
-        Refresh();
-    }
-
 }}

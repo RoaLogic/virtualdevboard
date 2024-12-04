@@ -96,35 +96,55 @@ void cDE10Lite::setupGUI()
 {
     if(_myGUI)
     {
+        // First register ourself to the GUI so that we receive all the events from the GUI
         _myGUI->registerObserver(this);
 
-        _myGUI->setupGui("DE10lite virtual demo board", 
-                    "DE10lite", 
-                    "This is a virtual development board for the DE10lite",
-                    distancePoint(97.5_mm, 80.0_mm),
-                    sColor(4, 29, 102) );
+        // Setup the GUI itself
+        _myGUI->setupGui("DE10lite virtual demo board",     // Name of the application
+                    "DE10lite",                             // About title information
+                    "This is a virtual development board for the DE10lite", // About text
+                    distancePoint(97.5_mm, 80.0_mm),    // Size of the board
+                    sRGBColor(4, 29, 102) );            // Background colour of the board
 
         for(size_t i = 0; i < _cNumLed; i++)
         {
+            // Create a new led instance and map it through the scope with the verilated component
             _ledInstances[i] = new cVdbLed("TOP.de10lite_verilator_wrapper.gen_vdbLED[" + 
                                                 std::to_string(i) + 
                                                 "].LED_inst", i);
 
-            _myGUI->addVdbComponent(eVdbComponentType::vdbLed, _ledInstances[i], distancePoint((10.0_mm + 10.0_mm*i), 10.0_mm));
+            // Map the LED instance to a LED on the virtual board
+            _myGUI->addVdbComponent(eVdbComponentType::vdbLed,                      // VDB component type LED
+                                    _ledInstances[i],                               // Verilated linked component
+                                    distancePoint((10.0_mm + 10.0_mm*i), 10.0_mm),  // Placement on the board
+                                    // LED specific information, in this case a SMD1206 LED, with a full red colour
+                                    new sVdbLedInformation(eVdbLedType::SMD1206, {255, 0, 0})); 
         }
 
         for(size_t i = 0; i < _cNum7Seg; i++)
         {
+            // Create a new 7 segment instance and map it through the scope with the verilated component
             _7segInstances[i] = new cVdb7SegmentDisplay("TOP.de10lite_verilator_wrapper.gen_vdb7SegmentDisplay[" + 
                                                 std::to_string(i) + 
                                                 "].hex_inst", i);
 
-            _myGUI->addVdbComponent(eVdbComponentType::vdb7SegmentDisplay, _7segInstances[i], distancePoint((10.0_mm + 10.0_mm*i), 40.0_mm));
+            // Map the 7 segment instance to a 7 segment on the virtual board. The type of 7 segment is a commonAnode, with a RGB colour of pure RED.
+            // The placement on the board is determined through the distancePoint.
+            _myGUI->addVdbComponent(eVdbComponentType::vdb7SegmentDisplay,          // VDB component type 7 segment
+                                    _7segInstances[i],                              // Verilated linked component
+                                    distancePoint((10.0_mm + 10.0_mm*i), 40.0_mm),  // Placement on the board
+                                    // 7 segment specific information, in this case a common anode 7 segment, with a full red colour
+                                    new sVdb7SegInformation(eVdb7SegType::commonAnode, {255, 0, 0}));
         }
 
+        // Create a new VGA instance and map it through the scope with the verilated component
         _vgaController = new cVdbVGAMonitor("TOP.de10lite_verilator_wrapper.vgaMonitor_inst", this, clk_vga,
                                             _core->de10lite_verilator_wrapper->vgaMonitor_inst->framebuffer);
-        _myGUI->addVdbComponent(eVdbComponentType::vdbVGA, _vgaController, distancePoint(50.0_mm, 100.0_mm));
+        // Create a new VGA component on the virtual board
+        _myGUI->addVdbComponent(eVdbComponentType::vdbVGA,          // VDB component type VGA
+                                _vgaController,                     // Verilated linked component
+                                distancePoint(50.0_mm, 100.0_mm),   // Placement on the board
+                                nullptr);                           // Doesn't take any information
     }
 }
 

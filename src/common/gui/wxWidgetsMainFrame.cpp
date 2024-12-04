@@ -231,13 +231,19 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
         {
             case eVdbComponentType::vdbLed :
             {
-                cWXVdbLed* newLED = new cWXVdbLed(eventData->vdbComponent, eventData->placement, _rightPanel, 50 , 'g');
+                cWXVdbLed* newLED = new cWXVdbLed(eventData->vdbComponent, 
+                                                  eventData->placement, 
+                                                  _rightPanel, 
+                                                  reinterpret_cast<sVdbLedInformation*>(eventData->componentDetails));
                 vdbInstances.push_back(newLED);
                 break;
             }
             case eVdbComponentType::vdb7SegmentDisplay :
             {
-                cWXVdb7SegmentDisplay* new7SegmentDisplay = new cWXVdb7SegmentDisplay(eventData->vdbComponent, eventData->placement, _rightPanel, 50 , 'g');
+                cWXVdb7SegmentDisplay* new7SegmentDisplay = new cWXVdb7SegmentDisplay(eventData->vdbComponent, 
+                                                                                      eventData->placement, 
+                                                                                      _rightPanel, 
+                                                                            reinterpret_cast<sVdb7SegInformation*>(eventData->componentDetails));
                 vdbInstances.push_back(new7SegmentDisplay);
                 break;
             }

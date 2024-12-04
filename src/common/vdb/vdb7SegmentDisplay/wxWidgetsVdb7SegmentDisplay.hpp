@@ -79,7 +79,7 @@ namespace GUI {
     class cWXVdb7SegmentDisplay : public cGuiVDBComponent, public wxWindow
     {
         private:
-        char    _color;                             //currently unused
+        sVdb7SegInformation* _myInformation;
         uint8_t _value;
 
         static inline    wxColour colBackground = wxColour(138,150,168); //Grey-blue
@@ -134,7 +134,7 @@ namespace GUI {
 	/**
 	 * @brief Constructor
 	 */
-        cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, int Size, char Color);
+        cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdb7SegInformation* information);
 
 	/**
 	 * @brief Destructor

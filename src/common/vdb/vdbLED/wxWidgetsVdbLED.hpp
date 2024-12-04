@@ -80,7 +80,7 @@ namespace GUI {
     class cWXVdbLed : public cGuiVDBComponent, public wxWindow
     {
         private:
-        char _color;
+        sVdbLedInformation* _myInformation;
         bool _status = false;
         static constexpr float deviceWidth  = 3.5; //device width in mm
         static constexpr float deviceHeight = 2.2; //device height in mm
@@ -113,7 +113,7 @@ namespace GUI {
 	/**
 	 * @brief Constructor
 	 */
-        cWXVdbLed(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, int Size, char color);
+        cWXVdbLed(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbLedInformation* ledInformation);
 
 	/**
 	 * @brief Destructor
@@ -126,8 +126,6 @@ namespace GUI {
 	 *          the corresponding bits in @_value are set, otherwise the corresponding LEDs are turned off
 	 */
         void OnPaint(wxPaintEvent& event);
-
-        void SetColor(char color);
     };
 
 }}

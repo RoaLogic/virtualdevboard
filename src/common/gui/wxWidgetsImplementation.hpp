@@ -86,8 +86,8 @@ class cVirtualDemoBoard : public wxApp, public cGuiInterface
     ~cVirtualDemoBoard();
     void init(int argc, char** argv);
 
-    void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distancePoint minimalScreenSize, sColor backgroundColor);
-    void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point);
+    void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distancePoint minimalScreenSize, sRGBColor backgroundColor);
+    void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point, void* information);
 };
 
 
