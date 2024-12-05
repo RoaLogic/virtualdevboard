@@ -50,7 +50,7 @@
 #include <wx/wx.h>
 #include "distance.hpp"
 
-using namespace RoaLogic::Dimensions;
+using namespace RoaLogic::dimensions;
 
 class wxGuiDistance
 {

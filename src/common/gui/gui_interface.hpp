@@ -53,7 +53,7 @@
 namespace RoaLogic {
     using namespace observer;
     using namespace vdb;
-    using namespace Dimensions;
+    using namespace dimensions;
 namespace GUI {
 
     /** @struct sRGBColor

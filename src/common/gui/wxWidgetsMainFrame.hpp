@@ -59,7 +59,7 @@
 using namespace RoaLogic::observer;
 using namespace RoaLogic::GUI;
 using namespace RoaLogic::vdb;
-using namespace RoaLogic::Dimensions;
+using namespace RoaLogic::dimensions;
 
 wxDECLARE_EVENT(wxEVT_CHANGE_FRAME, wxCommandEvent);
 wxDECLARE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);

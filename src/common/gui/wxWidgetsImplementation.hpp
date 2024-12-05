@@ -54,7 +54,7 @@
 
 using namespace RoaLogic::observer;
 using namespace RoaLogic::GUI;
-using namespace RoaLogic::Dimensions;
+using namespace RoaLogic::dimensions;
 
 /**
  * @class cVirtualDemoBoard
