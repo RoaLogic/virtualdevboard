@@ -45,12 +45,14 @@
 
 #include "wxWidgetsVdbLED.hpp"
 #include "wxGuiDistance.hpp"
+#include "distance.hpp"
 
 // Define the wxEVT_LED, which is special within this class
 wxDEFINE_EVENT(wxEVT_LED, wxCommandEvent);
 
 namespace RoaLogic {
     using namespace observer;
+    using namespace dimensions;
 namespace GUI {
 
     /**
@@ -62,7 +64,7 @@ namespace GUI {
      */
     cWXVdbLed::cWXVdbLed(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbLedInformation* ledInformation) :
         cGuiVDBComponent(myVDBComponent, position),
-        wxWindow(windowParent, wxID_ANY, wxGuiDistance::convertPoint(position, windowParent), wxSize(50,50), wxTRANSPARENT_WINDOW),
+        wxWindow(windowParent, wxID_ANY, wxGuiDistance::convertPoint(position, windowParent), wxDefaultSize, wxTRANSPARENT_WINDOW),
         _myInformation(ledInformation)
     {
 
@@ -112,20 +114,44 @@ namespace GUI {
 
     
     /**
-     * @brief 
+     * @brief Draw the LED
      * 
      * @param event 
      */
     void cWXVdbLed::OnPaint(wxPaintEvent& event)
     {
-        const int x = scaleWidth(mm2mil(deviceWidth));
-        const int y = scaleHeight(mm2mil(deviceHeight));
+        const int x = GetDeviceSize().width.pix(GetDPI().GetWidth());
+        const int y = GetDeviceSize().height.pix(GetDPI().GetHeight());
 
         wxPaintDC dc(this);
-        wxColour ledColour = _status ? wxColour(255,0,0) : wxColour(255,223,223);
+        wxColour ledColour = _status ? wxColour(_myInformation->colour.red,
+                                                _myInformation->colour.green,
+                                                _myInformation->colour.blue)
+                                     : wxColour(255,223,223);
 
         dc.SetPen(wxPen(wxColour(0,0,0),1));
         dc.SetBrush(ledColour);
         dc.DrawRectangle(0,0,x,y);
+    }
+
+
+    /**
+     * @brief Return size of the LED
+     *        Returns a ridiculously large number to indicate an unknown type without breaking functionality
+     */
+    distanceSize cWXVdbLed::GetDeviceSize()
+    {
+        switch (_myInformation->type)
+	{
+            case eVdbLedType::round10mm: return distanceSize(10_mm,10_mm);
+            case eVdbLedType::round5mm : return distanceSize(5_mm, 5_mm);
+            case eVdbLedType::round3mm : return distanceSize(3_mm, 3_mm);
+            case eVdbLedType::SMD1206  : return distanceSize(125_mils, 60_mils);
+            case eVdbLedType::SMD0805  : return distanceSize(80_mils, 50_mils);
+            case eVdbLedType::SMD0603  : return distanceSize(60_mils, 30_mils);
+            case eVdbLedType::SMD0402  : return distanceSize(40_mils, 20_mils);
+            case eVdbLedType::SMD3520  : return distanceSize(3.5_mm, 2.0_mm);
+            default                    : return distanceSize(50_mm, 50_mm);
+	}
     }
 }}

@@ -63,7 +63,7 @@ namespace GUI {
 
     /**
      * @class cWXVdbLed
-     * @author Bjorn Schouteten
+     * @author Bjorn Schouteten, Richard Herveille
      * @brief LED virtual development board component
      * 
      * @details
@@ -82,18 +82,6 @@ namespace GUI {
         private:
         sVdbLedInformation* _myInformation;
         bool _status = false;
-        static constexpr float deviceWidth  = 3.5; //device width in mm
-        static constexpr float deviceHeight = 2.2; //device height in mm
-
-        /**
-         * @brief Helper functions to scale the widget
-         * @details Helper functions to scale the widget depending on the screen's DPI
-         */
-        int  scaleWidth  (int   width)  const { return width  * GetDPI().GetWidth()  /1000; }
-        int  scaleWidth  (float width)  const { return width  * GetDPI().GetWidth()  /1000.0; }
-        int  scaleHeight (int   height) const { return height * GetDPI().GetHeight() /1000; }
-        int  scaleHeight (float height) const { return height * GetDPI().GetHeight() /1000.0; }
-        float mm2mil     (float a     ) const { return a *1000.0 /25.4; }
 
         /**
          * @brief notify function from the vdb component
@@ -119,6 +107,24 @@ namespace GUI {
 	 * @brief Destructor
 	 */
         ~cWXVdbLed() {}
+
+        /**
+         * @brief LED size
+         * @details Returns the size of the LED
+         */
+        distanceSize GetDeviceSize();
+
+        /**
+         * @brief Default component size
+         * @details Returns the default size for the component.
+	 *
+            The optional @a win argument is new since wxWidgets 3.1.3 and allows to
+            get a per-monitor DPI specific size.
+         */
+        wxSize GetDefaultSize(wxWindow* win = NULL)
+        {
+            return wxSize(GetDeviceSize().width.pix(GetDPI().GetWidth()), GetDeviceSize().height.pix(GetDPI().GetHeight()));
+        }
 
         /**
 	 * @brief Paint the widget
