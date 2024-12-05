@@ -47,7 +47,7 @@
 #define DIMENSIONS_DISTANCE_HPP
 
 namespace RoaLogic {
-namespace Dimensions {
+namespace dimensions {
 
     class cDistance
     {
@@ -111,6 +111,23 @@ namespace Dimensions {
     /**
      * Units
      */
+    inline long double operator""_mils (unsigned long long val) { return ((long double)val                          / cDistance::milsPerInch * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_inch (unsigned long long val) { return ((long double)val                                                   * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_feet (unsigned long long val) { return ((long double)val                          * cDistance::inchPerFoot * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_ft   (unsigned long long val) { return ((long double)val                          * cDistance::inchPerFoot * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_yard (unsigned long long val) { return ((long double)val * cDistance::feetPerYard * cDistance::inchPerFoot * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_yd   (unsigned long long val) { return ((long double)val * cDistance::feetPerYard * cDistance::inchPerFoot * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_mile (unsigned long long val) { return ((long double)val * cDistance::feetPerMile * cDistance::inchPerFoot * cDistance::mmPerInch / 1000.0); }
+    inline long double operator""_nm   (unsigned long long val) { return ((long double)val / 1.0E9); }
+    inline long double operator""_um   (unsigned long long val) { return ((long double)val / 1.0E6); }
+    inline long double operator""_mm   (unsigned long long val) { return ((long double)val / 1.0E3); }
+    inline long double operator""_cm   (unsigned long long val) { return ((long double)val / 100.0); }
+    inline long double operator""_dm   (unsigned long long val) { return ((long double)val / 10.0 ); }
+    inline long double operator""_m    (unsigned long long val) { return  (long double)val;          }
+    inline long double operator""_dam  (unsigned long long val) { return ((long double)val * 10.0 ); }
+    inline long double operator""_hm   (unsigned long long val) { return ((long double)val * 100.0); }
+    inline long double operator""_km   (unsigned long long val) { return ((long double)val * 1.0E3); }
+
     inline long double operator""_mils (long double val) { return (val                          / cDistance::milsPerInch * cDistance::mmPerInch / 1000.0); }
     inline long double operator""_inch (long double val) { return (val                                                   * cDistance::mmPerInch / 1000.0); }
     inline long double operator""_feet (long double val) { return (val                          * cDistance::inchPerFoot * cDistance::mmPerInch / 1000.0); }
@@ -129,12 +146,21 @@ namespace Dimensions {
     inline long double operator""_km   (long double val) { return (val * 1.0E3); }
 
     /**
-     * @brief point of distance units
+     * @brief Point of distance units
      */
     struct distancePoint
     {
         cDistance x,y;
     };
+
+    /**
+     * @brief Size in distance units
+     */
+    struct distanceSize
+    {
+        cDistance width,height;
+    };
+
 
 }}
 
