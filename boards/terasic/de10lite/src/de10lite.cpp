@@ -103,7 +103,7 @@ void cDE10Lite::setupGUI()
         _myGUI->setupGui("DE10lite virtual demo board",     // Name of the application
                     "DE10lite",                             // About title information
                     "This is a virtual development board for the DE10lite", // About text
-                    distancePoint(97.5_mm, 80.0_mm),    // Size of the board
+                    distancePoint(97.54_mm, 80.01_mm),    // Size of the board
                     sRGBColor(4, 29, 102) );            // Background colour of the board
 
         for(size_t i = 0; i < _cNumLed; i++)
@@ -117,8 +117,8 @@ void cDE10Lite::setupGUI()
             _myGUI->addVdbComponent(eVdbComponentType::vdbLed,                      // VDB component type LED
                                     _ledInstances[i],                               // Verilated linked component
                                     distancePoint((10.0_mm + 10.0_mm*i), 10.0_mm),  // Placement on the board
-                                    // LED specific information, in this case a SMD1206 LED, with a full red colour
-                                    new sVdbLedInformation(eVdbLedType::SMD1206, {255, 0, 0})); 
+                                    // LED specific information, in this case a SMD3.5x2.0mm LED, with a full red colour
+                                    new sVdbLedInformation(eVdbLedType::SMD3520, {255, 0, 0}));
         }
 
         for(size_t i = 0; i < _cNum7Seg; i++)
