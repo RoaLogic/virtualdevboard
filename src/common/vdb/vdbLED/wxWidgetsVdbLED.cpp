@@ -131,7 +131,26 @@ namespace GUI {
 
         dc.SetPen(wxPen(wxColour(0,0,0),1));
         dc.SetBrush(ledColour);
-        dc.DrawRectangle(0,0,x,y);
+
+	switch (_myInformation->type)
+        {
+            case eVdbLedType::round10mm:
+                dc.DrawCircle (x/2, y/2,cDistance(10_mm).pix(GetDPI().GetWidth()/2));
+                break;
+            case eVdbLedType::round5mm :
+                dc.DrawCircle (x/2, y/2,cDistance(5_mm).pix(GetDPI().GetWidth()/2));
+                break;
+            case eVdbLedType::round3mm :
+                dc.DrawCircle (x/2, y/2,cDistance(3_mm).pix(GetDPI().GetWidth()/2));
+                break;
+            case eVdbLedType::SMD1206  :
+            case eVdbLedType::SMD0805  :
+            case eVdbLedType::SMD0603  :
+            case eVdbLedType::SMD0402  :
+            case eVdbLedType::SMD3520  :
+            default                    :
+                dc.DrawRectangle(0,0,x,y);
+	}
     }
 
 
