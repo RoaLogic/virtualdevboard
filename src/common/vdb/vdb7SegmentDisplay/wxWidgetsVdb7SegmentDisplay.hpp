@@ -99,15 +99,6 @@ namespace GUI {
         bool bitSet      (int   bit  )  const { return (_value >> bit) & 1; }
 
         /**
-         * @brief Helper functions to scale the widget
-         * @details Helper functions to scale the widget depending on the screen's DPI
-         */
-        int  scaleWidth  (int   width)  const { return width  * GetDPI().GetWidth()  /1000; }
-        int  scaleWidth  (float width)  const { return width  * GetDPI().GetWidth()  /1000.0; }
-        int  scaleHeight (int   height) const { return height * GetDPI().GetHeight() /1000; }
-        int  scaleHeight (float height) const { return height * GetDPI().GetHeight() /1000.0; }
-
-        /**
          * @brief Default widget size
          * @details Returns the default size for the widget.
 
@@ -118,7 +109,6 @@ namespace GUI {
         {
             return wxSize(deviceWidth.pix(GetDPI().GetWidth()),deviceHeight.pix(GetDPI().GetHeight()));
         }
-        wxSize GetBestClientSize() { return GetDefaultSize(); }
 
         /**
          * @brief notify function from the vdb component
