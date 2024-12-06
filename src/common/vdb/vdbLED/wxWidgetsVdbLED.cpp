@@ -67,6 +67,7 @@ namespace GUI {
         wxWindow(windowParent, wxID_ANY, wxGuiDistance::convertPoint(position, windowParent), wxDefaultSize, wxTRANSPARENT_WINDOW),
         _myInformation(ledInformation)
     {
+        SetInitialSize(GetDefaultSize());
 
         Connect(wxEVT_PAINT, wxPaintEventHandler(cWXVdbLed::OnPaint));
 
