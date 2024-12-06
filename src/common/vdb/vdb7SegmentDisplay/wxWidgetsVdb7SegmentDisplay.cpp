@@ -62,9 +62,10 @@ namespace GUI {
      */
     cWXVdb7SegmentDisplay::cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdb7SegInformation* information) :
         cGuiVDBComponent(myVDBComponent, position),
-        wxWindow(windowParent, wxID_ANY, wxGuiDistance::convertPoint(position, windowParent), wxSize(50,50), wxTRANSPARENT_WINDOW),
+        wxWindow(windowParent, wxID_ANY, wxGuiDistance::convertPoint(position, windowParent), wxDefaultSize, wxTRANSPARENT_WINDOW),
         _myInformation(information)
     {
+        SetInitialSize(GetDefaultSize());
 
         Connect(wxEVT_PAINT, wxPaintEventHandler(cWXVdb7SegmentDisplay::OnPaint));
 
@@ -121,15 +122,18 @@ namespace GUI {
      */
     void cWXVdb7SegmentDisplay::OnPaint(wxPaintEvent& event)
     {
-        const float xMin = (deviceWidth - ledLength)/2.0;
-        const float xMax = (deviceWidth + ledLength)/2.0;
+        const cDistance xMin      = (deviceWidth - ledLength)/2;
+        const cDistance xMax      = (deviceWidth + ledLength)/2;
+        const int       dpiWidth  = GetDPI().GetWidth();
+        const int       dpiHeight = GetDPI().GetHeight();
+
         wxPen penLed;
         wxPaintDC dc(this);
 
         //draw outline
         dc.SetBrush(wxColour(138,150,168)); //grey-blue
         dc.SetPen(wxPen(wxColour(230,250,230), 1));
-        dc.DrawRectangle(0,0, scaleWidth(deviceWidth), scaleHeight(deviceHeight));
+        dc.DrawRectangle(0,0, deviceWidth.pix(dpiWidth), deviceHeight.pix(dpiHeight));
 
         //draw the LEDs
         //   ---           bit[0]
@@ -142,60 +146,60 @@ namespace GUI {
         {
             switch (bit)
             {
-                case 0: penLed = bitSet(bit) ? wxPen(colLedOn , scaleHeight(ledWidth))
-                                             : wxPen(colLedOff, scaleHeight(ledWidth));
+                case 0: penLed = bitSet(bit) ? wxPen(colLedOn , ledWidth.pix(dpiHeight))
+                                             : wxPen(colLedOff, ledWidth.pix(dpiHeight));
                         dc.SetPen(penLed);
-                        dc.DrawLine(scaleWidth(xMin + ledOffset + ledWidth), scaleHeight(100),
-                                    scaleWidth(xMax + ledOffset - ledWidth), scaleHeight(100));
+                        dc.DrawLine(cDistance(xMin + ledOffset + ledWidth).pix(dpiWidth), cDistance(100_mils).pix(dpiHeight),
+                                    cDistance(xMax + ledOffset - ledWidth).pix(dpiWidth), cDistance(100_mils).pix(dpiHeight));
                         break;
 
-                case 1: penLed = bitSet(bit) ? wxPen(colLedOn , scaleWidth(ledWidth))
-                                             : wxPen(colLedOff, scaleWidth(ledWidth));
+                case 1: penLed = bitSet(bit) ? wxPen(colLedOn , ledWidth.pix(dpiWidth))
+                                             : wxPen(colLedOff, ledWidth.pix(dpiWidth));
                         dc.SetPen(penLed);
-                        dc.DrawLine(scaleWidth(xMax + ledOffset), scaleHeight(100 + ledWidth),
-                                    scaleWidth(xMax            ), scaleHeight(250 - ledWidth));
+                        dc.DrawLine(cDistance(xMax + ledOffset).pix(dpiWidth), cDistance(100_mils + ledWidth).pix(dpiHeight),
+                                                           xMax.pix(dpiWidth), cDistance(250_mils - ledWidth).pix(dpiHeight));
                         break;
 
-                case 2: penLed = bitSet(bit) ? wxPen(colLedOn , scaleWidth(ledWidth))
-                                             : wxPen(colLedOff, scaleWidth(ledWidth));
+                case 2: penLed = bitSet(bit) ? wxPen(colLedOn , ledWidth.pix(dpiWidth))
+                                             : wxPen(colLedOff, ledWidth.pix(dpiWidth));
                         dc.SetPen(penLed);
-                        dc.DrawLine(scaleWidth(xMax            ), scaleHeight(250 + ledWidth),
-                                    scaleWidth(xMax - ledOffset), scaleHeight(400 - ledWidth));
+                        dc.DrawLine(                       xMax.pix(dpiWidth), cDistance(250_mils + ledWidth).pix(dpiHeight),
+                                    cDistance(xMax - ledOffset).pix(dpiWidth), cDistance(400_mils - ledWidth).pix(dpiHeight));
                         break;
 
-                case 3: penLed = bitSet(bit) ? wxPen(colLedOn , scaleHeight(ledWidth))
-                                             : wxPen(colLedOff, scaleHeight(ledWidth));
+                case 3: penLed = bitSet(bit) ? wxPen(colLedOn , ledWidth.pix(dpiHeight))
+                                             : wxPen(colLedOff, ledWidth.pix(dpiHeight));
                         dc.SetPen(penLed);
-                        dc.DrawLine(scaleWidth(xMin - ledOffset + ledWidth), scaleHeight(400),
-                                    scaleWidth(xMax - ledOffset - ledWidth), scaleHeight(400));
+                        dc.DrawLine(cDistance(xMin - ledOffset + ledWidth).pix(dpiWidth), cDistance(400_mils).pix(dpiHeight),
+                                    cDistance(xMax - ledOffset - ledWidth).pix(dpiWidth), cDistance(400_mils).pix(dpiHeight));
                         break;
 
-                case 4: penLed = bitSet(bit) ? wxPen(colLedOn , scaleWidth(ledWidth))
-                                             : wxPen(colLedOff, scaleWidth(ledWidth));
+                case 4: penLed = bitSet(bit) ? wxPen(colLedOn , ledWidth.pix(dpiWidth))
+                                             : wxPen(colLedOff, ledWidth.pix(dpiWidth));
 			dc.SetPen(penLed);
-                        dc.DrawLine(scaleWidth(xMin            ), scaleHeight(250 + ledWidth),
-                                    scaleWidth(xMin - ledOffset), scaleHeight(400 - ledWidth));
+                        dc.DrawLine(                       xMin.pix(dpiWidth), cDistance(250_mils + ledWidth).pix(dpiHeight),
+                                    cDistance(xMin - ledOffset).pix(dpiWidth), cDistance(400_mils - ledWidth).pix(dpiHeight));
                         break;
 
-                case 5: penLed = bitSet(bit) ? wxPen(colLedOn , scaleWidth(ledWidth))
-                                             : wxPen(colLedOff, scaleWidth(ledWidth));
+                case 5: penLed = bitSet(bit) ? wxPen(colLedOn , ledWidth.pix(dpiWidth))
+                                             : wxPen(colLedOff, ledWidth.pix(dpiWidth));
                         dc.SetPen(penLed);
-                        dc.DrawLine(scaleWidth(xMin + ledOffset), scaleHeight(100 + ledWidth),
-                                    scaleWidth(xMin            ), scaleHeight(250 - ledWidth));
+                        dc.DrawLine(cDistance(xMin + ledOffset).pix(dpiWidth), cDistance(100_mils + ledWidth).pix(dpiHeight),
+                                                           xMin.pix(dpiWidth), cDistance(250_mils - ledWidth).pix(dpiHeight));
                         break;
 
-                case 6: penLed = bitSet(bit) ? wxPen(colLedOn , scaleHeight(ledWidth))
-                                             : wxPen(colLedOff, scaleHeight(ledWidth));
+                case 6: penLed = bitSet(bit) ? wxPen(colLedOn , ledWidth.pix(dpiHeight))
+                                             : wxPen(colLedOff, ledWidth.pix(dpiHeight));
 			dc.SetPen(penLed);
-                        dc.DrawLine(scaleWidth(xMin + ledWidth), scaleHeight(250),
-                                    scaleWidth(xMax - ledWidth), scaleHeight(250));
+                        dc.DrawLine(cDistance(xMin + ledWidth).pix(dpiWidth), cDistance(250_mils).pix(dpiHeight),
+                                    cDistance(xMax - ledWidth).pix(dpiWidth), cDistance(250_mils).pix(dpiHeight));
                         break;
 
-                case 7: penLed = bitSet(bit) ? wxPen(colLedOn , scaleHeight(ledWidth))
-                                             : wxPen(colLedOff, scaleHeight(ledWidth));
+                case 7: penLed = bitSet(bit) ? wxPen(colLedOn , ledWidth.pix(dpiHeight))
+                                             : wxPen(colLedOff, ledWidth.pix(dpiHeight));
                         dc.SetPen(penLed);
-                        dc.DrawLine(scaleWidth(xMax + ledOffset + ledWidth/2), scaleHeight(400),
-                                    scaleWidth(xMax + ledOffset - ledWidth/2), scaleHeight(400));
+                        dc.DrawLine(cDistance(xMax + ledOffset + ledWidth/2).pix(dpiWidth), cDistance(400_mils).pix(dpiHeight),
+                                    cDistance(xMax + ledOffset - ledWidth/2).pix(dpiWidth), cDistance(400_mils).pix(dpiHeight));
                         break;
             }
         }
