@@ -81,9 +81,13 @@ namespace dimensions {
         ~cDistance(){};
 
         /**
+         * Conversion to long double
+         */
+        operator long double() const { return _distance; }
+
+        /**
          * Output formats
          */
-
         long double mils() const { return inch() * milsPerInch;  }
         long double inch() const { return mm()   / mmPerInch;    }
         long double feet() const { return inch() / inchPerFoot;  }
@@ -104,7 +108,59 @@ namespace dimensions {
         long double km()   const { return _distance / 1.0E3;     }
 
         //special case to convert _distance to pixels
-        int pix(int dpi)   const { return inch() * dpi; } 
+        int pix(int dpi)   const { return inch() * dpi; }
+
+        /**
+         * Overload operators
+         */
+
+        cDistance& operator+=(const cDistance& rhs)
+        {
+            _distance += rhs._distance;
+            return *this;
+        }
+
+        cDistance& operator-=(const cDistance& rhs)
+        {
+            _distance -= rhs._distance;
+            return *this;
+        }
+
+        cDistance& operator*=(const cDistance& rhs)
+        {
+            _distance *= rhs._distance;
+            return *this;
+        }
+
+        cDistance& operator/=(const cDistance& rhs)
+        {
+            _distance /= rhs._distance;
+            return *this;
+        }
+
+        cDistance& operator+=(const long double rhs)
+        {
+            _distance += rhs;
+            return *this;
+        }
+
+        cDistance& operator-=(const long double rhs)
+        {
+            _distance -= rhs;
+            return *this;
+        }
+
+        cDistance& operator*=(const long double rhs)
+        {
+            _distance *= rhs;
+            return *this;
+        }
+
+        cDistance& operator/=(const long double rhs)
+        {
+            _distance /= rhs;
+            return *this;
+        }
     };
 
 
