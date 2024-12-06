@@ -198,8 +198,9 @@ namespace GUI {
                 case 7: penLed = bitSet(bit) ? wxPen(colLedOn , ledWidth.pix(dpiHeight))
                                              : wxPen(colLedOff, ledWidth.pix(dpiHeight));
                         dc.SetPen(penLed);
-                        dc.DrawLine(cDistance(xMax + ledOffset + ledWidth/2).pix(dpiWidth), cDistance(400_mils).pix(dpiHeight),
-                                    cDistance(xMax + ledOffset - ledWidth/2).pix(dpiWidth), cDistance(400_mils).pix(dpiHeight));
+                        dc.DrawCircle(cDistance(xMax + ledOffset).pix(dpiWidth), cDistance(400_mils).pix(dpiHeight), ledWidth.pix(dpiWidth)/2);
+//                        dc.DrawLine(cDistance(xMax + ledOffset + ledWidth/2).pix(dpiWidth), cDistance(400_mils).pix(dpiHeight),
+//                                    cDistance(xMax + ledOffset - ledWidth/2).pix(dpiWidth), cDistance(400_mils).pix(dpiHeight));
                         break;
             }
         }
