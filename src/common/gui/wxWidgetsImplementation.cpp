@@ -78,7 +78,7 @@ void cVirtualDemoBoard::init(int argc, char** argv)
     wxEntry(argc, argv);
 }
 
-void cVirtualDemoBoard::setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distancePoint minimalScreenSize, sRGBColor backgroundColor)
+void cVirtualDemoBoard::setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distanceSize minimalScreenSize, sRGBColor backgroundColor)
 {
     wxCommandEvent changeFrameEvent{wxEVT_CHANGE_FRAME};
     sChangeFrameData* const changeFrameData{ new sChangeFrameData};

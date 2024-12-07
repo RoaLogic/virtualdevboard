@@ -55,17 +55,13 @@ using namespace RoaLogic::dimensions;
 class wxGuiDistance
 {
     public:
-    static int scaleWidth  (int   width, wxWindow* window)  { return width  * window->GetDPI().GetWidth(); }
-    static int scaleWidth  (float width, wxWindow* window)  { return width  * window->GetDPI().GetWidth(); }
-    static int scaleHeight (int   height, wxWindow* window) { return height * window->GetDPI().GetHeight(); }
-    static int scaleHeight (float height, wxWindow* window) { return height * window->GetDPI().GetHeight(); }
 
-    static wxSize convertSize(distancePoint point, wxWindow* window)
+    static wxSize convertSize(distanceSize size, wxWindow* window)
     {
         wxSize newSize;
 
-        newSize.SetWidth (point.x.pix(window->GetDPI().GetWidth ()));
-        newSize.SetHeight(point.y.pix(window->GetDPI().GetHeight()));
+        newSize.SetWidth (size.width.pix(window->GetDPI().GetWidth ()));
+        newSize.SetHeight(size.height.pix(window->GetDPI().GetHeight()));
 
         return window->FromDIP(newSize);
     }

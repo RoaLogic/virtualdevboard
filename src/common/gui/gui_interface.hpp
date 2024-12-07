@@ -81,12 +81,14 @@ namespace GUI {
      */
     enum class eVdbComponentType
     {
-        //!< Led component, uses the sVdbLedInformation structure to handle it's layout
+        //!< Led component, uses the sVdbLedInformation structure to handle its layout
         vdbLed,
         //!< VGA component, does not take any information into it
         vdbVGA,
-        //!< 7 segment component, uses the sVdb7SegInformation structure to handle it's layout
-        vdb7SegmentDisplay      
+        //!< 7 segment component, uses the sVdb7SegInformation structure to handle its layout
+        vdb7SegmentDisplay,
+	//!< IC component, uses the sVdbICInformation structure to handle its layout
+	vdbIC
     };
 
     /** @enum eVdbLedType
@@ -101,7 +103,7 @@ namespace GUI {
         SMD0805,    //!< SMD led size 0805
         SMD0603,    //!< SMD led size 0603
         SMD0402,    //!< SMD led size 0402
-        SMD3520,    //!< SMD led size 3.5x2.0mm
+        SMD3520     //!< SMD led size 3.5x2.0mm
     };
 
     /** @struct sVdbLedInformation
@@ -128,7 +130,6 @@ namespace GUI {
         commonCathode, //!< 7 Segment display which uses a common cathode
     };
 
-
     /** @struct sVdb7SegInformation
      *  @brief virtual development board 7 segment information
      *  @details This structure is used to design a
@@ -142,6 +143,41 @@ namespace GUI {
     {
         eVdb7SegType type;
         sRGBColor colour;
+    };
+
+    /** @enum eVdbICType
+     *  @brief DefineS the IC types
+     */
+    enum class eVdbICType
+    {
+        SIP,   //!< Single in-line package
+        DIP,   //!< Dual in-line package
+        QIP,   //!< Quad (staggered) in-line package
+        SOP,   //!< Small outline package
+        SOJ,   //!< Small outline J-leaded package
+	SOIC,  //!< Small outline Integrated Circuit
+	QFP,   //!< Quad flat-pack
+        QFN,   //!< Quad flat no-leads package
+        PGA,   //!< Pin-grid array
+	BGA,   //!< Ball-grid array
+	CSP    //!< Chip-scale package
+    };
+
+    /** @struct sVdbICInformation
+     *  @brief virtual development board IC information
+     *  @details This structure is used to design a
+     * virtual development board integrated circuit
+     * 
+     * The type of IC is defined through the eVdbICType enumeration.
+     * Number of pins, pitch, body width and height are other parameters
+     */
+    struct sVdbICInformation
+    {
+        eVdbICType type;
+	unsigned  pincount;
+	cDistance pitch;
+	cDistance bodyWidth;
+	cDistance bodyHeight;
     };
 
     /**
@@ -171,7 +207,7 @@ namespace GUI {
     class cGuiInterface : public cSubject
     {
         public:
-        virtual void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distancePoint minimalScreenSize, sRGBColor backgroundColor) = 0;
+        virtual void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distanceSize minimalScreenSize, sRGBColor backgroundColor) = 0;
         virtual void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point, void* information) = 0;
     };
 

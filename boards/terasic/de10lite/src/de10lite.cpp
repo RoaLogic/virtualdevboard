@@ -103,8 +103,8 @@ void cDE10Lite::setupGUI()
         _myGUI->setupGui("DE10lite virtual demo board",     // Name of the application
                     "DE10lite",                             // About title information
                     "This is a virtual development board for the DE10lite", // About text
-                    distancePoint(97.54_mm, 80.01_mm),    // Size of the board
-                    sRGBColor(4, 29, 102) );            // Background colour of the board
+                    distanceSize(97.54_mm, 80.01_mm),       // Size of the board
+                    sRGBColor(4, 29, 102) );                // Background colour of the board
 
         for(size_t i = 0; i < _cNumLed; i++)
         {

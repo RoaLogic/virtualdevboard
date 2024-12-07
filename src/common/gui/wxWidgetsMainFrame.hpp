@@ -69,7 +69,7 @@ struct sChangeFrameData : public wxClientData
     std::string applicationName;
     std::string aboutTitle;
     std::string aboutText;
-    distancePoint minimalScreenSize;
+    distanceSize minimalScreenSize;
     sRGBColor backgroundColor;
 };
 
