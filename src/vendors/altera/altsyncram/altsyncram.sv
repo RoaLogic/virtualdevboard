@@ -116,7 +116,8 @@ module altsyncram
   parameter     power_up_uninitialized             = "FALSE",
   parameter     init_file                          = "",
   parameter     init_file_layout                   = "UNUSED",
-  parameter     intended_device_family             = "DONT_CARE"
+  parameter     intended_device_family             = "DONT_CARE",
+  parameter     lpm_type                           = "altsyncram"
 )
 (
   // clear inputs on both ports and here are their usage
@@ -199,7 +200,8 @@ module altsyncram
      Initialize altsyncram
   */
   import "DPI-C" context function void altsyncram_initializeInstance(input string init_file, input string init_file_layout);
-  initial if (init_file != "") altsyncram_initializeInstance(init_file, init_file_layout);
+  initial if (init_file != "" &&
+              init_file != "UNUSED") altsyncram_initializeInstance(init_file, init_file_layout);
 `endif
 
 
