@@ -52,6 +52,7 @@
 #include <wx/graphics.h>
 
 #include "gui_interface.hpp"
+#include "wxGuiDistance.hpp"
 #include "vdbLED.hpp"
 
 wxDECLARE_EVENT(wxEVT_LED, wxCommandEvent);
@@ -123,7 +124,8 @@ namespace GUI {
          */
         wxSize GetDefaultSize(wxWindow* win = NULL)
         {
-            return wxSize(GetDeviceSize().width.pix(GetDPI().GetWidth()), GetDeviceSize().height.pix(GetDPI().GetHeight()));
+            if (win == NULL) { win = this; }
+            return wxDistanceSize(GetDeviceSize(), win);
         }
 
         /**
