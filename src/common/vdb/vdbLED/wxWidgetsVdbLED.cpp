@@ -64,7 +64,7 @@ namespace GUI {
      */
     cWXVdbLed::cWXVdbLed(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbLedInformation* ledInformation) :
         cGuiVDBComponent(myVDBComponent, position),
-        wxWindow(windowParent, wxID_ANY, wxGuiDistance::convertPoint(position, windowParent), wxDefaultSize, wxTRANSPARENT_WINDOW),
+        wxWindow(windowParent, wxID_ANY, wxDistancePoint(position, windowParent), wxDefaultSize, wxTRANSPARENT_WINDOW),
         _myInformation(ledInformation)
     {
         SetInitialSize(GetDefaultSize());
@@ -121,8 +121,7 @@ namespace GUI {
      */
     void cWXVdbLed::OnPaint(wxPaintEvent& event)
     {
-        const int x = GetDeviceSize().width.pix(GetDPI().GetWidth());
-        const int y = GetDeviceSize().height.pix(GetDPI().GetHeight());
+        const wxSize size = GetDefaultSize();
 
         wxPaintDC dc(this);
         wxColour ledColour = _status ? wxColour(_myInformation->colour.red,
@@ -136,13 +135,13 @@ namespace GUI {
 	switch (_myInformation->type)
         {
             case eVdbLedType::round10mm:
-                dc.DrawCircle (x/2, y/2,cDistance(10_mm).pix(GetDPI().GetWidth()/2));
+                  dc.DrawCircle (size.x/2, size.y/2, wxCoord(wxDistanceCoord(10_mm, this))/2);
                 break;
             case eVdbLedType::round5mm :
-                dc.DrawCircle (x/2, y/2,cDistance(5_mm).pix(GetDPI().GetWidth()/2));
+                dc.DrawCircle (size.x/2, size.y/2, wxCoord(wxDistanceCoord(5_mm, this))/2);
                 break;
             case eVdbLedType::round3mm :
-                dc.DrawCircle (x/2, y/2,cDistance(3_mm).pix(GetDPI().GetWidth()/2));
+                dc.DrawCircle (size.x/2, size.y/2, wxCoord(wxDistanceCoord(3_mm, this))/2);
                 break;
             case eVdbLedType::SMD1206  :
             case eVdbLedType::SMD0805  :
@@ -150,7 +149,7 @@ namespace GUI {
             case eVdbLedType::SMD0402  :
             case eVdbLedType::SMD3520  :
             default                    :
-                dc.DrawRectangle(0,0,x,y);
+                dc.DrawRectangle(0,0,size.x,size.y);
 	}
     }
 
