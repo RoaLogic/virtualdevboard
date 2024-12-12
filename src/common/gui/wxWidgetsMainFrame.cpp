@@ -138,16 +138,19 @@ void cMainFrame::onChangeFrame(wxCommandEvent& event)
 
     this->SetLabel(_myApplicationName);
 
-    wxSize boardSize = wxGuiDistance::convertSize(eventData->minimalScreenSize, this);
+    wxSize boardSize = wxDistanceSize(eventData->minimalScreenSize, this);
+//INFO << "boardSize:" << boardSize.GetWidth() << "," << boardSize.GetHeight() << "\n";
 
     _myBoardWidth  = boardSize.GetWidth() + cLeftPanelWidth;
     _myBoardHeight = boardSize.GetHeight() + GetMenuBar()->GetSize().GetHeight();
+//INFO << "_myBoard:" << _myBoardWidth << "," << _myBoardHeight << "\n";
 
     _rightPanel->SetBackgroundColour(wxColour(eventData->backgroundColor.red, 
                                               eventData->backgroundColor.green, 
                                               eventData->backgroundColor.blue));
 
-    SetMinSize(FromDIP(wxSize(_myBoardWidth, _myBoardHeight)));
+    SetMinSize(wxSize(_myBoardWidth, _myBoardHeight));
+//INFO << "MinSize:" << GetMinSize().GetWidth() << "," << GetMinSize().GetHeight() << "\n";
 }
 
 void cMainFrame::onSize(wxSizeEvent& event)
