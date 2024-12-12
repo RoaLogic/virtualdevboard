@@ -51,7 +51,7 @@ namespace dimensions {
 
     class cDistance
     {
-        private:
+        protected:
         long double _distance;                        //distance in meter
 
         public:
@@ -78,7 +78,7 @@ namespace dimensions {
         /**
          * @brief Desctructor
          */
-        ~cDistance(){};
+        ~cDistance(){}
 
         /**
          * Conversion to long double
@@ -113,7 +113,6 @@ namespace dimensions {
         /**
          * Overload operators
          */
-
         cDistance& operator+=(const cDistance& rhs)
         {
             _distance += rhs._distance;
