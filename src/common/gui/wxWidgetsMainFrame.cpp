@@ -49,6 +49,7 @@
 #include "wxWidgetsvdbVGA.hpp"
 #include "wxWidgetsVdbLED.hpp"
 #include "wxWidgetsVdb7SegmentDisplay.hpp"
+#include "wxWidgetsVdbIC.hpp"
 
 wxDEFINE_EVENT(wxEVT_CHANGE_FRAME, wxCommandEvent);
 wxDEFINE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
@@ -245,6 +246,15 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
                                                                                       _rightPanel, 
                                                                             reinterpret_cast<sVdb7SegInformation*>(eventData->componentDetails));
                 vdbInstances.push_back(new7SegmentDisplay);
+                break;
+            }
+            case eVdbComponentType::vdbIC  :
+            {
+                cWXVdbIC* newIC = new cWXVdbIC(eventData->vdbComponent,
+                                               eventData->placement,
+                                               _rightPanel,
+                                               reinterpret_cast<sVdbICInformation*>(eventData->componentDetails));
+                vdbInstances.push_back(newIC);
                 break;
             }
             case eVdbComponentType::vdbVGA :
