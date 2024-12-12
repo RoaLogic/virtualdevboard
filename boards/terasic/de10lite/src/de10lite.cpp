@@ -106,6 +106,7 @@ void cDE10Lite::setupGUI()
                     distanceSize(97.54_mm, 80.01_mm),       // Size of the board
                     sRGBColor(4, 29, 102) );                // Background colour of the board
 
+        // LEDs
         for(size_t i = 0; i < _cNumLed; i++)
         {
             // Create a new led instance and map it through the scope with the verilated component
@@ -121,6 +122,7 @@ void cDE10Lite::setupGUI()
                                     new sVdbLedInformation(eVdbLedType::SMD3520, {255, 0, 0}));
         }
 
+        // 7-Segment Displays
         for(size_t i = 0; i < _cNum7Seg; i++)
         {
             // Create a new 7 segment instance and map it through the scope with the verilated component
@@ -136,6 +138,12 @@ void cDE10Lite::setupGUI()
                                     // 7 segment specific information, in this case a common anode 7 segment, with a full red colour
                                     new sVdb7SegInformation(eVdb7SegType::commonAnode, {255, 0, 0}));
         }
+
+        // SDRAM
+        _myGUI->addVdbComponent(eVdbComponentType::vdbIC, // VDB component type IC
+                                nullptr,                  // No verilated content
+                                distancePoint(10_mm,40_mm),
+                                new sVdbICInformation(eVdbICType::TSOP2, 54, 22.5_mm, 10.2_mm, 0.8_mm, 0.5_mm, 1.2_mm));
 
         // Create a new VGA instance and map it through the scope with the verilated component
         _vgaController = new cVdbVGAMonitor("TOP.de10lite_verilator_wrapper.vgaMonitor_inst", this, clk_vga,
