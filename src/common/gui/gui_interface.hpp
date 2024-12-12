@@ -154,6 +154,8 @@ namespace GUI {
         DIP,   //!< Dual in-line package
         QIP,   //!< Quad (staggered) in-line package
         SOP,   //!< Small outline package
+        TSOP,  //!< Thin small outline package
+        TSOP2, //!< Thins small outline package type-II
         SOJ,   //!< Small outline J-leaded package
 	SOIC,  //!< Small outline Integrated Circuit
 	QFP,   //!< Quad flat-pack
@@ -174,10 +176,12 @@ namespace GUI {
     struct sVdbICInformation
     {
         eVdbICType type;
-	unsigned  pincount;
-	cDistance pitch;
-	cDistance bodyWidth;
-	cDistance bodyHeight;
+        unsigned   pinCount;
+        cDistance  bodyWidth;
+        cDistance  bodyHeight;
+	cDistance  padPitch;
+	cDistance  padWidth;
+	cDistance  padHeight;
     };
 
     /**
@@ -235,27 +239,27 @@ namespace GUI {
             _myVDBComponent(myVDBComponent),
             _myScreenPosition(myPosition)
         {
-            myVDBComponent->registerObserver(this);
+            if (myVDBComponent) myVDBComponent->registerObserver(this);
         }
 
         ~cGuiVDBComponent()
         {
-            _myVDBComponent->removeObserver(this);
+            removeObserver();
         }
 
         void removeObserver()
         {
-            _myVDBComponent->removeObserver(this);
+            if (_myVDBComponent) _myVDBComponent->removeObserver(this);
         }
 
-        size_t getID()
+        size_t getID() const
         {
-            return _myVDBComponent->getID();
+            return _myVDBComponent ? _myVDBComponent->getID() : 0;
         }
 
-        int getIntID()
+        int getIntID() const
         {
-            return static_cast<int>(_myVDBComponent->getID());
+            return static_cast<int>(getID());
         }
 
         virtual void onClose(){};
