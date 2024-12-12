@@ -52,6 +52,7 @@
 #include <wx/graphics.h>
 
 #include "gui_interface.hpp"
+#include "wxGuiDistance.hpp"
 #include "vdb7SegmentDisplay.hpp"
 
 wxDECLARE_EVENT(wxEVT_7Segment, wxCommandEvent);
@@ -96,7 +97,7 @@ namespace GUI {
          * @details This helper function returns true if bit @bit is set in @_value, false otherwise
          * @returns true if the bit is set, false otherwise
          */
-        bool bitSet      (int   bit  )  const { return (_value >> bit) & 1; }
+        bool bitSet (int bit)  const { return (_value >> bit) & 1; }
 
         /**
          * @brief Default widget size
@@ -107,7 +108,8 @@ namespace GUI {
         */
         wxSize GetDefaultSize(wxWindow* win = NULL)
         {
-            return wxSize(deviceWidth.pix(GetDPI().GetWidth()),deviceHeight.pix(GetDPI().GetHeight()));
+            if (win==NULL) { win = this; }
+            return wxDistanceSize(deviceWidth, deviceHeight, win);
         }
 
         /**
