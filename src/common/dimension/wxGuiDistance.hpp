@@ -52,9 +52,144 @@
 
 using namespace RoaLogic::dimensions;
 
+class wxDistanceCoord : public cDistance
+{
+    private:
+    wxWindow* window;
+
+    public:
+    /**
+     * @brief constructor
+     */
+    wxDistanceCoord (wxWindow* window) : window(window), cDistance(){}
+    wxDistanceCoord (long double val, wxWindow* window) : window(window), cDistance(val){}
+
+    /**
+     * @brief destructor
+     */
+    ~wxDistanceCoord(){}
+
+    /**
+     * @brief Conversion to wxCoord
+     * @details Converts distance to wxCoord assuming horizontal and vertical conversion factor is the same
+     */
+    operator wxCoord() const { return window->ToPhys( window->FromDIP( inch() * window->GetDPI().GetWidth() ) ); }
+};
+
+
+class wxDistanceSize
+{
+    private:
+    wxWindow *window;
+    distanceSize size;
+
+    public:
+    /**
+     * @brief constructor
+     */
+    wxDistanceSize (wxWindow* window) : window(window){}
+    wxDistanceSize (distanceSize size, wxWindow* window) : window(window), size(size){}
+    wxDistanceSize (cDistance width, cDistance height, wxWindow* window) : window(window) {
+      SetWidth(width);
+      SetHeight(height);
+    }
+
+    /**
+     * @brief destructor
+     */
+    ~wxDistanceSize(){}
+
+    /**
+     * @brief sets width
+     */
+    void SetWidth(cDistance width) { size.width = width; }
+
+    /**
+     * @brief sets height
+     */
+    void SetHeight(cDistance height) { size.height = height; }
+
+    /**
+     * @brief GetWidth() returns width
+     */
+    cDistance GetWidth() const { return size.width; }
+
+    /**
+     * @brief GetHeight() returns height
+     */
+    cDistance GetHeight() const { return size.height; }
+
+    /**
+     * @brief conversion to distanceSize
+     */
+    operator distanceSize() const { return size; }
+
+    /**
+     * @brief Conversion to wxSize
+     * @details Converts width and height distance to wxSize
+     */
+    operator wxSize() const {
+        return window->ToPhys(window->FromDIP(
+                   wxSize( size.width.inch() * window->GetDPI().GetWidth(),
+                           size.height.inch() * window->GetDPI().GetHeight() )
+               ));
+    }
+};
+
+
+class wxDistancePoint
+{
+    private:
+    wxWindow *window;
+
+    public:
+    cDistance x;
+    cDistance y;
+
+    /**
+     * @brief constructor
+     */
+    wxDistancePoint (wxWindow* window) : window(window){}
+    wxDistancePoint (distancePoint point, wxWindow* window) : window(window), x(point.x), y(point.y){}
+    wxDistancePoint (cDistance x, cDistance y, wxWindow* window) : window(window), x(x), y(y) {}
+
+    /**
+     * @brief destructor
+     */
+    ~wxDistancePoint(){}
+
+    /**
+     * @brief conversion to distancePoint
+     */
+    operator distancePoint() const { return distancePoint(x,y); }
+
+    /**
+     * @brief Conversion to wxPoint
+     * @details Converts (x,y) to wxPoint
+     */
+    operator wxPoint() const {
+        return window->ToPhys(window->FromDIP(
+                   wxPoint( x.inch() * window->GetDPI().GetWidth(),
+                            y.inch() * window->GetDPI().GetHeight() )
+               ));
+      }
+};
+
+
+
 class wxGuiDistance
 {
     public:
+
+    static wxCoord convertCoord(cDistance x, wxWindow* window)
+    {
+      wxCoord newCoord;
+
+      newCoord = x.inch() * window->GetDPI().GetWidth();
+      newCoord = window->FromDIP(newCoord);
+
+      return window->ToPhys(newCoord);
+    }
 
     static wxSize convertSize(distanceSize size, wxWindow* window)
     {
@@ -63,7 +198,7 @@ class wxGuiDistance
         newSize.SetWidth (size.width.pix(window->GetDPI().GetWidth ()));
         newSize.SetHeight(size.height.pix(window->GetDPI().GetHeight()));
 
-        return window->FromDIP(newSize);
+        return window->ToPhys(window->FromDIP(newSize));
     }
 
     static wxPoint convertPoint(distancePoint point, wxWindow* window)
@@ -73,7 +208,7 @@ class wxGuiDistance
         newPoint.x = point.x.pix(window->GetDPI().GetWidth ());
         newPoint.y = point.y.pix(window->GetDPI().GetHeight());
 
-        return newPoint;
+        return window->ToPhys(newPoint);
     }
 };
 
