@@ -62,7 +62,7 @@ namespace GUI {
      */
     cWXVdb7SegmentDisplay::cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdb7SegInformation* information) :
         cGuiVDBComponent(myVDBComponent, position),
-        wxWindow(windowParent, wxID_ANY, wxGuiDistance::convertPoint(position, windowParent), wxDefaultSize, wxTRANSPARENT_WINDOW),
+        wxWindow(windowParent, wxID_ANY, wxDistancePoint(position, windowParent), wxDefaultSize, wxTRANSPARENT_WINDOW),
         _myInformation(information)
     {
         SetInitialSize(GetDefaultSize());
@@ -124,8 +124,8 @@ namespace GUI {
     {
         const cDistance xMin      = (deviceWidth - ledLength)/2;
         const cDistance xMax      = (deviceWidth + ledLength)/2;
-        const int       dpiWidth  = GetDPI().GetWidth();
-        const int       dpiHeight = GetDPI().GetHeight();
+        const int       dpiWidth  = ToPhys(FromDIP(GetDPI().GetWidth ()));
+        const int       dpiHeight = ToPhys(FromDIP(GetDPI().GetHeight()));
 
         wxPen penLed;
         wxPaintDC dc(this);
@@ -133,7 +133,7 @@ namespace GUI {
         //draw outline
         dc.SetBrush(wxColour(138,150,168)); //grey-blue
         dc.SetPen(wxPen(wxColour(230,250,230), 1));
-        dc.DrawRectangle(0,0, deviceWidth.pix(dpiWidth), deviceHeight.pix(dpiHeight));
+        dc.DrawRectangle(wxPoint(0,0), wxDistanceSize(deviceWidth, deviceHeight, this));
 
         //draw the LEDs
         //   ---           bit[0]
