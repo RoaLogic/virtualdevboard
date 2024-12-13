@@ -145,43 +145,17 @@ namespace GUI {
         sRGBColor colour;
     };
 
-    /** @enum eVdbICType
-     *  @brief DefineS the IC types
-     */
-    enum class eVdbICType
-    {
-        SIP,   //!< Single in-line package
-        DIP,   //!< Dual in-line package
-        QIP,   //!< Quad (staggered) in-line package
-        SOP,   //!< Small outline package
-        TSOP,  //!< Thin small outline package
-        TSOP2, //!< Thins small outline package type-II
-        SOJ,   //!< Small outline J-leaded package
-	SOIC,  //!< Small outline Integrated Circuit
-	QFP,   //!< Quad flat-pack
-        QFN,   //!< Quad flat no-leads package
-        PGA,   //!< Pin-grid array
-	BGA,   //!< Ball-grid array
-	CSP    //!< Chip-scale package
-    };
-
     /** @struct sVdbICInformation
      *  @brief virtual development board IC information
-     *  @details This structure is used to design a
-     * virtual development board integrated circuit
-     * 
-     * The type of IC is defined through the eVdbICType enumeration.
-     * Number of pins, pitch, body width and height are other parameters
+     *  @details This structure is used to design a virtual development board IC.
+     *           The IC is drawn as a simple rectangle of distanceSize dimension,
+     *           with text @label in the center
      */
     struct sVdbICInformation
     {
-        eVdbICType type;
-        unsigned   pinCount;
-        cDistance  bodyWidth;
-        cDistance  bodyHeight;
-	cDistance  padPitch;
-	cDistance  padWidth;
-	cDistance  padHeight;
+        cDistance width;
+        cDistance height;
+        std::string label;
     };
 
     /**

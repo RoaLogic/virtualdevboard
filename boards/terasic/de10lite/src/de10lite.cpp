@@ -146,19 +146,19 @@ void cDE10Lite::setupGUI()
         _myGUI->addVdbComponent(eVdbComponentType::vdbIC, // VDB component type IC
                                 nullptr,                  // No verilated content
                                 distancePoint(9_mm,37_mm),
-                                new sVdbICInformation(eVdbICType::TSOP2, 54, 22.5_mm, 10.2_mm, 0.8_mm, 0.5_mm, 1.2_mm));
+                                new sVdbICInformation(875_mils,400_mils,"SDRAM"));
 
         // MAX-II (GUI only element)
         _myGUI->addVdbComponent(eVdbComponentType::vdbIC, // VDB component type IC
                                 nullptr,                  // No verilated content
                                 distancePoint(19.5_mm, 18.5_mm),
-                                new sVdbICInformation(eVdbICType::QFN, 100, 13_mm, 13_mm, 0.8_mm, 0.5_mm, 1.2_mm));
+                                new sVdbICInformation(14_mm,14_mm,"MAX-II"));
 
         // MAX10 (FPGA)
         _myGUI->addVdbComponent(eVdbComponentType::vdbIC, // VDB component type IC
                                 nullptr,                  // No verilated content
                                 distancePoint(39_mm,26.5_mm),
-                                new sVdbICInformation(eVdbICType::BGA, 484, 23_mm, 23_mm, 0.8_mm, 0.5_mm, 1.2_mm));
+                                new sVdbICInformation(23_mm, 23_mm,"FPGA"));
 
         // Create a new VGA instance and map it through the scope with the verilated component
         _vgaController = new cVdbVGAMonitor("TOP.de10lite_verilator_wrapper.vgaMonitor_inst", this, clk_vga,

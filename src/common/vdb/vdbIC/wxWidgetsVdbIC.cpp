@@ -58,10 +58,12 @@ namespace GUI {
      */
     cWXVdbIC::cWXVdbIC(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbICInformation* information) :
         cGuiVDBComponent(myVDBComponent, position),
-        wxWindow(windowParent, wxID_ANY, wxDistancePoint(position, windowParent), wxDefaultSize, wxTRANSPARENT_WINDOW),
+        wxWindow(windowParent, wxID_ANY, wxPoint(wxDistancePoint(position, windowParent)), wxDefaultSize, wxTRANSPARENT_WINDOW),
         _myInformation(information)
     {
         SetInitialSize(GetDefaultSize());
+
+        Connect(wxEVT_PAINT, wxPaintEventHandler(cWXVdbIC::OnPaint));
     }
 
     
@@ -74,91 +76,40 @@ namespace GUI {
      */
     void cWXVdbIC::OnPaint(wxPaintEvent& event)
     {
-        const int x = GetDeviceSize().width.pix(GetDPI().GetWidth());
-        const int y = GetDeviceSize().height.pix(GetDPI().GetHeight());
-        wxDistancePoint point = wxDistancePoint(this);
-
         wxPaintDC dc(this);
 
-        //First Draw pins, if visible
-        wxColour PinColour = wxColour(188,198,204); //shiny silver (apparently)
-        dc.SetPen(wxPen(wxColour(PinColour),1));
-        dc.SetBrush(PinColour);
-	switch (_myInformation->type)
-        {
-            case eVdbICType::SIP   :
-                for (int n=0; n < _myInformation->pinCount; n++)
-                {
-                    dc.DrawCircle(cDistance(_myInformation->padPitch/2 + n*_myInformation->padPitch).pix(GetDPI().GetWidth()),
-                                  y/2,
-                                  cDistance(_myInformation->padPitch/2).pix(GetDPI().GetWidth()));
-                }
-                break;
+        wxSize  size = wxDistanceSize(_myInformation->width,_myInformation->height, this);
+        wxSize  textSize;
+        wxPoint textOrigin;
+        double  angle;
 
-            case eVdbICType::DIP   :
-                for (int n=0; n < _myInformation->pinCount/2; n++)
-                {
-                    //top row
-                    dc.DrawRectangle(cDistance(_myInformation->padPitch/2 + n*_myInformation->padPitch).pix(GetDPI().GetWidth()),
-                                     0,
-                                     cDistance(_myInformation->padPitch   + n*_myInformation->padPitch).pix(GetDPI().GetWidth()),
-                                     -cDistance(25_mils).pix(GetDPI().GetHeight()));
-                    //bottom row
-                    dc.DrawRectangle(cDistance(_myInformation->padPitch/2 + n*_myInformation->padPitch).pix(GetDPI().GetWidth()),
-                                     y,
-                                     cDistance(_myInformation->padPitch   + n*_myInformation->padPitch).pix(GetDPI().GetWidth()),
-                                     cDistance(GetDeviceSize().height + 25_mils).pix(GetDPI().GetHeight()));
-                }
-                break;
-
-            case eVdbICType::QIP   :
-            case eVdbICType::SOP   :
-            case eVdbICType::TSOP  :
-            case eVdbICType::TSOP2 :
-                {
-                    const cDistance padPitch  = 0.229_mm;
-                    const cDistance padWidth  = 0.131_mm;
-                    const cDistance padHeight = 0.334_mm;
-                }
-                break;
-
-            case eVdbICType::SOJ   :
-            case eVdbICType::SOIC  : 
-            case eVdbICType::QFN   :
-            default                : ;
-	}
-
-        //Then Draw the IC (just a rectangle)
-        wxColour ICColour  = wxColour(36,36,36);    //antracit black
+        //Draw the IC (just a rectangle)
+        wxColour ICColour  = wxColour(55,50,45);    //black
         dc.SetPen(wxPen(wxColour(ICColour),1));
         dc.SetBrush(ICColour);
-        dc.DrawRectangle(0,0,x,y);
-    }
+        dc.DrawRectangle(wxPoint(0,0),size);
 
+        //add light lines for 3D effect
+        dc.SetPen(wxPen(wxColour(150,140,130),2));
+        dc.DrawLine(0,0,size.GetWidth(),0);
+        dc.DrawLine(0,0,0,size.GetHeight());
 
-    /**
-     * @brief Return size of the IC
-     *        Returns a ridiculously large number to indicate an unknown type without breaking functionality
-     */
-    distanceSize cWXVdbIC::GetDeviceSize()
-    {
-        switch (_myInformation->type)
-	{
-            case eVdbICType::SIP   :
-            case eVdbICType::DIP   :
-            case eVdbICType::QIP   :
-            case eVdbICType::SOP   :
-            case eVdbICType::TSOP  :
-            case eVdbICType::TSOP2 :
-            case eVdbICType::SOJ   :
-            case eVdbICType::SOIC  : return distanceSize(_myInformation->padPitch * (_myInformation->pinCount/2 +1),
-                                                         _myInformation->bodyHeight);
-            case eVdbICType::QFN   : return distanceSize(_myInformation->padPitch * (_myInformation->pinCount/4 +1),
-                                                         _myInformation->padPitch * (_myInformation->pinCount/4 +1));
-            case eVdbICType::PGA   : 
-            case eVdbICType::BGA   :
-            case eVdbICType::CSP   : return distanceSize(_myInformation->bodyWidth, _myInformation->bodyHeight);
-            default                : return distanceSize(100_mm, 100_mm);
-	}
+        //add label
+        dc.SetFont(*wxNORMAL_FONT);
+        dc.SetTextForeground(*wxWHITE);
+        textSize = GetTextExtent(_myInformation->label);
+        if (size.GetHeight() > size.GetWidth())
+        {
+            angle = 90;
+            textOrigin.x = (size.GetWidth() - textSize.GetHeight())/2;
+            textOrigin.y = (size.GetHeight() + textSize.GetWidth())/2;
+        }
+        else
+        {
+            angle = 0;
+            textOrigin.x = (size.GetWidth() - textSize.GetWidth())/2;
+            textOrigin.y = (size.GetHeight() - textSize.GetHeight())/2;
+        }
+        dc.DrawRotatedText(_myInformation->label, textOrigin, angle);
     }
 }}

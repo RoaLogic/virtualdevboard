@@ -99,12 +99,6 @@ namespace GUI {
         ~cWXVdbIC() {}
 
         /**
-         * @brief IC size
-         * @details Returns the size of the IC
-         */
-        distanceSize GetDeviceSize();
-
-        /**
          * @brief Default component size
          * @details Returns the default size for the component.
 	 *
@@ -114,7 +108,7 @@ namespace GUI {
         wxSize GetDefaultSize(wxWindow* win = NULL)
         {
             if (win==NULL) { win = this; }
-            return wxDistanceSize(GetDeviceSize(), win);
+            return wxDistanceSize(_myInformation->width,_myInformation->height, win);
         }
 
         /**
