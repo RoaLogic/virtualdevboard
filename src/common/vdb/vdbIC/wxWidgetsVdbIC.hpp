@@ -65,7 +65,7 @@ namespace GUI {
      * @brief IC virtual development board component
      * 
      * @details
-     * This class draws an IC. If event handling is required, then that must be
+     * This class draws an abstract IC. If event handling is required, then that must be
      * handled in a derived class.
      */
     class cWXVdbIC : public cGuiVDBComponent, public wxWindow

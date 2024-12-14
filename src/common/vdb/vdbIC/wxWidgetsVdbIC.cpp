@@ -69,7 +69,7 @@ namespace GUI {
     
     /**
      * @brief Draw the IC
-     * @details Draws an IC shape based on information.type and size given by GetDeviceSize.
+     * @details Draws an abstract IC shape based on information.size
      *          The origin (0,0) is the top-left corner, not pin0
      * 
      * @param event 
