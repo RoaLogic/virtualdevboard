@@ -46,28 +46,35 @@
 /**
  * @section vdbComponent_1 Virtual development board components
  * 
- * Virtual development board components are specific components which
- * on one side connect with the verilated design and on the other side
- * show there state to the user. It connects with the verilated
- * code and interpret the signals of the design back into logic. This
- * is not limited to C++ code, it's possible that it has a minor 
- * System Verilog design component. Using System Verilog enhances 
- * performance but also aids the C++ component development and makes
- * it more simple and more readable. Each component shall have a specific
- * implementation for showing information to the user, this is seperated
- * so that different UI frameworks can be used. But with this it's also
- * possible to implement something completly different for showing the 
- * information to the user. The second reason to have seperate implementation
- * for the verilated design and the UI design is the use of different 
- * threads. 
+ * Virtual development board components are components which have a specific
+ * system functionality, for example a LED. Meaning that there is a output
+ * of the system that connects with a LED, that LED is then shown on the GUI 
+ * to the user. To set this up there are two different base designs, one basic 
+ * module to connect with the verilated design and a module to show the state 
+ * on the GUI. This is split for two reasons, one is that it's possible to have
+ * a component which is not connected to the verilated design or not shown on 
+ * the GUI. Second reason is that it's possible to change the UI framework 
+ * without having to change each component, this also helps with the two 
+ * different threads for the verilated design and the GUI.
  * 
- * One example for this are the LED's, they have a system verilog component,
- * which notifies when the corresponding pin of the design is toggled. It 
- * simplifies the C++ code that it only waits for an event and doesn't need
- * to poll the IO line every clock tick. On the UI we could draw the LED and
- * let it glow when the LED is active and dim when the LED is off.
+ * All vdb components shall be placed in the vdb directory and have there own
+ * submap named vdb<component name>. All design files shall be added
+ * in this subdirectory, where the classes that connect with the verilated 
+ * design are called vdb<component name>. Classes that show something on 
+ * the GUI are named differently, <UI framework>vdb<component name>.
  * 
- * @section vdbComponent_2 virtual development board verilated common design
+ * As example the LED, placed in subdirectory vdbLED. It has the system verilog
+ * design in vdbLED.sv and the C++ sources that connect with the verilated design,
+ * vdbLED.hpp and vdbLED.cpp. The LED implementation for wxWidgets is placed in the
+ * wxWidgetsVdbLED.hpp and wxWidgetVdbLED.cpp.
+ * 
+ * @section vdbComponent_2 virtual development board component basic module
+ * 
+ * The virtual development board basic module is the module that directly 
+ * connects with the verilated design. This can be done in two ways, first is
+ * by a specific system verilog design component that uses DPI functions. 
+ * Second method is by directly checking the design itself. Preferred is to
+ * use the DPI methodology, as this simplifies and enhances design speed.
  * 
  * Since the base of each virtual development board component is the same, a
  * generic base class is designed, see @ref RoaLogic::vdb::cVDBCommon. This is a 
@@ -94,25 +101,27 @@
  * determines the implementation of the vdb component.
  * 
  * @note DPI functions shall be placed within the *.cpp file of the corresponding
- * implementation. This so that we cannot accidently call those functions.
+ * implementation. In this way the DPI functions are private and are not called
+ * within the design.
  * 
  * @attention Every DPI function must call the processVerilatorEvent() function
  * so that the system can handle the event accordingly.
  * 
- * @section vdbComponent_3 virtual development board UI common
+ * @section vdbComponent_3 virtual development board component UI common
  * 
- * Each virtual development board component is developed in such way that it 
- * is abstracted from the UI framework. This means that each vdb component shall
- * have a verilated design component and a specific UI implementation for the
- * corresponding framework. Since the vdb common component does not know or care
- * anything about the UI implementation it abstracts this fully away. 
+ * Each UI component shall implement the RoaLogic::GUI::cGuiVDBComponent  base 
+ * class. In this class all the basics are implemented to directly communicate
+ * with the vdb common component, which is passed during construction. There are
+ * cases where the verilated component is not used, a nullptr can at that point 
+ * be given and the class will handle it accordingly. 
  * 
- * The abstraction is created by the observer pattern and by using a virtual function.
- * Both serve a different use case, since the vdb component does not know anything
- * about the UI implementation, but the UI implementation does know the vdb common 
- * component, it can call the virtual cppEvent() function. With this data from the 
- * UI can be passed into the verilated context, where each component can override 
- * the cppEvent() and implement it's implementation.
+ * The VDB common component does not care about the UI implementation and abstracts 
+ * it away. This abstraction is created by the observer pattern and by using a
+ * virtual function. Both serve a different use case, since the vdb component does 
+ * not know anything about the UI implementation, but the UI implementation does 
+ * know the vdb common component, it can call the virtual cppEvent() function. With 
+ * this data from the UI can be passed into the verilated context, where each 
+ * component can override the cppEvent() and implement it's implementation.
  * 
  * From the verilated context to the UI is slightly more complicated, especially since
  * each UI framework uses a different event mechanism. Because of this every vdb 
@@ -123,6 +132,11 @@
  * @attention Due that UI components shall be updated within there own thread,
  * the observer of the vdb component must handle the context switch from the
  * verilator thread to the UI thread.
+ * 
+ * @section vdbComponent_3 virtual development board component creating a new one
+ * 
+ * @todo Add description on how to create a new development board component
+ * 
  */
 
 //include Dpi headers, required to link verilator model to C++
