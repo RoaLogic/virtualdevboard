@@ -56,4 +56,3 @@ INCDIRS +=$(CWD)altsyncram
 #restore CWD
 CWD:=$(SAVE_CWD)
 
-
