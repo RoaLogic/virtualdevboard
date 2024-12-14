@@ -133,7 +133,11 @@
  * the observer of the vdb component must handle the context switch from the
  * verilator thread to the UI thread.
  * 
- * @section vdbComponent_3 virtual development board component creating a new one
+ * @section vdbComponent_4 virtual development board existing components
+ * 
+ * @todo Add and link the existing components
+ * 
+ * @section vdbComponent_5 virtual development board component creating a new one
  * 
  * @todo Add description on how to create a new development board component
  * 
