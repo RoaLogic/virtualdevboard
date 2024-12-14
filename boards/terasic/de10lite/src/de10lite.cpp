@@ -160,6 +160,13 @@ void cDE10Lite::setupGUI()
                                 distancePoint(39_mm,26.5_mm),
                                 new sVdbICInformation(23_mm, 23_mm,"FPGA"));
 
+
+        // Create the VGA connector
+        _myGUI->addVdbComponent(eVdbComponentType::vdbConnector, // VDB connector component for VGA
+                                nullptr,                         // No verilated content
+                                distancePoint(81_mm,7.5_mm),
+                                new sVdbConnectorInformation(eVdbConnectorType::DSUB,30.8_mm,16.2_mm,"VGA"));
+
         // Create a new VGA instance and map it through the scope with the verilated component
         _vgaController = new cVdbVGAMonitor("TOP.de10lite_verilator_wrapper.vgaMonitor_inst", this, clk_vga,
                                             _core->de10lite_verilator_wrapper->vgaMonitor_inst->framebuffer);

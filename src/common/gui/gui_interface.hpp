@@ -83,7 +83,9 @@ namespace GUI {
     {
         //!< Led component, uses the sVdbLedInformation structure to handle its layout
         vdbLed,
-        //!< VGA component, does not take any information into it
+        //!< Connector component (now only VGA), does not yet use any information
+        vdbConnector,
+        //!< VGA component, does not use any information
         vdbVGA,
         //!< 7 segment component, uses the sVdb7SegInformation structure to handle its layout
         vdb7SegmentDisplay,
@@ -157,6 +159,31 @@ namespace GUI {
         cDistance height;
         std::string label;
     };
+
+    /** @enum eVdbConnectorType
+     *  @brief Defines the connector types
+     */
+    enum class eVdbConnectorType
+    {
+        DSUB   //!< D-SUB style
+    };
+
+    /** @struct sVdbConnectorInformation
+     *  @brief virtual development board connector information
+     *  @details This structure is used to design a virtual development board connector
+     *
+     * The type of connector is defined through the eVdbConnectorType enumeration
+     * Size is defined through the size variable
+     */
+    struct sVdbConnectorInformation
+    {
+        eVdbConnectorType type;
+        cDistance         width;
+        cDistance         height;
+        std::string       label;
+    };
+
+
 
     /**
      * @class cGuiInterface

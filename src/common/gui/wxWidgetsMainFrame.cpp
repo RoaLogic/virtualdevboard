@@ -46,10 +46,11 @@
 #include "wxGuiDistance.hpp"
 
 #include "wxWidgetsMainFrame.hpp"
-#include "wxWidgetsvdbVGA.hpp"
+#include "wxWidgetsVdbVGA.hpp"
 #include "wxWidgetsVdbLED.hpp"
 #include "wxWidgetsVdb7SegmentDisplay.hpp"
 #include "wxWidgetsVdbIC.hpp"
+#include "wxWidgetsVdbConnector.hpp"
 
 wxDEFINE_EVENT(wxEVT_CHANGE_FRAME, wxCommandEvent);
 wxDEFINE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
@@ -248,6 +249,14 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
                 vdbInstances.push_back(new7SegmentDisplay);
                 break;
             }
+            case eVdbComponentType::vdbConnector :
+            {
+                cWXVdbConnector* newConnector = new cWXVdbConnector(eventData->vdbComponent,
+                                                                    eventData->placement,
+                                                                    _rightPanel,
+                                                                    reinterpret_cast<sVdbConnectorInformation*>(eventData->componentDetails));
+                break;
+            }
             case eVdbComponentType::vdbIC  :
             {
                 cWXVdbIC* newIC = new cWXVdbIC(eventData->vdbComponent,
@@ -259,7 +268,7 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
             }
             case eVdbComponentType::vdbVGA :
             {
-                cWXvdbVGAMonitor* newVGA = new cWXvdbVGAMonitor(eventData->vdbComponent, eventData->placement, this);
+                cWXVdbVGAMonitor* newVGA = new cWXVdbVGAMonitor(eventData->vdbComponent, eventData->placement, this);
                 vdbInstances.push_back(newVGA);
                 break;
             }
