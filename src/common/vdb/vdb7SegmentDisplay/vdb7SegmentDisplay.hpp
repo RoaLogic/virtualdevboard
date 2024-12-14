@@ -71,9 +71,6 @@ namespace vdb
     class cVdb7SegmentDisplay : public cVDBCommon
     {
         private:
-        uint8_t _myID;
-        svScope _myScope;                 //!< The scope of the verilated context
-
         void verilatorCallback(uint32_t event);
 
         public:
