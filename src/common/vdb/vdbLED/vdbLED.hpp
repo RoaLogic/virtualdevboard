@@ -79,8 +79,6 @@ namespace vdb
         };
 
         private:
-        svScope _myScope;                 //!< The scope of the verilated context
-
         void verilatorCallback(uint32_t event);
 
         public:

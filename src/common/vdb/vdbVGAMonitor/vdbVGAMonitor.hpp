@@ -101,7 +101,6 @@ namespace vdb
         private:
         cTimeInterface* _timeInterface;   //!< Pointer to the time interface for retrieving the current time
         cClock* _pixelClock;              //!< Pointer to the pixel clock, which must be generated within this class
-        svScope _myScope;                 //!< The scope of the verilated context
         simtime_t _previousVSyncTime;     //!< Previous time that a VSYNC occured
         uint8_t _currentSetting = 0xff;   //!< Current lookup table setting, 0xff means no element found
         sVgaData _myEventData;            //!< Event data element which is passed in any of the events

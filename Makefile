@@ -48,6 +48,7 @@ default: help
 
 CWD:=$(dir $(lastword $(MAKEFILE_LIST)))
 BUILDDIR=build
+DOCDIR=doc
 BOARDS_DIR=$(CWD)boards
 
 include $(CWD)boards/common/Makefile.include
@@ -100,4 +101,14 @@ help:
 	@echo "make <board>_clean  : clean <board> build directory"
 	@echo "make help           : this help message"
 
+
+#####################################################################
+## Doc
+#####################################################################
+.PHONY: doc
+
+doc:
+	@echo "Building doxygen documentation"
+	if [ ! -d $(DOCDIR) ]; then mkdir $(DOCDIR); fi
+	doxygen doxyfile
 

@@ -146,7 +146,7 @@ namespace vdb
      */
     cVdbVGAMonitor::cVdbVGAMonitor(std::string scopeName, cTimeInterface* timeInterface, cClock* pixelClock,
                 VlUnpacked<unsigned int,cMaxVerticalLines*cMaxHorizontalLines>& framebuffer) :
-        cVDBCommon(0),
+        cVDBCommon(scopeName, 0),
         _timeInterface(timeInterface),
         _pixelClock(pixelClock),
         _myFramebuffer(framebuffer)
@@ -154,16 +154,6 @@ namespace vdb
         // Make sure that the passed parameters are not nullpointers
         assert(timeInterface != nullptr);   
         assert(pixelClock != nullptr);
-
-        // Get the scope according to the given name
-        _myScope = svGetScopeFromName(scopeName.c_str());
-        svSetScope(_myScope);
-
-        // Make sure that the scope is not a nullpointer
-        assert(_myScope != nullptr);
-
-        // Store this class instance in the gloval class instances
-        registerVdb(sVdbMap{_myScope, this});
 
         _myEventData.horizontalLines = 0;
         _myEventData.verticalLines = 0;
@@ -178,7 +168,7 @@ namespace vdb
      */
     cVdbVGAMonitor::~cVdbVGAMonitor()
     {
-        unregisterVdb(sVdbMap{_myScope, this});
+
     }
 
     /**

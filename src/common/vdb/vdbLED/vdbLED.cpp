@@ -105,21 +105,11 @@ namespace vdb
      * @param[in] id            Optional ID of this led (mainly used for debugging)
      */
     cVdbLed::cVdbLed(std::string scopeName, uint8_t id) :
-        cVDBCommon(id)
+        cVDBCommon(scopeName, id)
     {
-        // Get the scope according to the given name
-        _myScope = svGetScopeFromName(scopeName.c_str());
-        svSetScope(_myScope);
-
         #ifdef DBG_VDB_LED
         INFO << "LED: Create: ID " << id << " Scope: "<< svGetScope() << "\n";
         #endif
-
-        // Make sure that the scope is not a nullpointer
-        assert(_myScope != nullptr);
-
-        // Store this class instance in the gloval class instances
-        registerVdb(sVdbMap{_myScope, this});
     }
 
     /**
@@ -129,7 +119,7 @@ namespace vdb
      */
     cVdbLed::~cVdbLed()
     {
-        unregisterVdb(sVdbMap{_myScope, this});
+
     }
 
     /**

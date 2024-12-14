@@ -43,6 +43,106 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
+/**
+ * @section vdbComponent_1 Virtual development board components
+ * 
+ * Virtual development board components are components which have a specific
+ * system functionality, for example a LED. Meaning that there is a output
+ * of the system that connects with a LED, that LED is then shown on the GUI 
+ * to the user. To set this up there are two different base designs, one basic 
+ * module to connect with the verilated design and a module to show the state 
+ * on the GUI. This is split for two reasons, one is that it's possible to have
+ * a component which is not connected to the verilated design or not shown on 
+ * the GUI. Second reason is that it's possible to change the UI framework 
+ * without having to change each component, this also helps with the two 
+ * different threads for the verilated design and the GUI.
+ * 
+ * All vdb components shall be placed in the vdb directory and have there own
+ * submap named vdb<component name>. All design files shall be added
+ * in this subdirectory, where the classes that connect with the verilated 
+ * design are called vdb<component name>. Classes that show something on 
+ * the GUI are named differently, <UI framework>vdb<component name>.
+ * 
+ * As example the LED, placed in subdirectory vdbLED. It has the system verilog
+ * design in vdbLED.sv and the C++ sources that connect with the verilated design,
+ * vdbLED.hpp and vdbLED.cpp. The LED implementation for wxWidgets is placed in the
+ * wxWidgetsVdbLED.hpp and wxWidgetVdbLED.cpp.
+ * 
+ * @section vdbComponent_2 virtual development board component basic module
+ * 
+ * The virtual development board basic module is the module that directly 
+ * connects with the verilated design. This can be done in two ways, first is
+ * by a specific system verilog design component that uses DPI functions. 
+ * Second method is by directly checking the design itself. Preferred is to
+ * use the DPI methodology, as this simplifies and enhances design speed.
+ * 
+ * Since the base of each virtual development board component is the same, a
+ * generic base class is designed, see @ref RoaLogic::vdb::cVDBCommon. This is a 
+ * header only class implementation which holds everything needed to communicate 
+ * with a verilated component. To link a vdb component with a verilated design 
+ * component, the verilated scope is used. This scope must be given during 
+ * construction of the class, see @ref <add ref> for more information about 
+ * the scope of a verilated design.
+ * 
+ * When a verilated component has an event, like the toggling of an IO pin, a 
+ * specific DPI function is called. However this DPI function only knows the 
+ * scope of the design and not the corresponding class scope. Because of this
+ * the vdb common component holds a few static functions to handle the mapping
+ * of the scope and the pointer of the vdb component. All vdb components and 
+ * their scope are stored statically, which is automaticcaly done during class 
+ * creation and destruction. 
+ * 
+ * DPI functions must call the processVerilatorEvent() with the scope of the 
+ * event and possible event data. It traverses all the components to find 
+ * the related scope, when found it calls the virtual verilatorCallback()
+ * function. In this function it has changed the context and we are now 
+ * inside the class of the vdb component with the related event data. Since 
+ * the verilatorCallback() function is pure virtual the derived class
+ * determines the implementation of the vdb component.
+ * 
+ * @note DPI functions shall be placed within the *.cpp file of the corresponding
+ * implementation. In this way the DPI functions are private and are not called
+ * within the design.
+ * 
+ * @attention Every DPI function must call the processVerilatorEvent() function
+ * so that the system can handle the event accordingly.
+ * 
+ * @section vdbComponent_3 virtual development board component UI common
+ * 
+ * Each UI component shall implement the RoaLogic::GUI::cGuiVDBComponent  base 
+ * class. In this class all the basics are implemented to directly communicate
+ * with the vdb common component, which is passed during construction. There are
+ * cases where the verilated component is not used, a nullptr can at that point 
+ * be given and the class will handle it accordingly. 
+ * 
+ * The VDB common component does not care about the UI implementation and abstracts 
+ * it away. This abstraction is created by the observer pattern and by using a
+ * virtual function. Both serve a different use case, since the vdb component does 
+ * not know anything about the UI implementation, but the UI implementation does 
+ * know the vdb common component, it can call the virtual cppEvent() function. With 
+ * this data from the UI can be passed into the verilated context, where each 
+ * component can override the cppEvent() and implement it's implementation.
+ * 
+ * From the verilated context to the UI is slightly more complicated, especially since
+ * each UI framework uses a different event mechanism. Because of this every vdb 
+ * component shall implement a CSubject, so that any UI component can register to it.
+ * Every vdb component can now notify the UI component, which at that point can
+ * notify the UI framework with it's own event handling. 
+ * 
+ * @attention Due that UI components shall be updated within there own thread,
+ * the observer of the vdb component must handle the context switch from the
+ * verilator thread to the UI thread.
+ * 
+ * @section vdbComponent_4 virtual development board existing components
+ * 
+ * @todo Add and link the existing components
+ * 
+ * @section vdbComponent_5 virtual development board component creating a new one
+ * 
+ * @todo Add description on how to create a new development board component
+ * 
+ */
+
 //include Dpi headers, required to link verilator model to C++
 #include "vdb__Dpi.h"
 
@@ -78,18 +178,41 @@ namespace vdb
      */
     class cVDBCommon : public cSubject
     {
-        protected:
+        private:
+        /**
+         * @brief Structure to hold the scope and
+         * pointer for a vdb component 
+         */
         struct sVdbMap
         {
-            svScope scope;
-            cVDBCommon* reference;
+            svScope scope;          //!< Scope of the component
+            cVDBCommon* reference;  //!< Pointer to the component
         };
+        static std::vector<sVdbMap> _referencePointers; //!< Static vector for all maps
 
+        protected:
+        /**
+         * @brief register a vdb component
+         * @details This function registers a map of the
+         * scope and vdb common component together into 
+         * a static vector.
+         * 
+         * @param[in] map   The new vdb map to register
+         */
         static void registerVdb(sVdbMap map)
         {
             _referencePointers.push_back(map);
         }
 
+        /**
+         * @brief unregister a vdb component
+         * @details This function unregisters a map of the
+         * scope and vdb common component. First we traverse
+         * the list and see if we can find the reference,
+         * when found this element is removed from the list.
+         * 
+         * @param[in] map   The vdb map to unregister
+         */
         static void unregisterVdb(sVdbMap map)
         {
             uint32_t iterator = 0;
@@ -108,16 +231,31 @@ namespace vdb
         }
 
         public:
-        cVDBCommon(size_t id) : _myID(id){};
-
+        /**
+         * @brief Process a verilator event
+         * @details This function shall be called from a verilated DPI
+         * function. It takes the scope of the event and the value of the
+         * event (which is specific to each component). 
+         * 
+         * Traverse the full list of registered components and see if we
+         * can find the scope. When the scope is found the virtual 
+         * verilatorCallback function is called with the corresponding
+         * event code.
+         * 
+         * @param[in] scope     The verilated scope of the event
+         * @param[in] event     The event which happend (specific to the component)
+         */        
         static void processVerilatorEvent(svScope scope, uint32_t event)
         {
             bool found = false;
 
+            // Loop all registered vdb components
             for (const sVdbMap& ref : _referencePointers)
             {
+                // Check if we found the component
                 if(ref.scope == scope)
                 {
+                    // Call the callback with the event value
                     ref.reference->verilatorCallback(event);
                     found = true;
                     break;
@@ -130,13 +268,81 @@ namespace vdb
             }
         }
 
-        virtual void verilatorCallback(uint32_t event) = 0;
+        protected:
+        size_t  _myID;           //!< The ID of the vdb component
+        svScope _myScope;        //!< The scope of the verilated context
 
+        public:
+        /**
+         * @brief Construct a new cVDBCommon object
+         * @details This constructer creates a new cVDBCommon object
+         *
+         * First the scope is set according to the given name, where it is
+         * also checked that the scope exists. When this is ok, it registers
+         * this class for any verilator actions.
+         *
+         * @param[in] scopeName     Scope of this vdb component
+         * @param[in] id            Optional ID of the component
+         */
+        cVDBCommon(std::string scopeName, size_t id) : 
+            _myID(id)
+        {
+            // Get the scope according to the given name
+            _myScope = svGetScopeFromName(scopeName.c_str());
+            svSetScope(_myScope);
+
+            // Make sure that the scope is not a nullpointer
+            assert(_myScope != nullptr);
+
+            // Store this class instance in the global class instances
+            registerVdb(sVdbMap{_myScope, this});
+        };
+
+        /**
+         * @brief destruct the cVDBCommon object
+         *
+         * Unregister this class so that it's not called anymore
+         */
+        virtual ~cVDBCommon()
+        {
+            unregisterVdb(sVdbMap{_myScope, this});
+        }
+
+        /**
+         * @brief Get the ID of the component
+         * 
+         * @return The ID number of the component 
+         */
         size_t getID(){return _myID;};
 
-        private:
-        static std::vector<sVdbMap> _referencePointers;
-        size_t _myID;
+        /**
+         * @brief Verilator function callback
+         * @details This function is called when an
+         * event occurs for this vdb component. In this function
+         * we are in the class and have all knowledge needed.
+         * 
+         * The event data is specific per component, where it
+         * is just passed as uint32_t.
+         * 
+         * @param[in] event The event data for the handler
+         */
+        virtual void verilatorCallback(uint32_t event) = 0;
+
+        /**
+         * @brief Callback function from the C++ side
+         * @details This function is called when an event
+         * occurs on the C++ side of the vdb component.
+         * 
+         * Derived classes can override this function as 
+         * needed and implement their own methodology.
+         * 
+         * @todo Do we need a context switch or could it
+         * be changed from a different thread, it is already
+         * async, so why not?
+         * 
+         * @param[in] event     The event data 
+         */
+        virtual void cppEvent(uint32_t event){};
     };
 
     inline std::vector<cVDBCommon::sVdbMap> cVDBCommon::_referencePointers;
