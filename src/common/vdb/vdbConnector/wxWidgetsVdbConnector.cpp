@@ -82,20 +82,49 @@ namespace GUI {
         wxPoint textOrigin;
         double  angle;
 
+        dc.SetLogicalOrigin(wxDistanceCoord(0,this),wxDistanceCoord(-6_mm,this));
+
         //Draw the connector (just a bunch of rectangles)
+	//base
         myColour = wxColour(50,50,50);    //black
         dc.SetPen(wxPen(wxColour(myColour),1));
         dc.SetBrush(myColour);
         dc.DrawRectangle(wxPoint(0,0),size);
 
+	//connector edge
         myColour = wxColour(43,43,43); //different black
         dc.SetBrush(myColour);
         dc.DrawRectangle(wxPoint(0,0),wxDistanceSize(_myInformation->width, 3_mm, this));
+	//connector main
+        dc.DrawRectangle(wxDistancePoint(7.3_mm,0,this),
+                         wxDistanceSize(_myInformation->width - 14.6_mm,_myInformation->height,this));
 
         //metal sides (40x40)
-        myColour = wxColour(250,210,150);
+        myColour = wxColour(172,189,193);
         dc.SetPen(wxPen(wxColour(myColour),1));
         dc.SetBrush(myColour);
-        ed.DrawRectangle(wxPoint
+        dc.DrawRectangle(wxDistancePoint(0.5_mm,3_mm,this),
+                         wxDistanceSize(6.3_mm, 10_mm, this));
+        dc.DrawRectangle(wxDistancePoint(_myInformation->width - 0.5_mm,3_mm,this),
+                         wxDistanceSize(-6.3_mm, 10_mm, this));
+
+        //metal connector
+        dc.DrawRectangle(wxDistancePoint(7.3_mm,0,this),
+                         wxDistanceSize(_myInformation->width - 15.6_mm, -6_mm, this));
+
+        //metal bushings
+        dc.DrawRectangle(wxDistancePoint(3.15_mm - 4.75_mm/2,0,this),
+                         wxDistanceSize(4.75_mm,-4.75_mm,this));
+        dc.DrawRectangle(wxDistancePoint(_myInformation->width -(3.15_mm - 4.75_mm/2),0,this),
+                         wxDistanceSize(-4.75_mm,-4.75_mm,this));
+
+        //Mounting holes
+        myColour = wxColour(170,127,49); //bronze/gold
+        dc.SetBrush(myColour);
+        dc.DrawCircle(wxDistancePoint(3.15_mm,_myInformation->height/2,this),
+                      wxDistanceCoord(1.6_mm,this));
+        dc.DrawCircle(wxDistancePoint(_myInformation->width - 3.15_mm,_myInformation->height/2,this),
+                      wxDistanceCoord(1.6_mm,this));
+
     }
 }}

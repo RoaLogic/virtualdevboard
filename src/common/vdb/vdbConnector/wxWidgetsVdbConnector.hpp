@@ -108,7 +108,7 @@ namespace GUI {
         wxSize GetDefaultSize(wxWindow* win = NULL)
         {
             if (win==NULL) { win = this; }
-            return wxDistanceSize(_myInformation->width,_myInformation->height, win);
+            return wxDistanceSize(_myInformation->width,_myInformation->height + 6_mm, win);
         }
 
         /**
