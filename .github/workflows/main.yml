@@ -9,7 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: JustEnoughMod/DoxygenDeployAction@v1.0.0
+      - uses: JustEnoughMod/DoxygenDeployAction@v1.0.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh_pages
