@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['ieee_0',['ieee',['../classmux__using__with.html#a44d1d60c58066d98a072e90b31c9d908',1,'mux_using_with']]],
-  ['istream_1',['istream',['../classRoaLogic_1_1lexer_1_1lexerBase.html#a81e14bb849791fca0a8bef0a20d2ce59',1,'RoaLogic::lexer::lexerBase']]]
+  ['mmperinch_0',['mmPerInch',['../classRoaLogic_1_1dimensions_1_1cDistance.html#a02e24655beab46b89144bce2f65fc32c',1,'RoaLogic::dimensions::cDistance']]]
 ];

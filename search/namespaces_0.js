@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['docstring_0',['docstring',['../namespacedocstring.html',1,'']]]
+  ['roalogic_0',['RoaLogic',['../namespaceRoaLogic.html',1,'']]]
 ];

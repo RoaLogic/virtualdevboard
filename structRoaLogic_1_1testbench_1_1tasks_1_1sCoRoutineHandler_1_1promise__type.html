@@ -244,7 +244,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>return value </p>
-<p>This function is called just before final suspend and is used to return a value from the user. <a class="el" href="classA.html">A</a> promise type must hold either void <a class="el" href="structRoaLogic_1_1testbench_1_1tasks_1_1sCoRoutineHandler_1_1promise__type.html#a7f121f507c1843ca95238a12de8a0ded" title="return value">return_value()</a> or void return_void() depending on how the coroutine is used.</p>
+<p>This function is called just before final suspend and is used to return a value from the user. A promise type must hold either void <a class="el" href="structRoaLogic_1_1testbench_1_1tasks_1_1sCoRoutineHandler_1_1promise__type.html#a7f121f507c1843ca95238a12de8a0ded" title="return value">return_value()</a> or void return_void() depending on how the coroutine is used.</p>
 <p><a class="el" href="structRoaLogic_1_1testbench_1_1tasks_1_1sCoRoutineHandler_1_1promise__type.html#a7f121f507c1843ca95238a12de8a0ded" title="return value">return_value()</a> is used with "co_return e" return_void() is used with "co_return"</p>
 <p>For our testbench we will use return_value so we can get test results from our test. (This can always be ignored)</p>
 <p>CAUTION: falling of the end without a return_void() or <a class="el" href="structRoaLogic_1_1testbench_1_1tasks_1_1sCoRoutineHandler_1_1promise__type.html#a7f121f507c1843ca95238a12de8a0ded" title="return value">return_value()</a> causes undefined behaviour!!!!</p>

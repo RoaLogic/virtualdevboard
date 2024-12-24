@@ -1,9 +1,13 @@
 var searchData=
 [
-  ['test_0',['Test',['../classTest.html#a44e3a28c552193de099601e2910531f1',1,'Test::Test()'],['../classTest.html#adcf1bc755df94c4d07519c0a02aa1cc0',1,'Test::Test(const Test &amp;)'],['../classTest_3_01void_01_5_00_01200_01_4.html#aef160085cc11406b872b45fa871c7692',1,'Test&lt; void *, 200 &gt;::Test()'],['../classTest_3_01T_01_5_01_4.html#a474e8a1211308b3f810f9eafced6cbe7',1,'Test&lt; T * &gt;::Test()']]],
-  ['testme_1',['testMe',['../classJavadoc__Test.html#a0c472683ed25ff096e8a9edfb18d550c',1,'Javadoc_Test::testMe()'],['../classQTstyle__Test.html#a8840748753118dd468e8368a28e49c62',1,'QTstyle_Test::testMe()']]],
-  ['testmetoo_2',['testMeToo',['../classJavadoc__Test.html#ac2b39cabbe80957ae3e8bc2bd4e887f6',1,'Javadoc_Test::testMeToo()'],['../classQTstyle__Test.html#ad5b201f097a720d44bf976c2f27efbda',1,'QTstyle_Test::testMeToo()']]],
-  ['tick_3',['tick',['../classRoaLogic_1_1testbench_1_1clock_1_1cClockManager.html#ae37a89a8cfbd402f335ffc3b94727e34',1,'RoaLogic::testbench::clock::cClockManager::tick()'],['../classRoaLogic_1_1testbench_1_1cTestBench.html#a5868bad85430c592b229df89e673c1a8',1,'RoaLogic::testbench::cTestBench::tick()']]],
-  ['transactionend_4',['transactionEnd',['../classRoaLogic_1_1bus_1_1cBusInterface.html#a15619bc4aa342849882f58d92f274e16',1,'RoaLogic::bus::cBusInterface']]],
-  ['transactionstart_5',['transactionStart',['../classRoaLogic_1_1bus_1_1cBusInterface.html#a3f3435c4f0cb7d19be1ac5c764a8a368',1,'RoaLogic::bus::cBusInterface']]]
+  ['waitedge_0',['waitEdge',['../classRoaLogic_1_1testbench_1_1clock_1_1cClock.html#a5dc53baf99ab538f64c0e8b545f84e79',1,'RoaLogic::testbench::clock::cClock']]],
+  ['write_1',['write',['../classRoaLogic_1_1bus_1_1cBusAPB4.html#a3f4658166471bb0f5a8bc1beeea6f292',1,'RoaLogic::bus::cBusAPB4::write()'],['../classRoaLogic_1_1bus_1_1cBusInterface.html#a3316b5b08930933fb4b7f9202195284d',1,'RoaLogic::bus::cBusInterface::write()']]],
+  ['wxdistancecoord_2',['wxDistanceCoord',['../classwxDistanceCoord.html#a6390536bb2e23daa9b7f47400c310e6d',1,'wxDistanceCoord']]],
+  ['wxdistancepoint_3',['wxDistancePoint',['../classwxDistancePoint.html#a6626dab268f396b27dcd31297a83b4ab',1,'wxDistancePoint']]],
+  ['wxdistancesize_4',['wxDistanceSize',['../classwxDistanceSize.html#af5e130cb635e986c0b21d3e7013c8225',1,'wxDistanceSize']]],
+  ['wxmediabutton_5',['wxMediaButton',['../classwxMediaButton.html#a0254bda3b087d44d212d6b5a9daf4811',1,'wxMediaButton']]],
+  ['wxmediaplaypausebutton_6',['wxMediaPlayPauseButton',['../classwxMediaPlayPauseButton.html#aa7a14fa50a1bb8ed607d4657fe37eb80',1,'wxMediaPlayPauseButton']]],
+  ['wxmediapowerbutton_7',['wxMediaPowerButton',['../classwxMediaPowerButton.html#a0c7c219919ab554609827f25f0727a06',1,'wxMediaPowerButton']]],
+  ['wxmediaresetbutton_8',['wxMediaResetButton',['../classwxMediaResetButton.html#a921d5b9680f2e5a543d3b6b7df5ee7df',1,'wxMediaResetButton']]],
+  ['wxmediastopbutton_9',['wxMediaStopButton',['../classwxMediaStopButton.html#a46bdd136bd6614461b7200ee0224d2fd',1,'wxMediaStopButton']]]
 ];

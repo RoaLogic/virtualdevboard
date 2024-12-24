@@ -1,6 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classRoaLogic_1_1lexer_1_1lexerBase.html" title=" " alt="" coords="5,42,236,67"/>
-<area shape="rect" id="node2" href="$classRoaLogic_1_1lexer_1_1filelexer.html" title=" " alt="" coords="303,5,484,45"/>
-<area shape="rect" id="node4" href="$classRoaLogic_1_1lexer_1_1filelexer.html" title="Template class for a lexer that uses a file as input stream version 1.0.0." alt="" coords="284,70,503,95"/>
-<area shape="rect" id="node3" href="$classRoaLogic_1_1lexer_1_1miflexer.html" title="Lexer for MIF files version 1.0.0." alt="" coords="551,13,733,38"/>
-</map>

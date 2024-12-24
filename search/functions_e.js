@@ -1,19 +1,13 @@
 var searchData=
 [
-  ['objref_0',['objRef',['../structObject.html#a71225073d06a793b9a6ea9263ed37b12',1,'Object']]],
-  ['objunref_1',['objUnref',['../structObject.html#a924ee0cecc906d148022b3f0d6325cfb',1,'Object']]],
-  ['onpaint_2',['OnPaint',['../classwxMediaButton.html#a5472ab3102ccf1cdb4d2046f3c12169f',1,'wxMediaButton::OnPaint()'],['../classRoaLogic_1_1GUI_1_1cWXVdb7SegmentDisplay.html#a367bfa2d61d220da3dedf6ca0452a740',1,'RoaLogic::GUI::cWXVdb7SegmentDisplay::OnPaint()'],['../classRoaLogic_1_1GUI_1_1cWXVdbConnector.html#a6d7b9faaaa7b9d670cecbf4cae486444',1,'RoaLogic::GUI::cWXVdbConnector::OnPaint()'],['../classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a768ea798575f34c0c0576a997a3fb911',1,'RoaLogic::GUI::cWXVdbIC::OnPaint()'],['../classRoaLogic_1_1GUI_1_1cWXVdbLed.html#a45b3043beeb2d7c24efc336d3cfc864a',1,'RoaLogic::GUI::cWXVdbLed::OnPaint()']]],
-  ['onpaintprehandle_3',['OnPaintPreHandle',['../classwxMediaButton.html#af13c634a5151bc471425cf4008084ea9',1,'wxMediaButton']]],
-  ['open_4',['open',['../structcmd_8h.html#a2c4414339f388561554c2deab11a1a07',1,'structcmd.h']]],
-  ['opentrace_5',['opentrace',['../classRoaLogic_1_1testbench_1_1cTestBench.html#a35933d0d170cfc910adf90b21c020c93',1,'RoaLogic::testbench::cTestBench']]],
-  ['operator_20bool_6',['operator bool',['../structRoaLogic_1_1testbench_1_1tasks_1_1sCoRoutineHandler.html#a0028343bcf29e2d87539857b68317c24',1,'RoaLogic::testbench::tasks::sCoRoutineHandler']]],
-  ['operator_20distancepoint_7',['operator distancePoint',['../classwxDistancePoint.html#a7b2a6972b43c63e5196213d5af09d059',1,'wxDistancePoint']]],
-  ['operator_20distancesize_8',['operator distanceSize',['../classwxDistanceSize.html#aee902e4fabc754b4d2b26a207eb4ac77',1,'wxDistanceSize']]],
-  ['operator_20long_20double_9',['operator long double',['../classRoaLogic_1_1dimensions_1_1cDistance.html#a9ba9955c230997b1647b66efb4642d4d',1,'RoaLogic::dimensions::cDistance']]],
-  ['operator_20wxcoord_10',['operator wxCoord',['../classwxDistanceCoord.html#aadfa68fd026ab65d76565d57aff9477e',1,'wxDistanceCoord']]],
-  ['operator_20wxpoint_11',['operator wxPoint',['../classwxDistancePoint.html#a6f45025d12849ba73266d95825aeeeba',1,'wxDistancePoint']]],
-  ['operator_20wxsize_12',['operator wxSize',['../classwxDistanceSize.html#a6d0839b2561274f46ef6d4700489c449',1,'wxDistanceSize']]],
-  ['operator_2b_3d_13',['operator+=',['../classRoaLogic_1_1dimensions_1_1cDistance.html#a78c85bd4a77d4c25548fd718c989937f',1,'RoaLogic::dimensions::cDistance']]],
-  ['operator_3c_3c_14',['operator&lt;&lt;',['../classRoaLogic_1_1common_1_1cLog.html#af81b214fc41c59b5a6c7c667e1675815',1,'RoaLogic::common::cLog']]],
-  ['optioncount_15',['optionCount',['../classRoaLogic_1_1common_1_1cValueOption.html#a1e297e941fa5c604a4162352c64589b0',1,'RoaLogic::common::cValueOption']]]
+  ['read_0',['read',['../classRoaLogic_1_1bus_1_1cBusAPB4.html#a024ec99cd3afa4f1e91c916b4eaf2f40',1,'RoaLogic::bus::cBusAPB4::read()'],['../classRoaLogic_1_1bus_1_1cBusInterface.html#a174c4b35ede688eb218299c5859cdd35',1,'RoaLogic::bus::cBusInterface::read()']]],
+  ['registerobserver_1',['registerObserver',['../classRoaLogic_1_1observer_1_1cSubject.html#ae5972ef76af4a66c66dc5a99d7cfb92f',1,'RoaLogic::observer::cSubject']]],
+  ['registervdb_2',['registerVdb',['../classRoaLogic_1_1vdb_1_1cVDBCommon.html#a5f369a03ed0040e15e149ea0ff5da307',1,'RoaLogic::vdb::cVDBCommon']]],
+  ['removeobserver_3',['removeObserver',['../classRoaLogic_1_1observer_1_1cSubject.html#afebf4791a7763fad61c88ac298bd3cba',1,'RoaLogic::observer::cSubject']]],
+  ['reset_4',['Reset',['../classcDE10Lite.html#aba9298dcd8f125a9476443eac160af75',1,'cDE10Lite']]],
+  ['resume_5',['resume',['../structRoaLogic_1_1testbench_1_1tasks_1_1sCoRoutineHandler.html#a23b756a4a873f1056f94413bc4b0af9b',1,'RoaLogic::testbench::tasks::sCoRoutineHandler']]],
+  ['return_5fvalue_6',['return_value',['../structRoaLogic_1_1testbench_1_1tasks_1_1sCoRoutineHandler_1_1promise__type.html#a7f121f507c1843ca95238a12de8a0ded',1,'RoaLogic::testbench::tasks::sCoRoutineHandler::promise_type']]],
+  ['ringbuffer_7',['ringbuffer',['../classRoaLogic_1_1common_1_1ringbuffer.html#ad04feb6f4fc3d9280a233b30910ad4f5',1,'RoaLogic::common::ringbuffer']]],
+  ['ringbufferiterator_8',['ringbufferIterator',['../classRoaLogic_1_1common_1_1ringbufferIterator.html#a969fb54a9bbeebece4b8cc11bade993a',1,'RoaLogic::common::ringbufferIterator']]],
+  ['run_9',['run',['../classcDE10Lite.html#ac46ecee5335d551bc9e06d3a1e22c532',1,'cDE10Lite']]]
 ];

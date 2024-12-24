@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structRoaLogic_1_1GUI_1_1sVdb7SegInformation.html" title="virtual development board 7 segment information" alt="" coords="5,5,267,31"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,31,116,56"/>
+<area shape="rect" id="node2" href="$structsAddVdbComponent.html" title=" " alt="" coords="164,5,319,31"/>
+<area shape="rect" id="node3" href="$structsChangeFrameData.html" title=" " alt="" coords="166,55,317,80"/>
 </map>

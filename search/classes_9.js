@@ -1,7 +1,12 @@
 var searchData=
 [
-  ['memgrp_5ftest_0',['Memgrp_Test',['../classMemgrp__Test.html',1,'']]],
-  ['miflexer_1',['miflexer',['../classRoaLogic_1_1lexer_1_1miflexer.html',1,'RoaLogic::lexer']]],
-  ['mifparser_2',['mifparser',['../classRoaLogic_1_1parser_1_1mifparser.html',1,'RoaLogic::parser']]],
-  ['mux_5fusing_5fwith_3',['mux_using_with',['../classmux__using__with.html',1,'']]]
+  ['wxdistancecoord_0',['wxDistanceCoord',['../classwxDistanceCoord.html',1,'']]],
+  ['wxdistancepoint_1',['wxDistancePoint',['../classwxDistancePoint.html',1,'']]],
+  ['wxdistancesize_2',['wxDistanceSize',['../classwxDistanceSize.html',1,'']]],
+  ['wxguidistance_3',['wxGuiDistance',['../classwxGuiDistance.html',1,'']]],
+  ['wxmediabutton_4',['wxMediaButton',['../classwxMediaButton.html',1,'']]],
+  ['wxmediaplaypausebutton_5',['wxMediaPlayPauseButton',['../classwxMediaPlayPauseButton.html',1,'']]],
+  ['wxmediapowerbutton_6',['wxMediaPowerButton',['../classwxMediaPowerButton.html',1,'']]],
+  ['wxmediaresetbutton_7',['wxMediaResetButton',['../classwxMediaResetButton.html',1,'']]],
+  ['wxmediastopbutton_8',['wxMediaStopButton',['../classwxMediaStopButton.html',1,'']]]
 ];

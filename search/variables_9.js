@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['mmperinch_0',['mmPerInch',['../classRoaLogic_1_1dimensions_1_1cDistance.html#a02e24655beab46b89144bce2f65fc32c',1,'RoaLogic::dimensions::cDistance']]],
-  ['mux_5fout_1',['mux_out',['../classmux__using__with.html#a6258515f40573285292fdb0b9663c422',1,'mux_using_with']]]
+  ['tokvalue_0',['tokValue',['../classRoaLogic_1_1lexer_1_1miflexer.html#a67bb7b412a5640c947bc15481dbdd841',1,'RoaLogic::lexer::miflexer']]],
+  ['type_1',['type',['../structRoaLogic_1_1GUI_1_1sVdbLedInformation.html#a85be587f33c65953be8418faade39c4a',1,'RoaLogic::GUI::sVdbLedInformation']]]
 ];

@@ -1,11 +1,16 @@
 var searchData=
 [
-  ['main_0',['main',['../manual_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'manual.c']]],
-  ['max_5fsize_1',['max_size',['../classRoaLogic_1_1common_1_1ringbuffer.html#a77c8cb22928c44cdeedac3bd692c6c96',1,'RoaLogic::common::ringbuffer']]],
-  ['member_2',['member',['../classAfterdoc__Test.html#a57ba94e9039ee90a1b191ae0009a05dd',1,'Afterdoc_Test::member()'],['../classAutolink__Test.html#a393ea281f235a2f603d98daf72b0d411',1,'Autolink_Test::member(int)'],['../classAutolink__Test.html#acf783a43c2b4b6cc9dd2361784eca2e1',1,'Autolink_Test::member(int, int)'],['../classFn__Test.html#a823b5c9726bb8f6ece50e57ac8e3092c',1,'Fn_Test::member()']]],
-  ['miflexer_3',['miflexer',['../classRoaLogic_1_1lexer_1_1miflexer.html#a55e4d40ed0c46c2e565ad1f4a9c136b3',1,'RoaLogic::lexer::miflexer']]],
-  ['mifparser_4',['mifparser',['../classRoaLogic_1_1parser_1_1mifparser.html#aba691389008493390061e0310f511bae',1,'RoaLogic::parser::mifparser']]],
-  ['mils_5',['mils',['../classRoaLogic_1_1dimensions_1_1cDistance.html#a3f83f79164758096c53392147f771b15',1,'RoaLogic::dimensions::cDistance']]],
-  ['mouseleftup_6',['MouseLeftUp',['../classwxMediaButton.html#aa4f56c8a5918069a4d99b80bf7e18343',1,'wxMediaButton']]],
-  ['mouseleftupprehandle_7',['MouseLeftUpPreHandle',['../classwxMediaPlayPauseButton.html#a9b20e75c16ce9c45395957e7304b3cc8',1,'wxMediaPlayPauseButton']]]
+  ['onpaint_0',['OnPaint',['../classRoaLogic_1_1GUI_1_1cWXVdb7SegmentDisplay.html#a367bfa2d61d220da3dedf6ca0452a740',1,'RoaLogic::GUI::cWXVdb7SegmentDisplay::OnPaint()'],['../classRoaLogic_1_1GUI_1_1cWXVdbConnector.html#a6d7b9faaaa7b9d670cecbf4cae486444',1,'RoaLogic::GUI::cWXVdbConnector::OnPaint()'],['../classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a768ea798575f34c0c0576a997a3fb911',1,'RoaLogic::GUI::cWXVdbIC::OnPaint()'],['../classRoaLogic_1_1GUI_1_1cWXVdbLed.html#a45b3043beeb2d7c24efc336d3cfc864a',1,'RoaLogic::GUI::cWXVdbLed::OnPaint()'],['../classwxMediaButton.html#a5472ab3102ccf1cdb4d2046f3c12169f',1,'wxMediaButton::OnPaint(wxPaintEvent &amp;evt)']]],
+  ['onpaintprehandle_1',['OnPaintPreHandle',['../classwxMediaButton.html#af13c634a5151bc471425cf4008084ea9',1,'wxMediaButton']]],
+  ['opentrace_2',['opentrace',['../classRoaLogic_1_1testbench_1_1cTestBench.html#a35933d0d170cfc910adf90b21c020c93',1,'RoaLogic::testbench::cTestBench']]],
+  ['operator_20bool_3',['operator bool',['../structRoaLogic_1_1testbench_1_1tasks_1_1sCoRoutineHandler.html#a0028343bcf29e2d87539857b68317c24',1,'RoaLogic::testbench::tasks::sCoRoutineHandler']]],
+  ['operator_20distancepoint_4',['operator distancePoint',['../classwxDistancePoint.html#a7b2a6972b43c63e5196213d5af09d059',1,'wxDistancePoint']]],
+  ['operator_20distancesize_5',['operator distanceSize',['../classwxDistanceSize.html#aee902e4fabc754b4d2b26a207eb4ac77',1,'wxDistanceSize']]],
+  ['operator_20long_20double_6',['operator long double',['../classRoaLogic_1_1dimensions_1_1cDistance.html#a9ba9955c230997b1647b66efb4642d4d',1,'RoaLogic::dimensions::cDistance']]],
+  ['operator_20wxcoord_7',['operator wxCoord',['../classwxDistanceCoord.html#aadfa68fd026ab65d76565d57aff9477e',1,'wxDistanceCoord']]],
+  ['operator_20wxpoint_8',['operator wxPoint',['../classwxDistancePoint.html#a6f45025d12849ba73266d95825aeeeba',1,'wxDistancePoint']]],
+  ['operator_20wxsize_9',['operator wxSize',['../classwxDistanceSize.html#a6d0839b2561274f46ef6d4700489c449',1,'wxDistanceSize']]],
+  ['operator_2b_3d_10',['operator+=',['../classRoaLogic_1_1dimensions_1_1cDistance.html#a78c85bd4a77d4c25548fd718c989937f',1,'RoaLogic::dimensions::cDistance']]],
+  ['operator_3c_3c_11',['operator&lt;&lt;',['../classRoaLogic_1_1common_1_1cLog.html#af81b214fc41c59b5a6c7c667e1675815',1,'RoaLogic::common::cLog']]],
+  ['optioncount_12',['optionCount',['../classRoaLogic_1_1common_1_1cValueOption.html#a1e297e941fa5c604a4162352c64589b0',1,'RoaLogic::common::cValueOption']]]
 ];

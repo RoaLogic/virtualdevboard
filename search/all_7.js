@@ -12,7 +12,7 @@ var searchData=
   ['gethighperiod_9',['getHighPeriod',['../classRoaLogic_1_1testbench_1_1clock_1_1cClock.html#a84ce38f7842fd916e425c6cc0fc22340',1,'RoaLogic::testbench::clock::cClock']]],
   ['getid_10',['getID',['../classRoaLogic_1_1vdb_1_1cVDBCommon.html#ab9b2e836aa62a9b8a81df682d51fd262',1,'RoaLogic::vdb::cVDBCommon']]],
   ['getinstance_11',['getInstance',['../classRoaLogic_1_1common_1_1cLog.html#a105381ff7bd55b9046563e00c1cbc55f',1,'RoaLogic::common::cLog']]],
-  ['getlabel_12',['GetLabel',['../classwxMediaPlayPauseButton.html#a34c65858e88afe233087b7939465cebb',1,'wxMediaPlayPauseButton::GetLabel()'],['../classwxMediaStopButton.html#acd584904b51d990560b09d30a914fa83',1,'wxMediaStopButton::GetLabel()'],['../classwxMediaPowerButton.html#acc3c353f7ee7485df2bbe1dfd0f376c4',1,'wxMediaPowerButton::GetLabel()'],['../classwxMediaResetButton.html#a833c94d4d076ea5123f8351bc88d3e6f',1,'wxMediaResetButton::GetLabel()']]],
+  ['getlabel_12',['GetLabel',['../classwxMediaResetButton.html#a833c94d4d076ea5123f8351bc88d3e6f',1,'wxMediaResetButton::GetLabel()'],['../classwxMediaPowerButton.html#acc3c353f7ee7485df2bbe1dfd0f376c4',1,'wxMediaPowerButton::GetLabel()'],['../classwxMediaPlayPauseButton.html#a34c65858e88afe233087b7939465cebb',1,'wxMediaPlayPauseButton::GetLabel()'],['../classwxMediaStopButton.html#acd584904b51d990560b09d30a914fa83',1,'wxMediaStopButton::GetLabel()']]],
   ['getlineno_13',['getLineno',['../classRoaLogic_1_1lexer_1_1filelexer.html#ae56106f6864f3636f674ee502c27cea9',1,'RoaLogic::lexer::filelexer']]],
   ['getlongname_14',['getLongName',['../classRoaLogic_1_1common_1_1cOption.html#af93f65386e6f3a634d66afc7665967d1',1,'RoaLogic::common::cOption']]],
   ['getlowperiod_15',['getLowPeriod',['../classRoaLogic_1_1testbench_1_1clock_1_1cClock.html#a4f3bedeb212019a2a95a193341df4d15',1,'RoaLogic::testbench::clock::cClock']]],
@@ -27,11 +27,5 @@ var searchData=
   ['gettoken_24',['getToken',['../classRoaLogic_1_1lexer_1_1lexerBase.html#aecfdafe2505bb59670f41c7a436b969d',1,'RoaLogic::lexer::lexerBase::getToken()'],['../classRoaLogic_1_1lexer_1_1miflexer.html#a4b765c5e2ed243701c30403e456b7870',1,'RoaLogic::lexer::miflexer::getToken()']]],
   ['getvalue_25',['getValue',['../structRoaLogic_1_1testbench_1_1tasks_1_1sCoRoutineHandler.html#add6c252595e5d37ebae085abb3230907',1,'RoaLogic::testbench::tasks::sCoRoutineHandler']]],
   ['getwidth_26',['GetWidth',['../classwxDistanceSize.html#add6a7d62c8c31fdb8a6fd1269235b4f4',1,'wxDistanceSize']]],
-  ['globalvalue_27',['globalValue',['../file_8h.html#a4a86bef4b6181cb3f53bd0461a9a511b',1,'file.h']]],
-  ['globenum_28',['GlobEnum',['../autolink_8cpp.html#a656d63cf384d2a6f23c2c18523a7bc5e',1,'autolink.cpp']]],
-  ['globvar_29',['globVar',['../autolink_8cpp.html#a88d0bae800d600a11d7bd60f0bc4b858',1,'autolink.cpp']]],
-  ['green_30',['green',['../structRoaLogic_1_1GUI_1_1sRGBColor.html#a930f1b9536c38884699bc6639ed59f22',1,'RoaLogic::GUI::sRGBColor']]],
-  ['group_2ecpp_31',['group.cpp',['../group_8cpp.html',1,'']]],
-  ['gval1_32',['GVal1',['../autolink_8cpp.html#a656d63cf384d2a6f23c2c18523a7bc5ea0f016f49e4f3bcd072319b9d68bc927d',1,'autolink.cpp']]],
-  ['gval2_33',['GVal2',['../autolink_8cpp.html#a656d63cf384d2a6f23c2c18523a7bc5ea811876e2eea5c16ae0594a95d98fbd55',1,'autolink.cpp']]]
+  ['green_27',['green',['../structRoaLogic_1_1GUI_1_1sRGBColor.html#a930f1b9536c38884699bc6639ed59f22',1,'RoaLogic::GUI::sRGBColor']]]
 ];

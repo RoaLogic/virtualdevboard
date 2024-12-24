@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['data_0',['data',['../classRoaLogic_1_1parser_1_1parserBase.html#ae01fd5d7db602401650380ef790e9967',1,'RoaLogic::parser::parserBase']]],
-  ['disable_1',['disable',['../classRoaLogic_1_1testbench_1_1clock_1_1cClock.html#ae34d054e7751f94bd0a63cfd4680dc16',1,'RoaLogic::testbench::clock::cClock']]],
-  ['done_2',['done',['../classRoaLogic_1_1bus_1_1cBusInterface.html#ac988bd78b56e4f37897cebc2067a8050',1,'RoaLogic::bus::cBusInterface']]],
-  ['draw_3',['Draw',['../classwxMediaButton.html#adb9a44daa0a788b33df23ffb9ebfe017',1,'wxMediaButton::Draw()'],['../classwxMediaPlayPauseButton.html#a1a3fffcef1db07f5c893c71984859bf8',1,'wxMediaPlayPauseButton::Draw()'],['../classwxMediaStopButton.html#a86d6212e7ee6770a12a8ab2134fde2a9',1,'wxMediaStopButton::Draw()'],['../classwxMediaPowerButton.html#a12c5ff735fb128c1f1589635f23c96d5',1,'wxMediaPowerButton::Draw()'],['../classwxMediaResetButton.html#aab7eaf0a457481ac6e2f903c6435b718',1,'wxMediaResetButton::Draw()']]],
-  ['drawlayout_4',['DrawLayout',['../classwxMediaButton.html#a1cdfac6d9f769f2ef3fdf567668778c4',1,'wxMediaButton']]],
-  ['drawrect_5',['drawRect',['../classOverload__Test.html#a840305784a1944b4de9826a1f4204365',1,'Overload_Test::drawRect(int, int, int, int)'],['../classOverload__Test.html#a7a613f50092cbc0ef830a818d9f3409c',1,'Overload_Test::drawRect(const Rect &amp;r)']]]
+  ['empty_0',['empty',['../classRoaLogic_1_1common_1_1ringbuffer.html#ab89990ac844990d2b5e682898e207e76',1,'RoaLogic::common::ringbuffer::empty()'],['../classRoaLogic_1_1testbench_1_1clock_1_1cClockManager.html#a770ae5465d80f7f8c757303944566a00',1,'RoaLogic::testbench::clock::cClockManager::empty()']]],
+  ['enable_1',['enable',['../classRoaLogic_1_1testbench_1_1clock_1_1cClock.html#a48bba196bcf4df6050c649c9c7888cca',1,'RoaLogic::testbench::clock::cClock']]],
+  ['end_2',['end',['../classRoaLogic_1_1common_1_1ringbuffer.html#a2fe6035497edd5a28842939e64319467',1,'RoaLogic::common::ringbuffer']]],
+  ['enterwindow_3',['EnterWindow',['../classwxMediaButton.html#a404b7f290a8aa40e4ced002768b3e83b',1,'wxMediaButton']]],
+  ['error_4',['error',['../classRoaLogic_1_1bus_1_1cBusInterface.html#af665e986af3d4088962c044e83bb4566',1,'RoaLogic::bus::cBusInterface']]]
 ];
