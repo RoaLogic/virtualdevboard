@@ -1,0 +1,5 @@
+<map id="RoaLogic::bus::cBusAPB4&lt; PADDR_t, PDATA_t &gt;" name="RoaLogic::bus::cBusAPB4&lt; PADDR_t, PDATA_t &gt;">
+<area shape="rect" id="node1" title="APB Bus Interface Class." alt="" coords="22,167,207,207"/>
+<area shape="rect" id="node2" href="$classRoaLogic_1_1bus_1_1cBusInterface.html" title=" " alt="" coords="10,79,219,119"/>
+<area shape="rect" id="node3" href="$classRoaLogic_1_1common_1_1cUniqueId.html" title="Template base class for a classes with a unique ID." alt="" coords="5,5,224,31"/>
+</map>

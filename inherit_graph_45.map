@@ -1,0 +1,10 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classRoaLogic_1_1observer_1_1cSubject.html" title="Subject definition." alt="" coords="5,55,152,95"/>
+<area shape="rect" id="node2" href="$classRoaLogic_1_1GUI_1_1cGuiInterface.html" title="GUI interface." alt="" coords="203,5,411,31"/>
+<area shape="rect" id="node4" href="$classRoaLogic_1_1vdb_1_1cVDBCommon.html" title="Common virtual development board component." alt="" coords="200,112,415,137"/>
+<area shape="rect" id="node3" href="$classcVirtualDemoBoard.html" title="WX widgets virtual demo board implementation." alt="" coords="503,5,653,31"/>
+<area shape="rect" id="node5" href="$classRoaLogic_1_1vdb_1_1cVdb7SegmentDisplay.html" title="Virtual GUI 7&#45;Segment Display controlled by verilog instance." alt="" coords="469,55,687,95"/>
+<area shape="rect" id="node6" href="$classRoaLogic_1_1vdb_1_1cVdbLed.html" title="Virtual GUI LED controlled by verilog instance." alt="" coords="490,120,666,145"/>
+<area shape="rect" id="node7" href="$classRoaLogic_1_1vdb_1_1cVdbVGAMonitor.html" title="VGA virtual development board component." alt="" coords="463,169,693,195"/>
+<area shape="rect" id="node8" title=" " alt="" coords="274,55,341,80"/>
+</map>

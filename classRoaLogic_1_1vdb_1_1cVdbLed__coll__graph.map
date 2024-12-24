@@ -1,0 +1,5 @@
+<map id="RoaLogic::vdb::cVdbLed" name="RoaLogic::vdb::cVdbLed">
+<area shape="rect" id="node1" title="Virtual GUI LED controlled by verilog instance." alt="" coords="25,167,201,192"/>
+<area shape="rect" id="node2" href="$classRoaLogic_1_1vdb_1_1cVDBCommon.html" title="Common virtual development board component." alt="" coords="5,93,220,119"/>
+<area shape="rect" id="node3" href="$classRoaLogic_1_1observer_1_1cSubject.html" title="Subject definition." alt="" coords="39,5,186,45"/>
+</map>

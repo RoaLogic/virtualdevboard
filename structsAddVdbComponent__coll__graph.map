@@ -1,0 +1,8 @@
+<map id="sAddVdbComponent" name="sAddVdbComponent">
+<area shape="rect" id="node1" title=" " alt="" coords="170,225,325,251"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,130,116,155"/>
+<area shape="rect" id="node3" href="$classRoaLogic_1_1vdb_1_1cVDBCommon.html" title="Common virtual development board component." alt="" coords="140,130,355,155"/>
+<area shape="rect" id="node4" href="$classRoaLogic_1_1observer_1_1cSubject.html" title="Subject definition." alt="" coords="174,5,321,45"/>
+<area shape="rect" id="node5" href="$structRoaLogic_1_1dimensions_1_1distancePoint.html" title="Point of distance units." alt="" coords="379,123,543,163"/>
+<area shape="rect" id="node6" href="$classRoaLogic_1_1dimensions_1_1cDistance.html" title=" " alt="" coords="379,5,543,45"/>
+</map>

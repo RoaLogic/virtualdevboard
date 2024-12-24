@@ -1,0 +1,6 @@
+<map id="RoaLogic::uart::cUart" name="RoaLogic::uart::cUart">
+<area shape="rect" id="node1" title="Template base class for a uart." alt="" coords="142,79,301,104"/>
+<area shape="rect" id="node3" href="$classRoaLogic_1_1uart_1_1cTelnetUart.html" title=" " alt="" coords="5,152,203,177"/>
+<area shape="rect" id="node4" href="$classRoaLogic_1_1uart_1_1cTestbenchUart.html" title=" " alt="" coords="227,152,450,177"/>
+<area shape="rect" id="node2" href="$classRoaLogic_1_1common_1_1cUniqueId.html" title="Template base class for a classes with a unique ID." alt="" coords="112,5,331,31"/>
+</map>

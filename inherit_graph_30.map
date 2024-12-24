@@ -1,0 +1,10 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classRoaLogic_1_1common_1_1cUniqueId.html" title="Template base class for a classes with a unique ID." alt="" coords="5,109,224,134"/>
+<area shape="rect" id="node2" href="$classRoaLogic_1_1bus_1_1cBusInterface.html" title=" " alt="" coords="272,5,481,45"/>
+<area shape="rect" id="node4" href="$classRoaLogic_1_1bus_1_1cBusInterface.html" title="Template base class for a bus&#45;interface." alt="" coords="272,69,481,109"/>
+<area shape="rect" id="node5" href="$classRoaLogic_1_1testbench_1_1clock_1_1cClock.html" title="Clock object." alt="" coords="300,133,453,173"/>
+<area shape="rect" id="node6" href="$classRoaLogic_1_1uart_1_1cUart.html" title="Template base class for a uart." alt="" coords="297,198,456,223"/>
+<area shape="rect" id="node3" href="$classRoaLogic_1_1bus_1_1cBusAPB4.html" title="APB Bus Interface Class." alt="" coords="548,5,733,45"/>
+<area shape="rect" id="node7" href="$classRoaLogic_1_1uart_1_1cTelnetUart.html" title=" " alt="" coords="542,173,739,198"/>
+<area shape="rect" id="node8" href="$classRoaLogic_1_1uart_1_1cTestbenchUart.html" title=" " alt="" coords="529,222,752,247"/>
+</map>

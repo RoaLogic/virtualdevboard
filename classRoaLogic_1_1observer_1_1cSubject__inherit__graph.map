@@ -1,0 +1,9 @@
+<map id="RoaLogic::observer::cSubject" name="RoaLogic::observer::cSubject">
+<area shape="rect" id="node1" title="Subject definition." alt="" coords="5,61,152,101"/>
+<area shape="rect" id="node2" href="$classRoaLogic_1_1GUI_1_1cGuiInterface.html" title="GUI interface." alt="" coords="203,24,411,49"/>
+<area shape="rect" id="node4" href="$classRoaLogic_1_1vdb_1_1cVDBCommon.html" title="Common virtual development board component." alt="" coords="200,92,415,117"/>
+<area shape="rect" id="node3" href="$classcVirtualDemoBoard.html" title="WX widgets virtual demo board implementation." alt="" coords="503,5,653,31"/>
+<area shape="rect" id="node5" href="$classRoaLogic_1_1vdb_1_1cVdb7SegmentDisplay.html" title="Virtual GUI 7&#45;Segment Display controlled by verilog instance." alt="" coords="469,55,687,95"/>
+<area shape="rect" id="node6" href="$classRoaLogic_1_1vdb_1_1cVdbLed.html" title="Virtual GUI LED controlled by verilog instance." alt="" coords="490,120,666,145"/>
+<area shape="rect" id="node7" href="$classRoaLogic_1_1vdb_1_1cVdbVGAMonitor.html" title="VGA virtual development board component." alt="" coords="463,169,693,195"/>
+</map>

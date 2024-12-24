@@ -1,0 +1,4 @@
+<map id="RoaLogic::GUI::sVdbLedInformation" name="RoaLogic::GUI::sVdbLedInformation">
+<area shape="rect" id="node1" title="virtual development board led information" alt="" coords="5,93,257,119"/>
+<area shape="rect" id="node2" href="$structRoaLogic_1_1GUI_1_1sRGBColor.html" title="RGB colour structure." alt="" coords="36,5,227,31"/>
+</map>

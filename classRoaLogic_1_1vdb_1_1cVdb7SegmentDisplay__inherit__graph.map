@@ -1,0 +1,5 @@
+<map id="RoaLogic::vdb::cVdb7SegmentDisplay" name="RoaLogic::vdb::cVdb7SegmentDisplay">
+<area shape="rect" id="node1" title="Virtual GUI 7&#45;Segment Display controlled by verilog instance." alt="" coords="5,167,224,207"/>
+<area shape="rect" id="node2" href="$classRoaLogic_1_1vdb_1_1cVDBCommon.html" title="Common virtual development board component." alt="" coords="7,93,222,119"/>
+<area shape="rect" id="node3" href="$classRoaLogic_1_1observer_1_1cSubject.html" title="Subject definition." alt="" coords="41,5,188,45"/>
+</map>
