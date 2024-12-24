@@ -92,7 +92,7 @@ CXX ?= g++
 #CXXFLAGS ?= -fcoroutines
 CXXFLAGS += $(shell wx-config --cxxflags)
 CXXFLAGS += -g
-CXXFLAGS += -O3
+CXXFLAGS += -O0
 
 CPPSTD ?= c++20
 CPPLIB ?= stdc++

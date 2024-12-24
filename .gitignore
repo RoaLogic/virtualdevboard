@@ -4,5 +4,4 @@
 /.vscode
 build/
 log
-doc/
 *.vcd
