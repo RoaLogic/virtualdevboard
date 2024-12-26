@@ -43,6 +43,11 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
+/**
+ * @section vdbComponentLED Virtual development LED component
+ *
+ */
+
 #ifndef VDB_LED_HPP
 #define VDB_LED_HPP
 

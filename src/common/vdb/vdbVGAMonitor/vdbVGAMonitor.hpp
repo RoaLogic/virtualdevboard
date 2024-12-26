@@ -43,6 +43,12 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
+/**
+ * @section vdbComponentVGA Virtual development VGA component
+ *
+ */
+
+
 #include "vdbCommon.hpp"
 #include <vector>
 

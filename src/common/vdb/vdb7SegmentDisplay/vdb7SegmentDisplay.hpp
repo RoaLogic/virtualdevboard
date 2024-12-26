@@ -43,6 +43,11 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
+/**
+ * @section vdbComponent7Seg Virtual development 7 segment component
+ *
+ */
+
 #ifndef VDB_7SEGMENT_HPP
 #define VDB_7SEGMENT_HPP
 

@@ -109,7 +109,7 @@
  * 
  * @section vdbComponent_3 virtual development board component UI common
  * 
- * Each UI component shall implement the RoaLogic::GUI::cGuiVDBComponent  base 
+ * Each UI component shall implement the RoaLogic::GUI::cGuiVDBComponent base 
  * class. In this class all the basics are implemented to directly communicate
  * with the vdb common component, which is passed during construction. There are
  * cases where the verilated component is not used, a nullptr can at that point 
@@ -135,11 +135,160 @@
  * 
  * @section vdbComponent_4 virtual development board existing components
  * 
- * @todo Add and link the existing components
+ * LED: see @ref vdbComponentLED
+ * 7Segment display: see @ref vdbComponent7Seg
+ * VGA: see @ref vdbComponentVGA
  * 
  * @section vdbComponent_5 virtual development board component creating a new one
  * 
- * @todo Add description on how to create a new development board component
+ * @subsection Verilated component
+ * A new VDB component which communicates with the verilated design is created by 
+ * deriving from the cVDBCommon base class. The new class must then implement the 
+ * void verilatorCallback(uint32_t event) function, which is called when an event 
+ * from the verilated context occurs. In cases where it expects an event from the
+ * GUI, it must also implement the void cppEvent(uint32_t event) function. Eventual
+ * DPI functions are placed in the cpp file and shall call the verilatorCallback 
+ * function, see example below. If there is a GUI component (which must register 
+ * to the VDB component), we can notify it. If there is no component listening, 
+ * the event will be ignored.
+ * 
+ * Example class definition:
+ * @code {.c++}
+ *
+ * namespace RoaLogic
+ * {
+ * namespace vdb 
+ * {
+ *     class cMyNewVDBComponent : public cVDBCommon
+ *     {
+ *         private:
+ *         // Define the verilator callback function
+ *         void verilatorCallback(uint32_t event);
+ *
+ *         public:
+ *         // The constructor must have the scopename
+ *         cMyNewVDBComponent(std::string scopeName, uint8_t id); 
+ *         ~cMyNewVDBComponent();
+ *     };
+ * }
+ * }
+ * @endcode
+ * 
+ * Example class implementation
+ * @code {.c++}
+ * 
+ * // This function is a implementation of the DPI function declared in the system verilog code
+ * void myNewVDBComponentDPIFunction
+ * {
+ *      // It calls the processVerilatorEvent function with the scope of the DPI function and
+ *      // the value which is passed into the corresponding verilatorCallback function.
+ *      cVDBCommon::processVerilatorEvent(svGetScope(), myValue);
+ * }
+ * 
+ * namespace RoaLogic
+ * {
+ *   using namespace observer;
+ * namespace vdb
+ * {
+ *      // Construct the new class, internally everything is done within the cVDBCommon constructor
+ *      cMyNewVDBComponent::cMyNewVDBComponent(std::string scopeName, uint8_t id) :
+ *          cVDBCommon(scopeName, id)
+ *      {
+ *          
+ *      } 
+ * 
+ *      cMyNewVDBComponent::~cMyNewVDBComponent()
+ *      {
+ * 
+ *      }
+ * 
+ *     void cMyNewVDBComponent::verilatorCallback(uint32_t event)
+ *     {
+ *          // Handle the verilated event, which is up to the class to handle
+ * 
+ *          // In case there is a GUI element, notify the observer and pass it the data
+ *          notifyObserver(eEvent::myNewEvent, myEventDataPointer);
+ *     }
+ * 
+ * }
+ * }
+ * @endcode
+ * 
+ * @subsection GUI component
+ * 
+ * In this part we only explain the specifics of adding a GUI component within the system, this 
+ * excludes the drawing part of the component as this is specific for each GUI framework. Each 
+ * GUI component shall be derived from the cGuiVDBComponent. This baseclass holds all information
+ * to communicate with the VDB verilated component and to handle eventual calls from the GUI. The 
+ * constructor takes a pointer to the VDB verilatored component, which can be given as nullptr in
+ * case it is not used. The class will internally register to the VDB component and receive the
+ * corresponding events in the notify() function. Since this function is specific to the component
+ * it is virtual and shall be overwritten by the derived class. The constructor also takes a 
+ * distancePoint, which translates to the position on the GUI screen. This position is relative
+ * in dimension to the top left corner of the board screen. See @ref <add ref> for more information.
+ * It is possible in some cases that the GUI has to clean up when the system is closed or restarted,
+ * for this reason there is a virtual onClose() function. This function is called when the component
+ * is closed to clean up, which is also depend on the implemented class.
+ * 
+ * Example class definition:
+ * @code {.c++}
+ *
+ * namespace RoaLogic
+ * {
+ * namespace GUI 
+ * {
+ *     class cNewGuiVdbComponent : public cGuiVDBComponent, <possible GUI framework base classes>
+ *     {
+ *         private:
+ *         // Function to receive events from the vdb component
+ *         void notify(eEvent aEvent, void* data);
+ * 
+ *         public:
+ *         // The constructor must have a pointer to the vdb component and a position on the screen
+ *         cNewGuiVdbComponent(cVDBCommon* myVDBComponent, distancePoint position); 
+ *         ~cNewGuiVdbComponent();
+ * 
+ *         // Possible function if needed
+ *         void onClose();
+ * 
+ *         // Functions needed by the GUI framework to draw something on the screen
+ *     };
+ * }
+ * }
+ * @endcode
+ * 
+ *  * Example class implementation
+ * @code {.c++}
+ *  
+ * namespace RoaLogic
+ * {
+ *   using namespace observer;
+ *   using namespace dimensions;
+ * namespace vdb
+ * {
+ *      // Construct the new GUI class, internally everything is done within the cGuiVDBComponent constructor
+ *      cNewGuiVdbComponent::cNewGuiVdbComponent(cVDBCommon* myVDBComponent, distancePoint position) :
+ *          cGuiVDBComponent(myVDBComponent, position)
+ *      {
+ *          
+ *      } 
+ * 
+ *      cNewGuiVdbComponent::~cNewGuiVdbComponent()
+ *      {
+ * 
+ *      }
+ * 
+ *     void cNewGuiVdbComponent::notify(eEvent aEvent, void* data)
+ *     {
+ *          // Handle the event, which is up to this class to handle
+ *          // Do note that this function runs in the verilated thread, we need to pass
+ *          // the event to the GUI thread before we can adjust the GUI
+ *          postEventToGuiEventHandling(data);
+ *     }
+ * 
+ * }
+ * }
+ * @endcode
  * 
  */
 
