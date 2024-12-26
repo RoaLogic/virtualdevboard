@@ -135,9 +135,9 @@
  * 
  * @section vdbComponent_4 virtual development board existing components
  * 
- * LED: see @ref vdbComponentLED
- * 7Segment display: see @ref vdbComponent7Seg
- * VGA: see @ref vdbComponentVGA
+ * * LED: see @ref vdbComponentLED
+ * * 7Segment display: see @ref vdbComponent7Seg
+ * * VGA: see @ref vdbComponentVGA
  * 
  * @section vdbComponent_5 virtual development board component creating a new one
  * 
@@ -233,10 +233,9 @@
  * Example class definition:
  * @code {.c++}
  *
- * namespace RoaLogic
- * {
- * namespace GUI 
- * {
+ * namespace RoaLogic {
+ * namespace GUI {
+ *
  *     class cNewGuiVdbComponent : public cGuiVDBComponent, <possible GUI framework base classes>
  *     {
  *         private:
@@ -253,19 +252,17 @@
  * 
  *         // Functions needed by the GUI framework to draw something on the screen
  *     };
- * }
- * }
+ * }}
  * @endcode
  * 
- *  * Example class implementation
+ * Example class implementation
  * @code {.c++}
  *  
- * namespace RoaLogic
- * {
+ * namespace RoaLogic {
  *   using namespace observer;
  *   using namespace dimensions;
- * namespace vdb
- * {
+ * namespace vdb {
+ * 
  *      // Construct the new GUI class, internally everything is done within the cGuiVDBComponent constructor
  *      cNewGuiVdbComponent::cNewGuiVdbComponent(cVDBCommon* myVDBComponent, distancePoint position) :
  *          cGuiVDBComponent(myVDBComponent, position)
@@ -286,8 +283,7 @@
  *          postEventToGuiEventHandling(data);
  *     }
  * 
- * }
- * }
+ * }}
  * @endcode
  * 
  */

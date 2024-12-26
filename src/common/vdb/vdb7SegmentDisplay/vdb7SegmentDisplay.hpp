@@ -46,6 +46,7 @@
 /**
  * @section vdbComponent7Seg Virtual development 7 segment component
  *
+ * 7 segment text
  */
 
 #ifndef VDB_7SEGMENT_HPP

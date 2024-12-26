@@ -46,6 +46,7 @@
 /**
  * @section vdbComponentVGA Virtual development VGA component
  *
+ * VGA monitor text
  */
 
 

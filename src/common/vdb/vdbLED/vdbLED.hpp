@@ -46,6 +46,7 @@
 /**
  * @section vdbComponentLED Virtual development LED component
  *
+ * LED text
  */
 
 #ifndef VDB_LED_HPP
