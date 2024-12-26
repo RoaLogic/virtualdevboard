@@ -75,6 +75,7 @@ $(function() {
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h1><a class="anchor" id="vdbComponent7Seg"></a>
 Virtual development 7 segment component</h1>
+<p>7 segment text</p>
 <h1><a class="anchor" id="vdbComponent_1"></a>
 Virtual development board components</h1>
 <p>Virtual development board components are components which have a specific system functionality, for example a LED. Meaning that there is a output of the system that connects with a LED, that LED is then shown on the GUI to the user. To set this up there are two different base designs, one basic module to connect with the verilated design and a module to show the state on the GUI. This is split for two reasons, one is that it's possible to have a component which is not connected to the verilated design or not shown on the GUI. Second reason is that it's possible to change the UI framework without having to change each component, this also helps with the two different threads for the verilated design and the GUI.</p>
@@ -96,7 +97,11 @@ virtual development board component UI common</h1>
 <dl class="section attention"><dt>Attention</dt><dd>Due that UI components shall be updated within there own thread, the observer of the vdb component must handle the context switch from the verilator thread to the UI thread.</dd></dl>
 <h1><a class="anchor" id="vdbComponent_4"></a>
 virtual development board existing components</h1>
-<p>LED: see <a class="el" href="namespaceRoaLogic.html#vdbComponentLED">Virtual development LED component</a> 7Segment display: see <a class="el" href="namespaceRoaLogic.html#vdbComponent7Seg">Virtual development 7 segment component</a> VGA: see <a class="el" href="/home/runner/work/virtualdevboard/virtualdevboard/src/common/vdb/vdbVGAMonitor/vdbVGAMonitor.hpp#vdbComponentVGA">Virtual development VGA component</a></p>
+<ul>
+<li>LED: see <a class="el" href="namespaceRoaLogic.html#vdbComponentLED">Virtual development LED component</a></li>
+<li>7Segment display: see <a class="el" href="namespaceRoaLogic.html#vdbComponent7Seg">Virtual development 7 segment component</a></li>
+<li>VGA: see <a class="el" href="/home/runner/work/virtualdevboard/virtualdevboard/src/common/vdb/vdbVGAMonitor/vdbVGAMonitor.hpp#vdbComponentVGA">Virtual development VGA component</a></li>
+</ul>
 <h1><a class="anchor" id="vdbComponent_5"></a>
 virtual development board component creating a new one</h1>
 <h2><a class="anchor" id="Verilated"></a>
@@ -159,16 +164,15 @@ component</h2>
 <div class="line"> </div>
 <div class="line">}</div>
 <div class="line">}</div>
-<div class="ttc" id="aclassRoaLogic_1_1vdb_1_1cVDBCommon_html_a542b3035f520c224933cd84d01fb548d"><div class="ttname"><a href="classRoaLogic_1_1vdb_1_1cVDBCommon.html#a542b3035f520c224933cd84d01fb548d">RoaLogic::vdb::cVDBCommon::processVerilatorEvent</a></div><div class="ttdeci">static void processVerilatorEvent(svScope scope, uint32_t event)</div><div class="ttdoc">Process a verilator event.</div><div class="ttdef"><b>Definition:</b> vdbCommon.hpp:397</div></div>
+<div class="ttc" id="aclassRoaLogic_1_1vdb_1_1cVDBCommon_html_a542b3035f520c224933cd84d01fb548d"><div class="ttname"><a href="classRoaLogic_1_1vdb_1_1cVDBCommon.html#a542b3035f520c224933cd84d01fb548d">RoaLogic::vdb::cVDBCommon::processVerilatorEvent</a></div><div class="ttdeci">static void processVerilatorEvent(svScope scope, uint32_t event)</div><div class="ttdoc">Process a verilator event.</div><div class="ttdef"><b>Definition:</b> vdbCommon.hpp:393</div></div>
 </div><!-- fragment --><h2><a class="anchor" id="GUI"></a>
 component</h2>
 <p>In this part we only explain the specifics of adding a GUI component within the system, this excludes the drawing part of the component as this is specific for each GUI framework. Each GUI component shall be derived from the cGuiVDBComponent. This baseclass holds all information to communicate with the VDB verilated component and to handle eventual calls from the GUI. The constructor takes a pointer to the VDB verilatored component, which can be given as nullptr in case it is not used. The class will internally register to the VDB component and receive the corresponding events in the notify() function. Since this function is specific to the component it is virtual and shall be overwritten by the derived class. The constructor also takes a distancePoint, which translates to the position on the GUI screen. This position is relative in dimension to the top left corner of the board screen. See &lt;add ref&gt; for more information. It is possible in some cases that the GUI has to clean up when the system is closed or restarted, for this reason there is a virtual onClose() function. This function is called when the component is closed to clean up, which is also depend on the implemented class.</p>
 <p>Example class definition: </p><div class="fragment"><div class="line"> {.c++}</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceRoaLogic.html">RoaLogic</a></div>
-<div class="line">{</div>
-<div class="line"><span class="keyword">namespace </span>GUI </div>
-<div class="line">{</div>
+<div class="line"><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceRoaLogic.html">RoaLogic</a> {</div>
+<div class="line"><span class="keyword">namespace </span>GUI {</div>
+<div class="line"> </div>
 <div class="line">    <span class="keyword">class </span>cNewGuiVdbComponent : <span class="keyword">public</span> cGuiVDBComponent, &lt;possible GUI framework base classes&gt;</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keyword">private</span>:</div>
@@ -185,17 +189,14 @@ component</h2>
 <div class="line"> </div>
 <div class="line">        <span class="comment">// Functions needed by the GUI framework to draw something on the screen</span></div>
 <div class="line">    };</div>
-<div class="line">}</div>
-<div class="line">}</div>
-</div><!-- fragment --><ul>
-<li>Example class implementation <div class="fragment"><div class="line"> {.c++}</div>
+<div class="line">}}</div>
+</div><!-- fragment --><p>Example class implementation </p><div class="fragment"><div class="line"> {.c++}</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceRoaLogic.html">RoaLogic</a></div>
-<div class="line">{</div>
+<div class="line"><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceRoaLogic.html">RoaLogic</a> {</div>
 <div class="line">  <span class="keyword">using namespace </span>observer;</div>
 <div class="line">  <span class="keyword">using namespace </span>dimensions;</div>
-<div class="line"><span class="keyword">namespace </span>vdb</div>
-<div class="line">{</div>
+<div class="line"><span class="keyword">namespace </span>vdb {</div>
+<div class="line"> </div>
 <div class="line">     <span class="comment">// Construct the new GUI class, internally everything is done within the cGuiVDBComponent constructor</span></div>
 <div class="line">     cNewGuiVdbComponent::cNewGuiVdbComponent(cVDBCommon* myVDBComponent, distancePoint position) :</div>
 <div class="line">         cGuiVDBComponent(myVDBComponent, position)</div>
@@ -216,12 +217,10 @@ component</h2>
 <div class="line">         postEventToGuiEventHandling(data);</div>
 <div class="line">    }</div>
 <div class="line"> </div>
-<div class="line">}</div>
-<div class="line">}</div>
-</div><!-- fragment --></li>
-</ul>
-<h1><a class="anchor" id="vdbComponentLED"></a>
+<div class="line">}}</div>
+</div><!-- fragment --><h1><a class="anchor" id="vdbComponentLED"></a>
 Virtual development LED component</h1>
+<p>LED text </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
