@@ -187,7 +187,7 @@ static const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>_cMax
 <dl class="section author"><dt>Author</dt><dd>Bjorn Schouteten</dd></dl>
 <p>This is the common class for a virtual development board component. It holds the base for the system to interact with all the components in the same matter.</p>
 <p>It inherits the cSubject so that each component can notifyObservers through the corresponding function. All events must be defined in the <a class="el" href="eventDefinition_8hpp_source.html">eventDefinition.hpp</a>, together with the structures of data that are sent over the events. For each virtual development board component it doesn't matter who is listening, it just sents the event.</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>: Add a way to receive events from the outside </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>: Add a way to receive events from the outside </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a984437303d78c4e5a6291ae21b523836" name="a984437303d78c4e5a6291ae21b523836"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a984437303d78c4e5a6291ae21b523836">&#9670;&#160;</a></span>cVDBCommon()</h2>
@@ -292,7 +292,7 @@ static const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>_cMax
 <p>Callback function from the C++ side. </p>
 <p>This function is called when an event occurs on the C++ side of the vdb component.</p>
 <p>Derived classes can override this function as needed and implement their own methodology.</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>Do we need a context switch or could it be changed from a different thread, it is already async, so why not?</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>Do we need a context switch or could it be changed from a different thread, it is already async, so why not?</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">event</td><td>The event data </td></tr>
