@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Virtual development board: virtualdevboard</title>
+<title>Virtual development board: Virtual development board</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,30 +69,10 @@ $(function() {
 </div>
 
 <div><div class="header">
-  <div class="headertitle"><div class="title">virtualdevboard </div></div>
+  <div class="headertitle"><div class="title">Virtual development board </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_README"></a></p>
-<h1><a class="anchor" id="autotoc_md1"></a>
-Graphical Virtual SoC Development Board Builder using Verilator</h1>
-<p>virtualdevboard is a framework for creating virtual development boards. A virtual development board is an FPGA/ASIC development board that is entirely emulated on a PC. The FPGA/ASIC logic is converted into cycle accurate C++ models using Verilator. The peripherals (other components) on the board are emulated using graphical components (e.g. LEDs, 7-segment Display, VGA), abstracted (e.g. SDRAM memories), or by accessing the host PCs hardware and OS resources directly (e.g. UART, ethernet, ...)</p>
-<h1><a class="anchor" id="autotoc_md2"></a>
-Prerequisites</h1>
-<ul>
-<li>Verilator</li>
-<li>gmake</li>
-<li>C++20 capable compiler</li>
-<li>wxWidgets 3.2.6 or newer</li>
-<li>Doxygen</li>
-<li>Graphviz</li>
-</ul>
-<h1><a class="anchor" id="autotoc_md3"></a>
-Software design</h1>
-<p>The virtual development board has three main software components. First is the FPGA/ASIC logic, which is translated into C++ code with Verilator. The verilated design can then be controlled by our C++ application, which is done by the testbench, see CTestbench for more information about this part.</p>
-<p>Second part are the virtual development board (vdb) components, those are C++ components with specific logic to connect with the verilated design. Those translate the verilated signals into real components, like LED's, 7 segment displays or VGA data. See cVDBCommon for more information.</p>
-<p>Last part is the GUI, which is optional and has a specific interface. This interface is added so that it is possible to use different frameworks or eventual just a terminal. The GUI exists out of the main design/main frame and vdb component implementations. Every vdb component shall have it's own GUI implementation. See <a class="el" href="namespaceRoaLogic.html#vdbComponent_1">Virtual development board components</a></p>
-<h1><a class="anchor" id="autotoc_md4"></a>
-Folder structure</h1>
+<div class="textblock"><p>This is the software documentation for the virtual development board. The virtual development board is a framework for creating virtual development boards. A virtual development board is an FPGA/ASIC development board that is entirely emulated on a PC. The FPGA/ASIC logic is converted into cycle accurate C++ models using Verilator. The peripherals (other components) on the board are emulated using graphical components (e.g. LEDs, 7-segment Display, VGA), abstracted (e.g. SDRAM memories), or by accessing the host PCs hardware and OS resources directly (e.g. UART, ethernet, ...). </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
