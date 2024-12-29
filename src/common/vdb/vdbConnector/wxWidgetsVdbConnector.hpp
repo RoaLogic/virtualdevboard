@@ -43,16 +43,10 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#ifndef WX_WIDGETS_CONNECTOR_HPP
-#define WX_WIDGETS_CONNECTOR_HPP
+#ifndef WX_WIDGETS_VDB_CONNECTOR_HPP
+#define WX_WIDGETS_VDB_CONNECTOR_HPP
 
-#include <wx/wxprec.h>
-#include <wx/wx.h>
-#include "wx/event.h"
-#include <wx/graphics.h>
-
-#include "gui_interface.hpp"
-#include "wxGuiDistance.hpp"
+#include "wxWidgetsVdbBase.hpp"
 
 namespace RoaLogic {
     using namespace observer;
@@ -68,25 +62,8 @@ namespace GUI {
      * This class draws an abstract connector. If event handling is required, then that must be
      * handled in a derived class.
      */
-    class cWXVdbConnector : public cGuiVDBComponent, public wxWindow
+    class cWXVdbConnector : public cWXVdbBase
     {
-        private:
-        sVdbConnectorInformation* _myInformation;
-
-        /**
-         * @brief notify function from the vdb component
-         * @details This function receives events from the component it is registered to.
-         * @note this function runs in the verilated context.
-         */
-        virtual void notify(eEvent aEvent, void* data) {}
-
-	/**
-         * @brief Handle the event
-         * @details This function handles the wxEVT_LED event
-         * @note This function runs in the GUI thread
-         */
-        virtual void onEvent(wxCommandEvent& event) {}
-
         public:
 	/**
 	 * @brief Constructor
@@ -99,16 +76,13 @@ namespace GUI {
         ~cWXVdbConnector() {}
 
         /**
-         * @brief Default component size
-         * @details Returns the default size for the component.
-	 *
-            The optional @a win argument is new since wxWidgets 3.1.3 and allows to
-            get a per-monitor DPI specific size.
+         * @brief Component size
+         * @details Returns the size of the LED
          */
-        wxSize GetDefaultSize(wxWindow* win = NULL)
-        {
-            if (win==NULL) { win = this; }
-            return wxDistanceSize(_myInformation->width,_myInformation->height + 6_mm, win);
+        distanceSize GetDeviceSize() const {
+          sVdbConnectorInformation* myInformation = reinterpret_cast<sVdbConnectorInformation*>(_information);
+
+          return distanceSize(myInformation->width,myInformation->height + 6_mm);
         }
 
         /**

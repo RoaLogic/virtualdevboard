@@ -55,12 +55,9 @@ namespace GUI {
      * @details This is the constructor for the IC window.
      */
     cWXVdbConnector::cWXVdbConnector(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbConnectorInformation* information) :
-        cGuiVDBComponent(myVDBComponent, position),
-        wxWindow(windowParent, wxID_ANY, wxPoint(wxDistancePoint(position, windowParent)), wxDefaultSize, wxTRANSPARENT_WINDOW),
-        _myInformation(information)
+        cWXVdbBase(myVDBComponent, position, windowParent, information)
     {
         SetInitialSize(GetDefaultSize());
-
         Connect(wxEVT_PAINT, wxPaintEventHandler(cWXVdbConnector::OnPaint));
     }
 
@@ -77,7 +74,9 @@ namespace GUI {
         wxPaintDC dc(this);
         wxColour  myColour;
 
-        wxSize  size = wxDistanceSize(_myInformation->width,_myInformation->height, this);
+        sVdbConnectorInformation* myInformation = reinterpret_cast<sVdbConnectorInformation*>(_information);
+
+        wxSize  size = wxDistanceSize(myInformation->width,myInformation->height, this);
         wxSize  textSize;
         wxPoint textOrigin;
         double  angle;
@@ -94,10 +93,10 @@ namespace GUI {
 	//connector edge
         myColour = wxColour(43,43,43); //different black
         dc.SetBrush(myColour);
-        dc.DrawRectangle(wxPoint(0,0),wxDistanceSize(_myInformation->width, 3_mm, this));
+        dc.DrawRectangle(wxPoint(0,0),wxDistanceSize(myInformation->width, 3_mm, this));
 	//connector main
         dc.DrawRectangle(wxDistancePoint(7.3_mm,0,this),
-                         wxDistanceSize(_myInformation->width - 14.6_mm,_myInformation->height,this));
+                         wxDistanceSize(myInformation->width - 14.6_mm,myInformation->height,this));
 
         //metal sides (40x40)
         myColour = wxColour(172,189,193);
@@ -105,25 +104,25 @@ namespace GUI {
         dc.SetBrush(myColour);
         dc.DrawRectangle(wxDistancePoint(0.5_mm,3_mm,this),
                          wxDistanceSize(6.3_mm, 10_mm, this));
-        dc.DrawRectangle(wxDistancePoint(_myInformation->width - 0.5_mm,3_mm,this),
+        dc.DrawRectangle(wxDistancePoint(myInformation->width - 0.5_mm,3_mm,this),
                          wxDistanceSize(-6.3_mm, 10_mm, this));
 
         //metal connector
         dc.DrawRectangle(wxDistancePoint(7.3_mm,0,this),
-                         wxDistanceSize(_myInformation->width - 15.6_mm, -6_mm, this));
+                         wxDistanceSize(myInformation->width - 15.6_mm, -6_mm, this));
 
         //metal bushings
         dc.DrawRectangle(wxDistancePoint(3.15_mm - 4.75_mm/2,0,this),
                          wxDistanceSize(4.75_mm,-4.75_mm,this));
-        dc.DrawRectangle(wxDistancePoint(_myInformation->width -(3.15_mm - 4.75_mm/2),0,this),
+        dc.DrawRectangle(wxDistancePoint(myInformation->width -(3.15_mm - 4.75_mm/2),0,this),
                          wxDistanceSize(-4.75_mm,-4.75_mm,this));
 
         //Mounting holes
         myColour = wxColour(170,127,49); //bronze/gold
         dc.SetBrush(myColour);
-        dc.DrawCircle(wxDistancePoint(3.15_mm,_myInformation->height/2,this),
+        dc.DrawCircle(wxDistancePoint(3.15_mm,myInformation->height/2,this),
                       wxDistanceCoord(1.6_mm,this));
-        dc.DrawCircle(wxDistancePoint(_myInformation->width - 3.15_mm,_myInformation->height/2,this),
+        dc.DrawCircle(wxDistancePoint(myInformation->width - 3.15_mm,myInformation->height/2,this),
                       wxDistanceCoord(1.6_mm,this));
 
     }
