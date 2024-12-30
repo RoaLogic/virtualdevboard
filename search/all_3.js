@@ -40,8 +40,9 @@ var searchData=
   ['cvirtualdemoboard_37',['cVirtualDemoBoard',['../classcVirtualDemoBoard.html',1,'']]],
   ['cwxvdb7segment_38',['cWXVdb7Segment',['../classcWXVdb7Segment.html',1,'']]],
   ['cwxvdb7segmentdisplay_39',['cWXVdb7SegmentDisplay',['../classRoaLogic_1_1GUI_1_1cWXVdb7SegmentDisplay.html#a5e31f71acefdafeeafbffa3d54976d29',1,'RoaLogic::GUI::cWXVdb7SegmentDisplay::cWXVdb7SegmentDisplay()'],['../classRoaLogic_1_1GUI_1_1cWXVdb7SegmentDisplay.html',1,'RoaLogic::GUI::cWXVdb7SegmentDisplay']]],
-  ['cwxvdbconnector_40',['cWXVdbConnector',['../classRoaLogic_1_1GUI_1_1cWXVdbConnector.html#a5678a3634e4d29db84ecb61924eec153',1,'RoaLogic::GUI::cWXVdbConnector::cWXVdbConnector()'],['../classRoaLogic_1_1GUI_1_1cWXVdbConnector.html',1,'RoaLogic::GUI::cWXVdbConnector']]],
-  ['cwxvdbic_41',['cWXVdbIC',['../classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a7fa75892f14f739abb642afd613f4fdf',1,'RoaLogic::GUI::cWXVdbIC::cWXVdbIC()'],['../classRoaLogic_1_1GUI_1_1cWXVdbIC.html',1,'RoaLogic::GUI::cWXVdbIC']]],
-  ['cwxvdbled_42',['cWXVdbLed',['../classRoaLogic_1_1GUI_1_1cWXVdbLed.html#a627e2ff86d24af2ba1832960238df3d4',1,'RoaLogic::GUI::cWXVdbLed::cWXVdbLed()'],['../classRoaLogic_1_1GUI_1_1cWXVdbLed.html',1,'RoaLogic::GUI::cWXVdbLed']]],
-  ['cwxvdbvgamonitor_43',['cWXVdbVGAMonitor',['../classRoaLogic_1_1GUI_1_1cWXVdbVGAMonitor.html#abf9021fc6bfb770c0e3da2bfadd960d0',1,'RoaLogic::GUI::cWXVdbVGAMonitor::cWXVdbVGAMonitor()'],['../classRoaLogic_1_1GUI_1_1cWXVdbVGAMonitor.html',1,'RoaLogic::GUI::cWXVdbVGAMonitor']]]
+  ['cwxvdbbase_40',['cWXVdbBase',['../classRoaLogic_1_1GUI_1_1cWXVdbBase.html#a664e8b2409c07d4a59d2edfc3e91b616',1,'RoaLogic::GUI::cWXVdbBase::cWXVdbBase()'],['../classRoaLogic_1_1GUI_1_1cWXVdbBase.html',1,'RoaLogic::GUI::cWXVdbBase']]],
+  ['cwxvdbconnector_41',['cWXVdbConnector',['../classRoaLogic_1_1GUI_1_1cWXVdbConnector.html#a5678a3634e4d29db84ecb61924eec153',1,'RoaLogic::GUI::cWXVdbConnector::cWXVdbConnector()'],['../classRoaLogic_1_1GUI_1_1cWXVdbConnector.html',1,'RoaLogic::GUI::cWXVdbConnector']]],
+  ['cwxvdbic_42',['cWXVdbIC',['../classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a7fa75892f14f739abb642afd613f4fdf',1,'RoaLogic::GUI::cWXVdbIC::cWXVdbIC()'],['../classRoaLogic_1_1GUI_1_1cWXVdbIC.html',1,'RoaLogic::GUI::cWXVdbIC']]],
+  ['cwxvdbled_43',['cWXVdbLed',['../classRoaLogic_1_1GUI_1_1cWXVdbLed.html#a627e2ff86d24af2ba1832960238df3d4',1,'RoaLogic::GUI::cWXVdbLed::cWXVdbLed()'],['../classRoaLogic_1_1GUI_1_1cWXVdbLed.html',1,'RoaLogic::GUI::cWXVdbLed']]],
+  ['cwxvdbvgamonitor_44',['cWXVdbVGAMonitor',['../classRoaLogic_1_1GUI_1_1cWXVdbVGAMonitor.html#abf9021fc6bfb770c0e3da2bfadd960d0',1,'RoaLogic::GUI::cWXVdbVGAMonitor::cWXVdbVGAMonitor()'],['../classRoaLogic_1_1GUI_1_1cWXVdbVGAMonitor.html',1,'RoaLogic::GUI::cWXVdbVGAMonitor']]]
 ];

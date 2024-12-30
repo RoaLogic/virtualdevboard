@@ -35,8 +35,9 @@ var searchData=
   ['cvirtualdemoboard_32',['cVirtualDemoBoard',['../classcVirtualDemoBoard.html',1,'']]],
   ['cwxvdb7segment_33',['cWXVdb7Segment',['../classcWXVdb7Segment.html',1,'']]],
   ['cwxvdb7segmentdisplay_34',['cWXVdb7SegmentDisplay',['../classRoaLogic_1_1GUI_1_1cWXVdb7SegmentDisplay.html',1,'RoaLogic::GUI']]],
-  ['cwxvdbconnector_35',['cWXVdbConnector',['../classRoaLogic_1_1GUI_1_1cWXVdbConnector.html',1,'RoaLogic::GUI']]],
-  ['cwxvdbic_36',['cWXVdbIC',['../classRoaLogic_1_1GUI_1_1cWXVdbIC.html',1,'RoaLogic::GUI']]],
-  ['cwxvdbled_37',['cWXVdbLed',['../classRoaLogic_1_1GUI_1_1cWXVdbLed.html',1,'RoaLogic::GUI']]],
-  ['cwxvdbvgamonitor_38',['cWXVdbVGAMonitor',['../classRoaLogic_1_1GUI_1_1cWXVdbVGAMonitor.html',1,'RoaLogic::GUI']]]
+  ['cwxvdbbase_35',['cWXVdbBase',['../classRoaLogic_1_1GUI_1_1cWXVdbBase.html',1,'RoaLogic::GUI']]],
+  ['cwxvdbconnector_36',['cWXVdbConnector',['../classRoaLogic_1_1GUI_1_1cWXVdbConnector.html',1,'RoaLogic::GUI']]],
+  ['cwxvdbic_37',['cWXVdbIC',['../classRoaLogic_1_1GUI_1_1cWXVdbIC.html',1,'RoaLogic::GUI']]],
+  ['cwxvdbled_38',['cWXVdbLed',['../classRoaLogic_1_1GUI_1_1cWXVdbLed.html',1,'RoaLogic::GUI']]],
+  ['cwxvdbvgamonitor_39',['cWXVdbVGAMonitor',['../classRoaLogic_1_1GUI_1_1cWXVdbVGAMonitor.html',1,'RoaLogic::GUI']]]
 ];

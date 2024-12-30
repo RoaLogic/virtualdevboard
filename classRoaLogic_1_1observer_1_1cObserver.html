@@ -93,17 +93,17 @@ Inheritance diagram for RoaLogic::observer::cObserver:</div>
 <area shape="rect" href="classRoaLogic_1_1GUI_1_1cGuiVDBComponent.html" title="GUI virtual development board component." alt="" coords="200,119,453,145"/>
 <area shape="rect" href="classcDE10Lite.html" title="Verilog C++ wrapper for DE10&#45;Lite." alt="" coords="283,169,370,194"/>
 <area shape="rect" href="classRoaLogic_1_1GUI_1_1cWXVdb7SegmentDisplay.html" title=" " alt="" coords="507,5,749,45"/>
-<area shape="rect" href="classRoaLogic_1_1GUI_1_1cWXVdbConnector.html" title="virtual development board connector type component" alt="" coords="507,70,749,95"/>
+<area shape="rect" href="classRoaLogic_1_1GUI_1_1cWXVdbBase.html" title="virtual development board component base class" alt="" coords="525,70,731,95"/>
 <area shape="rect" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html" title="IC virtual development board component." alt="" coords="534,119,722,145"/>
 <area shape="rect" href="classRoaLogic_1_1GUI_1_1cWXVdbLed.html" title="LED virtual development board component." alt="" coords="529,169,727,194"/>
 <area shape="rect" href="classRoaLogic_1_1GUI_1_1cWXVdbVGAMonitor.html" title=" " alt="" coords="501,218,755,243"/>
+<area shape="rect" href="classRoaLogic_1_1GUI_1_1cWXVdbConnector.html" title="virtual development board connector type component" alt="" coords="803,70,1044,95"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aafc41eb84774b23731e84f236446c8f3"><td class="memItemLeft" align="right" valign="top"><a id="aafc41eb84774b23731e84f236446c8f3" name="aafc41eb84774b23731e84f236446c8f3"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>notify</b> (eEvent aEvent, void *data)=0</td></tr>
+<tr class="memitem:aafc41eb84774b23731e84f236446c8f3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRoaLogic_1_1observer_1_1cObserver.html#aafc41eb84774b23731e84f236446c8f3">notify</a> (eEvent aEvent, void *data)=0</td></tr>
 <tr class="separator:aafc41eb84774b23731e84f236446c8f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -114,7 +114,46 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>notify</b> (e
 <p>This class is the observer implementation of the observer pattern.</p>
 <p>A class shall derive from this class and implement the notify() function, it then subscribes itself to a subject. When the subject now has a event it will call the notify function and the event can be processed in any way.</p>
 <dl class="section attention"><dt>Attention</dt><dd>This function will always run in the thread context of the calling thread. So changing variables of another thread must be made thread safe within the notify() function implementation. </dd></dl>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="aafc41eb84774b23731e84f236446c8f3" name="aafc41eb84774b23731e84f236446c8f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafc41eb84774b23731e84f236446c8f3">&#9670;&#160;</a></span>notify()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void RoaLogic::observer::cObserver::notify </td>
+          <td>(</td>
+          <td class="paramtype">eEvent&#160;</td>
+          <td class="paramname"><em>aEvent</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbBase.html#a9fe9e866f2e905c532c181b0ccc1582d">RoaLogic::GUI::cWXVdbBase</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/common/observer/<a class="el" href="observer_8hpp_source.html">observer.hpp</a></li>
 </ul>
 </div><!-- contents -->

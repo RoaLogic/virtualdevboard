@@ -1,10 +1,11 @@
 <map id="RoaLogic::observer::cObserver" name="RoaLogic::observer::cObserver">
 <area shape="rect" id="node1" title="Observer implementation." alt="" coords="5,137,152,177"/>
 <area shape="rect" id="node2" href="$classRoaLogic_1_1GUI_1_1cGuiVDBComponent.html" title="GUI virtual development board component." alt="" coords="200,119,453,145"/>
-<area shape="rect" id="node8" href="$classcDE10Lite.html" title="Verilog C++ wrapper for DE10&#45;Lite." alt="" coords="283,169,370,194"/>
+<area shape="rect" id="node9" href="$classcDE10Lite.html" title="Verilog C++ wrapper for DE10&#45;Lite." alt="" coords="283,169,370,194"/>
 <area shape="rect" id="node3" href="$classRoaLogic_1_1GUI_1_1cWXVdb7SegmentDisplay.html" title=" " alt="" coords="507,5,749,45"/>
-<area shape="rect" id="node4" href="$classRoaLogic_1_1GUI_1_1cWXVdbConnector.html" title="virtual development board connector type component" alt="" coords="507,70,749,95"/>
-<area shape="rect" id="node5" href="$classRoaLogic_1_1GUI_1_1cWXVdbIC.html" title="IC virtual development board component." alt="" coords="534,119,722,145"/>
-<area shape="rect" id="node6" href="$classRoaLogic_1_1GUI_1_1cWXVdbLed.html" title="LED virtual development board component." alt="" coords="529,169,727,194"/>
-<area shape="rect" id="node7" href="$classRoaLogic_1_1GUI_1_1cWXVdbVGAMonitor.html" title=" " alt="" coords="501,218,755,243"/>
+<area shape="rect" id="node4" href="$classRoaLogic_1_1GUI_1_1cWXVdbBase.html" title="virtual development board component base class" alt="" coords="525,70,731,95"/>
+<area shape="rect" id="node6" href="$classRoaLogic_1_1GUI_1_1cWXVdbIC.html" title="IC virtual development board component." alt="" coords="534,119,722,145"/>
+<area shape="rect" id="node7" href="$classRoaLogic_1_1GUI_1_1cWXVdbLed.html" title="LED virtual development board component." alt="" coords="529,169,727,194"/>
+<area shape="rect" id="node8" href="$classRoaLogic_1_1GUI_1_1cWXVdbVGAMonitor.html" title=" " alt="" coords="501,218,755,243"/>
+<area shape="rect" id="node5" href="$classRoaLogic_1_1GUI_1_1cWXVdbConnector.html" title="virtual development board connector type component" alt="" coords="803,70,1044,95"/>
 </map>
