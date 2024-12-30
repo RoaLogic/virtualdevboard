@@ -130,8 +130,8 @@ namespace GUI {
 
         /**
 	 * @brief Paint the widget
-	 * @details This function paints the widget. The 'LED' is turned on when _status=TRUE
-	 *          the corresponding bits in @_value are set, otherwise the corresponding LEDs are turned off
+	 * @details This function paints the widget. The 'LED' is turned on when _status=TRUE,
+	 *          otherwise the LED is turned off
 	 */
         void OnPaint(wxPaintEvent& event);
     };
