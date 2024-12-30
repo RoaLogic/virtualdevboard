@@ -154,7 +154,7 @@ Makefile.vdb:
 	echo "	echo \"using designName = V$(wrapper);\" >> \$$@" >> $@
 
 
-%vdb__Dpi.h: Makefile.vdb
+%vdb__Dpi.h: Makefile.vdb $(OBJDIR)/V$(wrapper)__ALL.o
 	$(MAKE) -f $^ $@
 
 
