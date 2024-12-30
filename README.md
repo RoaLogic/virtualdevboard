@@ -14,10 +14,28 @@ The peripherals (other components) on the board are emulated using graphical com
 * Graphviz
 
 # Software design
-The virtual development board has three main software components. First is the FPGA/ASIC logic, which is translated into C++ code with Verilator. The verilated design can then be controlled by our C++ application, which is done by the testbench, see @ref CTestbench for more information about this part.
+The software consists out of two different components, one is the FPGA/ASIC logic, which is translated into C++ code with verilator. The
+second part is the GUI with the virtual components. The verilated design and the GUI run in a different thread and have different methods 
+to communicate between the threads, it is possible to run the design without the use of the GUI.
 
-Second part are the virtual development board (vdb) components, those are C++ components with specific logic to connect with the verilated design. Those translate the verilated signals into real components, like LED's, 7 segment displays or VGA data. See @ref cVDBCommon for more information.
+Full software documentation can be found [here](https://roalogic.github.io/virtualdevboard/).
 
-Last part is the GUI, which is optional and has a specific interface. This interface is added so that it is possible to use different frameworks or eventual just a terminal. The GUI exists out of the main design/main frame and vdb component implementations. Every vdb component shall have it's own GUI implementation. See @ref vdbComponent_1 
+## Verilated design
+
+All FPGA/ASIC logic is converted into C++ code with verilator, this is then controlled from the virtual development board. The design
+is controlled through the main testbench and holds the complete timing interface of the design. It cycles step by step through the
+design by changing the clocks when needed. This means that it evaluates the next clock edge, toggles the clock and evaluates the 
+full design. Which is then repeated untill a finish is received or the simulation is stopped. 
+
+## GUI design
+
+The verilated design communicates with the GUI through a specific interface. This interface is introduced so that it's possible to change the 
+underlaying GUI framework. In the main design of the GUI the general control is instantiated, with this comes the start, pause and stop button.
+
+## Peripherals
+
+Peripherals are created as virtual components. Those components can be connected with the verilated design and/or shown on the GUI, this is 
+specific to the peripheral and the usage of it. Within the initialization file it is determined where a component is placed in the GUI, which
+is always relative to the top left corner.
 
 # Folder structure
