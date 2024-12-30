@@ -46,7 +46,6 @@
 ##
 # List of directories
 #
-#list_directories = $(filter-out $1,$(subst /, ,$(dir $(wildcard $1/*/.))))
 list_directories = $(abspath $(wildcard $1/*/.))
 
 ##
@@ -89,7 +88,7 @@ load_filelist = $(if $(call file_exists,$1),$(call _filelist_readfile,$1))
 ##
 # Get the board
 #
-# This assumes the command is called from the <...>/<board>/build directory
+# This assumes the command is called from the <...>/<board> directory
 
 # @brief get second-to-last entry in list
 get_penultimate = $(wordlist $(words $1),$(words $1), __x__ $1)
