@@ -160,7 +160,24 @@ namespace dimensions {
             _distance /= rhs;
             return *this;
         }
+
+        //overload <<
+        friend std::ostream& operator<<(std::ostream& out, const cDistance& d);
     };
+
+    //streaming operator
+    inline std::ostream& operator<<(std::ostream& out, const cDistance& d)
+    {
+        if (d > 1.0E3  || d < -1.0E3 ) { return out << d.km() << "km"; }
+        if (d > 1.0    || d < -1.0   ) { return out << d.m()  << "m";  }
+        if (d > 0.1    || d < -0.1   ) { return out << d.dm() << "dm"; }
+        if (d > 0.01   || d < -0.01  ) { return out << d.cm() << "cm"; }
+        if (d > 1.0E-3 || d < -1.0E-3) { return out << d.mm() << "mm"; }
+        if (d > 1.0E-6 || d < -1.0E-6) { return out << d.um() << "um"; }
+        if (d > 1.0E-9 || d < -1.0E-9) { return out << d.nm() << "nm"; }
+
+        return out << d.pm() << "pm";
+    }
 
 
     /**
@@ -206,6 +223,12 @@ namespace dimensions {
     struct distancePoint
     {
         cDistance x,y;
+
+        //overload <<
+        inline friend std::ostream& operator<<(std::ostream& out, const distancePoint& pt)
+        {
+          return out << "(" << pt.x << "," << pt.y << ")";
+        }
     };
 
     /**
@@ -214,6 +237,11 @@ namespace dimensions {
     struct distanceSize
     {
         cDistance width,height;
+        //overload <<
+        inline friend std::ostream& operator<<(std::ostream& out, const distanceSize& sz)
+        {
+          return out << "[" << sz.width << "," << sz.height << "]";
+        }
     };
 
 

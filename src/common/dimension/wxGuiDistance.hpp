@@ -55,14 +55,14 @@ using namespace RoaLogic::dimensions;
 class wxDistanceCoord : public cDistance
 {
     private:
-    wxWindow* window;
+    const wxWindow* window;
 
     public:
     /**
      * @brief constructor
      */
-    wxDistanceCoord (wxWindow* window) : window(window), cDistance(){}
-    wxDistanceCoord (long double val, wxWindow* window) : window(window), cDistance(val){}
+    wxDistanceCoord (const wxWindow* window) : window(window), cDistance(){}
+    wxDistanceCoord (long double val, const wxWindow* window) : window(window), cDistance(val){}
 
     /**
      * @brief destructor
@@ -80,16 +80,16 @@ class wxDistanceCoord : public cDistance
 class wxDistanceSize
 {
     private:
-    wxWindow *window;
+    const wxWindow *window;
     distanceSize size;
 
     public:
     /**
      * @brief constructor
      */
-    wxDistanceSize (wxWindow* window) : window(window){}
-    wxDistanceSize (distanceSize size, wxWindow* window) : window(window), size(size){}
-    wxDistanceSize (cDistance width, cDistance height, wxWindow* window) : window(window) {
+    wxDistanceSize (const wxWindow* window) : window(window){}
+    wxDistanceSize (distanceSize size, const wxWindow* window) : window(window), size(size){}
+    wxDistanceSize (cDistance width, cDistance height, const wxWindow* window) : window(window) {
       SetWidth(width);
       SetHeight(height);
     }
@@ -140,7 +140,7 @@ class wxDistanceSize
 class wxDistancePoint
 {
     private:
-    wxWindow *window;
+    const wxWindow *window;
 
     public:
     cDistance x;
@@ -149,9 +149,9 @@ class wxDistancePoint
     /**
      * @brief constructor
      */
-    wxDistancePoint (wxWindow* window) : window(window){}
-    wxDistancePoint (distancePoint point, wxWindow* window) : window(window), x(point.x), y(point.y){}
-    wxDistancePoint (cDistance x, cDistance y, wxWindow* window) : window(window), x(x), y(y) {}
+    wxDistancePoint (const wxWindow* window) : window(window){}
+    wxDistancePoint (distancePoint point, const wxWindow* window) : window(window), x(point.x), y(point.y){}
+    wxDistancePoint (cDistance x, cDistance y, const wxWindow* window) : window(window), x(x), y(y) {}
 
     /**
      * @brief destructor
