@@ -93,7 +93,7 @@ void cVirtualDemoBoard::setupGui(std::string applicationName, std::string aboutT
     wxPostEvent(_mainFrame, changeFrameEvent);
 }
 
-void cVirtualDemoBoard::addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point, void* information)
+void cVirtualDemoBoard::addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point, void* information, double angle)
 {
     wxCommandEvent statusEvent{wxEVT_ADD_VDB};
     sAddVdbComponent* const eventData{ new sAddVdbComponent};
@@ -102,6 +102,7 @@ void cVirtualDemoBoard::addVdbComponent(eVdbComponentType type, cVDBCommon* vdbC
     eventData->vdbComponent = vdbComponent;
     eventData->placement = point;
     eventData->componentDetails = information;
+    eventData->angle = angle;
 
     statusEvent.SetClientObject(eventData);
     wxPostEvent(_mainFrame, statusEvent);

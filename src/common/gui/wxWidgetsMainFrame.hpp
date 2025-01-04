@@ -79,6 +79,7 @@ struct sAddVdbComponent : public wxClientData
     cVDBCommon* vdbComponent;
     distancePoint placement;
     void* componentDetails;
+    double angle;
 };
 
 /**
