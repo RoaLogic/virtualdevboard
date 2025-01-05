@@ -52,12 +52,12 @@ namespace GUI {
 
     /**
      * @brief Construct a new wx widgets Connector window
-     * @details This is the constructor for the IC window.
+     * @details This is the constructor for the connect window.
      */
-    cWXVdbConnector::cWXVdbConnector(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbConnectorInformation* information) :
-        cWXVdbBase(myVDBComponent, position, windowParent, information)
+    cWXVdbConnector::cWXVdbConnector(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbConnectorInformation* information, double angle) :
+        cWXVdbBase(myVDBComponent, position, windowParent, information, distanceSize(information->width,information->height + 6_mm), angle)
     {
-        SetInitialSize(GetDefaultSize());
+        SetLogicalOrigin(0,-6_mm);
         Connect(wxEVT_PAINT, wxPaintEventHandler(cWXVdbConnector::OnPaint));
     }
 
@@ -71,59 +71,56 @@ namespace GUI {
      */
     void cWXVdbConnector::OnPaint(wxPaintEvent& event)
     {
-        wxPaintDC dc(this);
+        //Create Drawing Canvas
+        NewDC();
+
+        distanceSize size = GetDeviceSize();
+
         wxColour  myColour;
-
-        sVdbConnectorInformation* myInformation = reinterpret_cast<sVdbConnectorInformation*>(_information);
-
-        wxSize  size = wxDistanceSize(myInformation->width,myInformation->height, this);
         wxSize  textSize;
         wxPoint textOrigin;
-        double  angle;
-
-        dc.SetLogicalOrigin(wxDistanceCoord(0,this),wxDistanceCoord(-6_mm,this));
 
         //Draw the connector (just a bunch of rectangles)
 	//base
         myColour = wxColour(50,50,50);    //black
-        dc.SetPen(wxPen(wxColour(myColour),1));
-        dc.SetBrush(myColour);
-        dc.DrawRectangle(wxPoint(0,0),size);
+        SetPen(wxPen(wxColour(myColour),1));
+        SetBrush(myColour);
+        DrawRectangle(distancePoint(0,0),size);
 
 	//connector edge
         myColour = wxColour(43,43,43); //different black
-        dc.SetBrush(myColour);
-        dc.DrawRectangle(wxPoint(0,0),wxDistanceSize(myInformation->width, 3_mm, this));
+        SetBrush(myColour);
+        DrawRectangle(distancePoint(0,0),distanceSize(size.width, 3_mm));
 	//connector main
-        dc.DrawRectangle(wxDistancePoint(7.3_mm,0,this),
-                         wxDistanceSize(myInformation->width - 14.6_mm,myInformation->height,this));
+        DrawRectangle(distancePoint(7.3_mm,0),
+                      distanceSize(size.width - 14.6_mm,size.height));
 
         //metal sides (40x40)
         myColour = wxColour(172,189,193);
-        dc.SetPen(wxPen(wxColour(myColour),1));
-        dc.SetBrush(myColour);
-        dc.DrawRectangle(wxDistancePoint(0.5_mm,3_mm,this),
-                         wxDistanceSize(6.3_mm, 10_mm, this));
-        dc.DrawRectangle(wxDistancePoint(myInformation->width - 0.5_mm,3_mm,this),
-                         wxDistanceSize(-6.3_mm, 10_mm, this));
+        SetPen(wxPen(wxColour(myColour),1));
+        SetBrush(myColour);
+        DrawRectangle(distancePoint(0.5_mm,3_mm),
+                      distanceSize(6.3_mm, 10_mm));
+        DrawRectangle(distancePoint(size.width - 0.5_mm,3_mm),
+                      distanceSize(-6.3_mm, 10_mm));
 
         //metal connector
-        dc.DrawRectangle(wxDistancePoint(7.3_mm,0,this),
-                         wxDistanceSize(myInformation->width - 15.6_mm, -6_mm, this));
+        DrawRectangle(distancePoint(7.3_mm,0),
+                      distanceSize(size.width - 15.6_mm, -6_mm));
 
         //metal bushings
-        dc.DrawRectangle(wxDistancePoint(3.15_mm - 4.75_mm/2,0,this),
-                         wxDistanceSize(4.75_mm,-4.75_mm,this));
-        dc.DrawRectangle(wxDistancePoint(myInformation->width -(3.15_mm - 4.75_mm/2),0,this),
-                         wxDistanceSize(-4.75_mm,-4.75_mm,this));
+        DrawRectangle(distancePoint(3.15_mm - 4.75_mm/2,0),
+                      distanceSize(4.75_mm,-4.75_mm));
+        DrawRectangle(distancePoint(size.width -(3.15_mm - 4.75_mm/2),0),
+                      distanceSize(-4.75_mm,-4.75_mm));
 
         //Mounting holes
         myColour = wxColour(170,127,49); //bronze/gold
-        dc.SetBrush(myColour);
-        dc.DrawCircle(wxDistancePoint(3.15_mm,myInformation->height/2,this),
-                      wxDistanceCoord(1.6_mm,this));
-        dc.DrawCircle(wxDistancePoint(myInformation->width - 3.15_mm,myInformation->height/2,this),
-                      wxDistanceCoord(1.6_mm,this));
+        SetBrush(myColour);
+        DrawCircle(3.15_mm,size.height/2,1.6_mm);
+        DrawCircle(size.width - 3.15_mm,size.height/2,1.6_mm);
 
+        //Destroy Drawing Canvas
+        DeleteDC();
     }
 }}
