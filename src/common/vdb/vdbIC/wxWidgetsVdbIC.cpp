@@ -44,8 +44,6 @@
 /////////////////////////////////////////////////////////////////////
 
 #include "wxWidgetsVdbIC.hpp"
-//#include "wxGuiDistance.hpp"
-//#include "distance.hpp"
 
 namespace RoaLogic {
     using namespace observer;
@@ -56,13 +54,10 @@ namespace GUI {
      * @brief Construct a new wx widgets IC window
      * @details This is the constructor for the IC window.
      */
-    cWXVdbIC::cWXVdbIC(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbICInformation* information) :
-        cGuiVDBComponent(myVDBComponent, position),
-        wxWindow(windowParent, wxID_ANY, wxPoint(wxDistancePoint(position, windowParent)), wxDefaultSize, wxTRANSPARENT_WINDOW),
-        _myInformation(information)
+    cWXVdbIC::cWXVdbIC(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbICInformation* information, double angle) :
+        cWXVdbBase(myVDBComponent, position, windowParent, information, distanceSize(information->width,information->height), angle)
     {
-        SetInitialSize(GetDefaultSize());
-
+//        SetSize(GetDefaultSize());
         Connect(wxEVT_PAINT, wxPaintEventHandler(cWXVdbIC::OnPaint));
     }
 
@@ -76,40 +71,51 @@ namespace GUI {
      */
     void cWXVdbIC::OnPaint(wxPaintEvent& event)
     {
-        wxPaintDC dc(this);
+        //Create New Drawing Canvas
+        NewDC();
 
-        wxSize  size = wxDistanceSize(_myInformation->width,_myInformation->height, this);
-        wxSize  textSize;
-        wxPoint textOrigin;
-        double  angle;
+        distanceSize size = GetDeviceSize();
+
+        wxSize        wxTextSize;
+        distanceSize  textSize;
+        distancePoint textOrigin;
+        double        textAngle;
 
         //Draw the IC (just a rectangle)
         wxColour ICColour  = wxColour(55,50,45);    //black
-        dc.SetPen(wxPen(wxColour(ICColour),1));
-        dc.SetBrush(ICColour);
-        dc.DrawRectangle(wxPoint(0,0),size);
+        SetPen(wxPen(wxColour(ICColour),1));
+        SetBrush(ICColour);
+        DrawRectangle(distancePoint(0,0),size);
 
         //add light lines for 3D effect
-        dc.SetPen(wxPen(wxColour(150,140,130),2));
-        dc.DrawLine(0,0,size.GetWidth(),0);
-        dc.DrawLine(0,0,0,size.GetHeight());
+        SetPen(wxPen(wxColour(150,140,130),2));
+        DrawLine(0,0,size.width,0);
+        DrawLine(0,0,0,size.height);
 
         //add label
-        dc.SetFont(*wxNORMAL_FONT);
-        dc.SetTextForeground(*wxWHITE);
-        textSize = GetTextExtent(_myInformation->label);
-        if (size.GetHeight() > size.GetWidth())
+        wxString label = reinterpret_cast<sVdbICInformation*>(GetInformation())->label;
+        SetFont(*wxNORMAL_FONT);
+        SetTextForeground(*wxWHITE);
+        wxTextSize = GetTextExtent(label);
+
+        textSize.width = 1_inch * wxTextSize.GetWidth() / GetDPI().GetWidth();
+        textSize.height = 1_inch * wxTextSize.GetHeight() / GetDPI().GetHeight();
+        if (size.height > size.width)
         {
-            angle = 90;
-            textOrigin.x = (size.GetWidth() - textSize.GetHeight())/2;
-            textOrigin.y = (size.GetHeight() + textSize.GetWidth())/2;
+            textAngle = 90;
+            textOrigin.x = (size.width - textSize.height)/2;
+            textOrigin.y = (size.height + textSize.width)/2;
         }
         else
         {
-            angle = 0;
-            textOrigin.x = (size.GetWidth() - textSize.GetWidth())/2;
-            textOrigin.y = (size.GetHeight() - textSize.GetHeight())/2;
+            textAngle = 0;
+            textOrigin.x = (size.width - textSize.width)/2;
+            textOrigin.y = (size.height - textSize.height)/2;
         }
-        dc.DrawRotatedText(_myInformation->label, textOrigin, angle);
+
+        DrawRotatedText(label, textOrigin, textAngle);
+
+        //Destroy Drawing Canvas
+        DeleteDC();
     }
 }}
