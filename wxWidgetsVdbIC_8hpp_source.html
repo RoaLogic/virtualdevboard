@@ -122,55 +122,37 @@ $(function() {
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">#ifndef WX_WIDGETS_IC_HPP</span></div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="preprocessor">#define WX_WIDGETS_IC_HPP</span></div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="preprocessor">#include &lt;wx/wxprec.h&gt;</span></div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="preprocessor">#include &lt;wx/wx.h&gt;</span></div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="preprocessor">#include &quot;wx/event.h&quot;</span></div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="preprocessor">#include &lt;wx/graphics.h&gt;</span></div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="preprocessor">#include &quot;gui_interface.hpp&quot;</span></div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="preprocessor">#include &quot;wxGuiDistance.hpp&quot;</span></div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceRoaLogic.html">RoaLogic</a> {</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="keyword">using namespace </span>observer;</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="keyword">using namespace </span>vdb;</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="keyword">namespace </span>GUI {</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html">   71</a></span>    <span class="keyword">class </span><a class="code hl_class" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html">cWXVdbIC</a> : <span class="keyword">public</span> <a class="code hl_class" href="classRoaLogic_1_1GUI_1_1cGuiVDBComponent.html">cGuiVDBComponent</a>, <span class="keyword">public</span> wxWindow</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    {</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        <a class="code hl_struct" href="structRoaLogic_1_1GUI_1_1sVdbICInformation.html">sVdbICInformation</a>* _myInformation;</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="preprocessor">#include &quot;wxWidgetsVdbBase.hpp&quot;</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceRoaLogic.html">RoaLogic</a> {</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keyword">using namespace </span>observer;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keyword">using namespace </span>vdb;</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="keyword">namespace </span>GUI {</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html">   65</a></span>    <span class="keyword">class </span><a class="code hl_class" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html">cWXVdbIC</a> : <span class="keyword">public</span> <a class="code hl_class" href="classRoaLogic_1_1GUI_1_1cWXVdbBase.html">cWXVdbBase</a></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    {</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        <a class="code hl_struct" href="structRoaLogic_1_1GUI_1_1sVdbICInformation.html">sVdbICInformation</a>* _myInformation;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        <a class="code hl_class" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html">cWXVdbIC</a>(<a class="code hl_class" href="classRoaLogic_1_1vdb_1_1cVDBCommon.html">cVDBCommon</a>* myVDBComponent, <a class="code hl_struct" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> position, wxWindow* windowParent, <a class="code hl_struct" href="structRoaLogic_1_1GUI_1_1sVdbICInformation.html">sVdbICInformation</a>* information, <span class="keywordtype">double</span> angle=0);</div>
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> notify(eEvent aEvent, <span class="keywordtype">void</span>* data) {}</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> onEvent(wxCommandEvent&amp; event) {}</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a2df917f46cfaced19a0256705583aa54">   79</a></span>        <a class="code hl_function" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a2df917f46cfaced19a0256705583aa54">~cWXVdbIC</a>() {}</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a768ea798575f34c0c0576a997a3fb911">OnPaint</a>(wxPaintEvent&amp; event);</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    };</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>}}</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        <a class="code hl_class" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html">cWXVdbIC</a>(<a class="code hl_class" href="classRoaLogic_1_1vdb_1_1cVDBCommon.html">cVDBCommon</a>* myVDBComponent, <a class="code hl_struct" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> position, wxWindow* windowParent, <a class="code hl_struct" href="structRoaLogic_1_1GUI_1_1sVdbICInformation.html">sVdbICInformation</a>* information);</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a2df917f46cfaced19a0256705583aa54">   99</a></span>        <a class="code hl_function" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a2df917f46cfaced19a0256705583aa54">~cWXVdbIC</a>() {}</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#afdf519d0c8a5664baa677a5c8f3ffff5">  108</a></span>        wxSize <a class="code hl_function" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#afdf519d0c8a5664baa677a5c8f3ffff5">GetDefaultSize</a>(wxWindow* win = NULL)</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        {</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            <span class="keywordflow">if</span> (win==NULL) { win = <span class="keyword">this</span>; }</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>            <span class="keywordflow">return</span> <a class="code hl_class" href="classwxDistanceSize.html">wxDistanceSize</a>(_myInformation-&gt;width,_myInformation-&gt;height, win);</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        }</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a768ea798575f34c0c0576a997a3fb911">OnPaint</a>(wxPaintEvent&amp; event);</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    };</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>}}</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassRoaLogic_1_1GUI_1_1cGuiVDBComponent_html"><div class="ttname"><a href="classRoaLogic_1_1GUI_1_1cGuiVDBComponent.html">RoaLogic::GUI::cGuiVDBComponent</a></div><div class="ttdoc">GUI virtual development board component.</div><div class="ttdef"><b>Definition:</b> gui_interface.hpp:233</div></div>
-<div class="ttc" id="aclassRoaLogic_1_1GUI_1_1cWXVdbIC_html"><div class="ttname"><a href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html">RoaLogic::GUI::cWXVdbIC</a></div><div class="ttdoc">IC virtual development board component.</div><div class="ttdef"><b>Definition:</b> wxWidgetsVdbIC.hpp:72</div></div>
-<div class="ttc" id="aclassRoaLogic_1_1GUI_1_1cWXVdbIC_html_a2df917f46cfaced19a0256705583aa54"><div class="ttname"><a href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a2df917f46cfaced19a0256705583aa54">RoaLogic::GUI::cWXVdbIC::~cWXVdbIC</a></div><div class="ttdeci">~cWXVdbIC()</div><div class="ttdoc">Destructor.</div><div class="ttdef"><b>Definition:</b> wxWidgetsVdbIC.hpp:99</div></div>
-<div class="ttc" id="aclassRoaLogic_1_1GUI_1_1cWXVdbIC_html_a768ea798575f34c0c0576a997a3fb911"><div class="ttname"><a href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a768ea798575f34c0c0576a997a3fb911">RoaLogic::GUI::cWXVdbIC::OnPaint</a></div><div class="ttdeci">void OnPaint(wxPaintEvent &amp;event)</div><div class="ttdoc">Paint the widget.</div><div class="ttdef"><b>Definition:</b> wxWidgetsVdbIC.cpp:77</div></div>
-<div class="ttc" id="aclassRoaLogic_1_1GUI_1_1cWXVdbIC_html_afdf519d0c8a5664baa677a5c8f3ffff5"><div class="ttname"><a href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#afdf519d0c8a5664baa677a5c8f3ffff5">RoaLogic::GUI::cWXVdbIC::GetDefaultSize</a></div><div class="ttdeci">wxSize GetDefaultSize(wxWindow *win=NULL)</div><div class="ttdoc">Default component size.</div><div class="ttdef"><b>Definition:</b> wxWidgetsVdbIC.hpp:108</div></div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclassRoaLogic_1_1GUI_1_1cWXVdbBase_html"><div class="ttname"><a href="classRoaLogic_1_1GUI_1_1cWXVdbBase.html">RoaLogic::GUI::cWXVdbBase</a></div><div class="ttdoc">virtual development board component base class</div><div class="ttdef"><b>Definition:</b> wxWidgetsVdbBase.hpp:71</div></div>
+<div class="ttc" id="aclassRoaLogic_1_1GUI_1_1cWXVdbIC_html"><div class="ttname"><a href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html">RoaLogic::GUI::cWXVdbIC</a></div><div class="ttdoc">IC virtual development board component.</div><div class="ttdef"><b>Definition:</b> wxWidgetsVdbIC.hpp:66</div></div>
+<div class="ttc" id="aclassRoaLogic_1_1GUI_1_1cWXVdbIC_html_a2df917f46cfaced19a0256705583aa54"><div class="ttname"><a href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a2df917f46cfaced19a0256705583aa54">RoaLogic::GUI::cWXVdbIC::~cWXVdbIC</a></div><div class="ttdeci">~cWXVdbIC()</div><div class="ttdoc">Destructor.</div><div class="ttdef"><b>Definition:</b> wxWidgetsVdbIC.hpp:79</div></div>
+<div class="ttc" id="aclassRoaLogic_1_1GUI_1_1cWXVdbIC_html_a768ea798575f34c0c0576a997a3fb911"><div class="ttname"><a href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a768ea798575f34c0c0576a997a3fb911">RoaLogic::GUI::cWXVdbIC::OnPaint</a></div><div class="ttdeci">void OnPaint(wxPaintEvent &amp;event)</div><div class="ttdoc">Paint the widget.</div><div class="ttdef"><b>Definition:</b> wxWidgetsVdbIC.cpp:72</div></div>
 <div class="ttc" id="aclassRoaLogic_1_1vdb_1_1cVDBCommon_html"><div class="ttname"><a href="classRoaLogic_1_1vdb_1_1cVDBCommon.html">RoaLogic::vdb::cVDBCommon</a></div><div class="ttdoc">Common virtual development board component.</div><div class="ttdef"><b>Definition:</b> vdbCommon.hpp:325</div></div>
-<div class="ttc" id="aclasswxDistanceSize_html"><div class="ttname"><a href="classwxDistanceSize.html">wxDistanceSize</a></div><div class="ttdef"><b>Definition:</b> wxGuiDistance.hpp:81</div></div>
 <div class="ttc" id="anamespaceRoaLogic_html"><div class="ttname"><a href="namespaceRoaLogic.html">RoaLogic</a></div><div class="ttdef"><b>Definition:</b> distance.hpp:49</div></div>
 <div class="ttc" id="astructRoaLogic_1_1GUI_1_1sVdbICInformation_html"><div class="ttname"><a href="structRoaLogic_1_1GUI_1_1sVdbICInformation.html">RoaLogic::GUI::sVdbICInformation</a></div><div class="ttdoc">virtual development board IC information</div><div class="ttdef"><b>Definition:</b> gui_interface.hpp:157</div></div>
-<div class="ttc" id="astructRoaLogic_1_1dimensions_1_1distancePoint_html"><div class="ttname"><a href="structRoaLogic_1_1dimensions_1_1distancePoint.html">RoaLogic::dimensions::distancePoint</a></div><div class="ttdoc">Point of distance units.</div><div class="ttdef"><b>Definition:</b> distance.hpp:207</div></div>
+<div class="ttc" id="astructRoaLogic_1_1dimensions_1_1distancePoint_html"><div class="ttname"><a href="structRoaLogic_1_1dimensions_1_1distancePoint.html">RoaLogic::dimensions::distancePoint</a></div><div class="ttdoc">Point of distance units.</div><div class="ttdef"><b>Definition:</b> distance.hpp:224</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

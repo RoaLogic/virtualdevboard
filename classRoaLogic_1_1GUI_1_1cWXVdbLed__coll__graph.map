@@ -1,6 +1,7 @@
 <map id="RoaLogic::GUI::cWXVdbLed" name="RoaLogic::GUI::cWXVdbLed">
-<area shape="rect" id="node1" title="LED virtual development board component." alt="" coords="131,167,330,192"/>
-<area shape="rect" id="node2" href="$classRoaLogic_1_1GUI_1_1cGuiVDBComponent.html" title="GUI virtual development board component." alt="" coords="5,93,259,119"/>
-<area shape="rect" id="node3" href="$classRoaLogic_1_1observer_1_1cObserver.html" title="Observer implementation." alt="" coords="59,5,205,45"/>
-<area shape="rect" id="node4" title=" " alt="" coords="283,93,376,119"/>
+<area shape="rect" id="node1" title="LED virtual development board component." alt="" coords="131,240,330,265"/>
+<area shape="rect" id="node2" href="$classRoaLogic_1_1GUI_1_1cWXVdbBase.html" title="virtual development board component base class" alt="" coords="127,167,334,192"/>
+<area shape="rect" id="node3" href="$classRoaLogic_1_1GUI_1_1cGuiVDBComponent.html" title="GUI virtual development board component." alt="" coords="5,93,259,119"/>
+<area shape="rect" id="node4" href="$classRoaLogic_1_1observer_1_1cObserver.html" title="Observer implementation." alt="" coords="59,5,205,45"/>
+<area shape="rect" id="node5" title=" " alt="" coords="283,93,376,119"/>
 </map>

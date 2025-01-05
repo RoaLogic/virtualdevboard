@@ -13,5 +13,6 @@ var searchData=
   ['ringbufferiter_10',['ringbufferIter',['../classringbufferIter.html',1,'']]],
   ['ringbufferiterator_11',['ringbufferIterator',['../classRoaLogic_1_1common_1_1ringbufferIterator.html#a969fb54a9bbeebece4b8cc11bade993a',1,'RoaLogic::common::ringbufferIterator::ringbufferIterator()'],['../classRoaLogic_1_1common_1_1ringbufferIterator.html',1,'RoaLogic::common::ringbufferIterator&lt; T &gt;']]],
   ['roalogic_12',['RoaLogic',['../namespaceRoaLogic.html',1,'']]],
-  ['run_13',['run',['../classcDE10Lite.html#ac46ecee5335d551bc9e06d3a1e22c532',1,'cDE10Lite']]]
+  ['rotate_13',['Rotate',['../classRoaLogic_1_1GUI_1_1cWXVdbBase.html#aec28a298f2b8ff8054e945a506ad4909',1,'RoaLogic::GUI::cWXVdbBase::Rotate(const distanceSize size) const'],['../classRoaLogic_1_1GUI_1_1cWXVdbBase.html#a358fd5e21c69eac6af9210f6bd74a39e',1,'RoaLogic::GUI::cWXVdbBase::Rotate(const cDistance x, const cDistance y) const']]],
+  ['run_14',['run',['../classcDE10Lite.html#ac46ecee5335d551bc9e06d3a1e22c532',1,'cDE10Lite']]]
 ];

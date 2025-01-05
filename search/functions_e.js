@@ -9,5 +9,6 @@ var searchData=
   ['return_5fvalue_6',['return_value',['../structRoaLogic_1_1testbench_1_1tasks_1_1sCoRoutineHandler_1_1promise__type.html#a7f121f507c1843ca95238a12de8a0ded',1,'RoaLogic::testbench::tasks::sCoRoutineHandler::promise_type']]],
   ['ringbuffer_7',['ringbuffer',['../classRoaLogic_1_1common_1_1ringbuffer.html#ad04feb6f4fc3d9280a233b30910ad4f5',1,'RoaLogic::common::ringbuffer']]],
   ['ringbufferiterator_8',['ringbufferIterator',['../classRoaLogic_1_1common_1_1ringbufferIterator.html#a969fb54a9bbeebece4b8cc11bade993a',1,'RoaLogic::common::ringbufferIterator']]],
-  ['run_9',['run',['../classcDE10Lite.html#ac46ecee5335d551bc9e06d3a1e22c532',1,'cDE10Lite']]]
+  ['rotate_9',['Rotate',['../classRoaLogic_1_1GUI_1_1cWXVdbBase.html#aec28a298f2b8ff8054e945a506ad4909',1,'RoaLogic::GUI::cWXVdbBase::Rotate(const distanceSize size) const'],['../classRoaLogic_1_1GUI_1_1cWXVdbBase.html#a358fd5e21c69eac6af9210f6bd74a39e',1,'RoaLogic::GUI::cWXVdbBase::Rotate(const cDistance x, const cDistance y) const']]],
+  ['run_10',['run',['../classcDE10Lite.html#ac46ecee5335d551bc9e06d3a1e22c532',1,'cDE10Lite']]]
 ];

@@ -76,7 +76,6 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classRoaLogic_1_1GUI_1_1cWXVdbBase-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">RoaLogic::GUI::cWXVdbBase Class Reference</div></div>
 </div><!--header-->
@@ -91,11 +90,14 @@ Inheritance diagram for RoaLogic::GUI::cWXVdbBase:</div>
 <div class="dyncontent">
 <div class="center"><img src="classRoaLogic_1_1GUI_1_1cWXVdbBase__inherit__graph.png" border="0" usemap="#aRoaLogic_1_1GUI_1_1cWXVdbBase_inherit__map" alt="Inheritance graph"/></div>
 <map name="aRoaLogic_1_1GUI_1_1cWXVdbBase_inherit__map" id="aRoaLogic_1_1GUI_1_1cWXVdbBase_inherit__map">
-<area shape="rect" title="virtual development board component base class" alt="" coords="127,167,334,192"/>
-<area shape="rect" href="classRoaLogic_1_1GUI_1_1cWXVdbConnector.html" title="virtual development board connector type component" alt="" coords="110,240,351,265"/>
-<area shape="rect" href="classRoaLogic_1_1GUI_1_1cGuiVDBComponent.html" title="GUI virtual development board component." alt="" coords="5,93,259,119"/>
-<area shape="rect" href="classRoaLogic_1_1observer_1_1cObserver.html" title="Observer implementation." alt="" coords="59,5,205,45"/>
-<area shape="rect" title=" " alt="" coords="283,93,376,119"/>
+<area shape="rect" title="virtual development board component base class" alt="" coords="501,95,708,121"/>
+<area shape="rect" href="classRoaLogic_1_1GUI_1_1cWXVdb7SegmentDisplay.html" title=" " alt="" coords="756,5,997,45"/>
+<area shape="rect" href="classRoaLogic_1_1GUI_1_1cWXVdbConnector.html" title="virtual development board connector type component" alt="" coords="756,70,997,95"/>
+<area shape="rect" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html" title="IC virtual development board component." alt="" coords="783,119,971,145"/>
+<area shape="rect" href="classRoaLogic_1_1GUI_1_1cWXVdbLed.html" title="LED virtual development board component." alt="" coords="777,169,976,194"/>
+<area shape="rect" href="classRoaLogic_1_1GUI_1_1cGuiVDBComponent.html" title="GUI virtual development board component." alt="" coords="200,70,453,95"/>
+<area shape="rect" href="classRoaLogic_1_1observer_1_1cObserver.html" title="Observer implementation." alt="" coords="5,63,152,103"/>
+<area shape="rect" title=" " alt="" coords="280,119,373,145"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -112,23 +114,119 @@ Collaboration diagram for RoaLogic::GUI::cWXVdbBase:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a664e8b2409c07d4a59d2edfc3e91b616"><td class="memItemLeft" align="right" valign="top"><a id="a664e8b2409c07d4a59d2edfc3e91b616" name="a664e8b2409c07d4a59d2edfc3e91b616"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>cWXVdbBase</b> (<a class="el" href="classRoaLogic_1_1vdb_1_1cVDBCommon.html">cVDBCommon</a> *myVDBComponent, <a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> position, wxWindow *windowParent, void *Information)</td></tr>
-<tr class="memdesc:a664e8b2409c07d4a59d2edfc3e91b616"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. <br /></td></tr>
-<tr class="separator:a664e8b2409c07d4a59d2edfc3e91b616"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1453c65c965e77a320f5fbfa844f2b1d"><td class="memItemLeft" align="right" valign="top"><a id="a1453c65c965e77a320f5fbfa844f2b1d" name="a1453c65c965e77a320f5fbfa844f2b1d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>cWXVdbBase</b> (<a class="el" href="classRoaLogic_1_1vdb_1_1cVDBCommon.html">cVDBCommon</a> *myVDBComponent, <a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> position, wxWindow *windowParent, void *Information, const <a class="el" href="structRoaLogic_1_1dimensions_1_1distanceSize.html">distanceSize</a> &amp;size=<a class="el" href="structRoaLogic_1_1dimensions_1_1distanceSize.html">distanceSize</a>(5_mm, 5_mm), double angle=0)</td></tr>
+<tr class="memdesc:a1453c65c965e77a320f5fbfa844f2b1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. <br /></td></tr>
+<tr class="separator:a1453c65c965e77a320f5fbfa844f2b1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc630ce90ec7431b2c0746b16aa648c5"><td class="memItemLeft" align="right" valign="top"><a id="abc630ce90ec7431b2c0746b16aa648c5" name="abc630ce90ec7431b2c0746b16aa648c5"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>~cWXVdbBase</b> ()</td></tr>
 <tr class="memdesc:abc630ce90ec7431b2c0746b16aa648c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
 <tr class="separator:abc630ce90ec7431b2c0746b16aa648c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6676f0d73efd0fdf9c6fe767d4811a4"><td class="memItemLeft" align="right" valign="top"><a id="af6676f0d73efd0fdf9c6fe767d4811a4" name="af6676f0d73efd0fdf9c6fe767d4811a4"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>GetInformation</b> () const</td></tr>
+<tr class="memdesc:af6676f0d73efd0fdf9c6fe767d4811a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns void* to information. <br /></td></tr>
+<tr class="separator:af6676f0d73efd0fdf9c6fe767d4811a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d7d587a627cc5db5e98d9f31ff9f903"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="structRoaLogic_1_1dimensions_1_1distanceSize.html">distanceSize</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbBase.html#a9d7d587a627cc5db5e98d9f31ff9f903">GetDeviceSize</a> () const</td></tr>
 <tr class="memdesc:a9d7d587a627cc5db5e98d9f31ff9f903"><td class="mdescLeft">&#160;</td><td class="mdescRight">Component size.  <br /></td></tr>
 <tr class="separator:a9d7d587a627cc5db5e98d9f31ff9f903"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab78333fa8a70857404fc82dfd634c61c"><td class="memItemLeft" align="right" valign="top">virtual wxSize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbBase.html#ab78333fa8a70857404fc82dfd634c61c">GetDefaultSize</a> (wxWindow *win=NULL)</td></tr>
-<tr class="memdesc:ab78333fa8a70857404fc82dfd634c61c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default component size.  <br /></td></tr>
-<tr class="separator:ab78333fa8a70857404fc82dfd634c61c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad306d9c778a99cf2c0dbcc388442f446"><td class="memItemLeft" align="right" valign="top">virtual wxSize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbBase.html#ad306d9c778a99cf2c0dbcc388442f446">GetDefaultSize</a> (wxWindow *win=NULL) const</td></tr>
+<tr class="memdesc:ad306d9c778a99cf2c0dbcc388442f446"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default component size.  <br /></td></tr>
+<tr class="separator:ad306d9c778a99cf2c0dbcc388442f446"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42b0bbf1f13ea072e0ded91b3d9274c3"><td class="memItemLeft" align="right" valign="top"><a id="a42b0bbf1f13ea072e0ded91b3d9274c3" name="a42b0bbf1f13ea072e0ded91b3d9274c3"></a>
+virtual wxSize&#160;</td><td class="memItemRight" valign="bottom"><b>DoGetBestSize</b> () const</td></tr>
+<tr class="memdesc:a42b0bbf1f13ea072e0ded91b3d9274c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns best size for custom control. Same size as client. <br /></td></tr>
+<tr class="separator:a42b0bbf1f13ea072e0ded91b3d9274c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36594a8fbdf9f8f355f1ed119d62c582"><td class="memItemLeft" align="right" valign="top"><a id="a36594a8fbdf9f8f355f1ed119d62c582" name="a36594a8fbdf9f8f355f1ed119d62c582"></a>
+virtual wxSize&#160;</td><td class="memItemRight" valign="bottom"><b>DoGetBestClientSize</b> () const</td></tr>
+<tr class="memdesc:a36594a8fbdf9f8f355f1ed119d62c582"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns best size for custom control based on client size. <br /></td></tr>
+<tr class="separator:a36594a8fbdf9f8f355f1ed119d62c582"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc794f1c3a0de3c43959a82127764399"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbBase.html#afc794f1c3a0de3c43959a82127764399">OnPaint</a> (wxPaintEvent &amp;event)</td></tr>
 <tr class="memdesc:afc794f1c3a0de3c43959a82127764399"><td class="mdescLeft">&#160;</td><td class="mdescRight">Paint the widget.  <br /></td></tr>
 <tr class="separator:afc794f1c3a0de3c43959a82127764399"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53b664cfe916baeb4ad9c9d6747a39de"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbBase.html#a53b664cfe916baeb4ad9c9d6747a39de">NewDC</a> ()</td></tr>
+<tr class="memdesc:a53b664cfe916baeb4ad9c9d6747a39de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create new drawing canvas object.  <br /></td></tr>
+<tr class="separator:a53b664cfe916baeb4ad9c9d6747a39de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac280632adae13d93c73cdcd80450f88c"><td class="memItemLeft" align="right" valign="top"><a id="ac280632adae13d93c73cdcd80450f88c" name="ac280632adae13d93c73cdcd80450f88c"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>DeleteDC</b> ()</td></tr>
+<tr class="memdesc:ac280632adae13d93c73cdcd80450f88c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete drawing canvas object. <br /></td></tr>
+<tr class="separator:ac280632adae13d93c73cdcd80450f88c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a116650335c8c9f8f286676345b199c70"><td class="memItemLeft" align="right" valign="top"><a id="a116650335c8c9f8f286676345b199c70" name="a116650335c8c9f8f286676345b199c70"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>SetAngle</b> (double angle)</td></tr>
+<tr class="memdesc:a116650335c8c9f8f286676345b199c70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets angle. <br /></td></tr>
+<tr class="separator:a116650335c8c9f8f286676345b199c70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc75524e2f3db9b1f23572f794764036"><td class="memItemLeft" align="right" valign="top"><a id="afc75524e2f3db9b1f23572f794764036" name="afc75524e2f3db9b1f23572f794764036"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>AngleToRadians</b> (double angle) const</td></tr>
+<tr class="memdesc:afc75524e2f3db9b1f23572f794764036"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert angle to radians. <br /></td></tr>
+<tr class="separator:afc75524e2f3db9b1f23572f794764036"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec28a298f2b8ff8054e945a506ad4909"><td class="memItemLeft" align="right" valign="top"><a id="aec28a298f2b8ff8054e945a506ad4909" name="aec28a298f2b8ff8054e945a506ad4909"></a>
+<a class="el" href="structRoaLogic_1_1dimensions_1_1distanceSize.html">distanceSize</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Rotate</b> (const <a class="el" href="structRoaLogic_1_1dimensions_1_1distanceSize.html">distanceSize</a> size) const</td></tr>
+<tr class="memdesc:aec28a298f2b8ff8054e945a506ad4909"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns size rotated by angle. <br /></td></tr>
+<tr class="separator:aec28a298f2b8ff8054e945a506ad4909"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4935418ccc9f1b3e1397fb827b63e7ee"><td class="memItemLeft" align="right" valign="top"><a id="a4935418ccc9f1b3e1397fb827b63e7ee" name="a4935418ccc9f1b3e1397fb827b63e7ee"></a>
+wxSize&#160;</td><td class="memItemRight" valign="bottom"><b>wxRotate</b> (const <a class="el" href="structRoaLogic_1_1dimensions_1_1distanceSize.html">distanceSize</a> sz) const</td></tr>
+<tr class="separator:a4935418ccc9f1b3e1397fb827b63e7ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a358fd5e21c69eac6af9210f6bd74a39e"><td class="memItemLeft" align="right" valign="top"><a id="a358fd5e21c69eac6af9210f6bd74a39e" name="a358fd5e21c69eac6af9210f6bd74a39e"></a>
+<a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Rotate</b> (const <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> x, const <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> y) const</td></tr>
+<tr class="memdesc:a358fd5e21c69eac6af9210f6bd74a39e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rotates point by angle around the center of the component. <br /></td></tr>
+<tr class="separator:a358fd5e21c69eac6af9210f6bd74a39e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb4c80fa8c3b364e1db8eeac8c5e7f6b"><td class="memItemLeft" align="right" valign="top"><a id="acb4c80fa8c3b364e1db8eeac8c5e7f6b" name="acb4c80fa8c3b364e1db8eeac8c5e7f6b"></a>
+<a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Rotate</b> (const <a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> pt) const</td></tr>
+<tr class="separator:acb4c80fa8c3b364e1db8eeac8c5e7f6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9a66051e809540165a256ae565d59ee"><td class="memItemLeft" align="right" valign="top"><a id="ac9a66051e809540165a256ae565d59ee" name="ac9a66051e809540165a256ae565d59ee"></a>
+wxPoint&#160;</td><td class="memItemRight" valign="bottom"><b>wxRotate</b> (const <a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> pt) const</td></tr>
+<tr class="separator:ac9a66051e809540165a256ae565d59ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adccec10255849d512bb2488499e14561"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbBase.html#adccec10255849d512bb2488499e14561">SetLogicalOrigin</a> (const <a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> &amp;pt)</td></tr>
+<tr class="memdesc:adccec10255849d512bb2488499e14561"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the offset used for translating coordinates.  <br /></td></tr>
+<tr class="separator:adccec10255849d512bb2488499e14561"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab711ed30433e3cf3d0f0bbe93c4e1255"><td class="memItemLeft" align="right" valign="top"><a id="ab711ed30433e3cf3d0f0bbe93c4e1255" name="ab711ed30433e3cf3d0f0bbe93c4e1255"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetLogicalOrigin</b> (<a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> x, <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> y)</td></tr>
+<tr class="separator:ab711ed30433e3cf3d0f0bbe93c4e1255"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a920e983efa2c47fb63841415a661ca65"><td class="memItemLeft" align="right" valign="top"><a id="a920e983efa2c47fb63841415a661ca65" name="a920e983efa2c47fb63841415a661ca65"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetBrush</b> (const wxBrush &amp;brush)</td></tr>
+<tr class="memdesc:a920e983efa2c47fb63841415a661ca65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current brush. <br /></td></tr>
+<tr class="separator:a920e983efa2c47fb63841415a661ca65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c43c961dc3c3b2a34f95ca41a656d87"><td class="memItemLeft" align="right" valign="top"><a id="a8c43c961dc3c3b2a34f95ca41a656d87" name="a8c43c961dc3c3b2a34f95ca41a656d87"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetPen</b> (const wxPen &amp;pen)</td></tr>
+<tr class="memdesc:a8c43c961dc3c3b2a34f95ca41a656d87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current pen. <br /></td></tr>
+<tr class="separator:a8c43c961dc3c3b2a34f95ca41a656d87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a409e92580c59c0ff9be786b16d80e448"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbBase.html#a409e92580c59c0ff9be786b16d80e448">DrawRectangle</a> (<a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> x, <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> y, <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> width, <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> height)</td></tr>
+<tr class="memdesc:a409e92580c59c0ff9be786b16d80e448"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a rectangle.  <br /></td></tr>
+<tr class="separator:a409e92580c59c0ff9be786b16d80e448"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f776ff6a5e24813946fce79099fcd64"><td class="memItemLeft" align="right" valign="top"><a id="a7f776ff6a5e24813946fce79099fcd64" name="a7f776ff6a5e24813946fce79099fcd64"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>DrawRectangle</b> (const <a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> &amp;pt, const <a class="el" href="structRoaLogic_1_1dimensions_1_1distanceSize.html">distanceSize</a> &amp;sz)</td></tr>
+<tr class="separator:a7f776ff6a5e24813946fce79099fcd64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4aa677c4f0c79a01334062d51ad9acd"><td class="memItemLeft" align="right" valign="top"><a id="af4aa677c4f0c79a01334062d51ad9acd" name="af4aa677c4f0c79a01334062d51ad9acd"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>DrawCircle</b> (const <a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> &amp;pt, <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> radius)</td></tr>
+<tr class="memdesc:af4aa677c4f0c79a01334062d51ad9acd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a circle. <br /></td></tr>
+<tr class="separator:af4aa677c4f0c79a01334062d51ad9acd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac204cba5b27c8a104a8b0925363ba97e"><td class="memItemLeft" align="right" valign="top"><a id="ac204cba5b27c8a104a8b0925363ba97e" name="ac204cba5b27c8a104a8b0925363ba97e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>DrawCircle</b> (<a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> x, <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> y, <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> radius)</td></tr>
+<tr class="separator:ac204cba5b27c8a104a8b0925363ba97e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b952c3c4e3b73c6e88bf4aa504218f3"><td class="memItemLeft" align="right" valign="top"><a id="a7b952c3c4e3b73c6e88bf4aa504218f3" name="a7b952c3c4e3b73c6e88bf4aa504218f3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>DrawLine</b> (const <a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> &amp;pt1, const <a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> &amp;pt2)</td></tr>
+<tr class="memdesc:a7b952c3c4e3b73c6e88bf4aa504218f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a line. <br /></td></tr>
+<tr class="separator:a7b952c3c4e3b73c6e88bf4aa504218f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae18dd8778a04ff2282987f70fbec8681"><td class="memItemLeft" align="right" valign="top"><a id="ae18dd8778a04ff2282987f70fbec8681" name="ae18dd8778a04ff2282987f70fbec8681"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>DrawLine</b> (<a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> x1, <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> y1, <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> x2, <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> y2)</td></tr>
+<tr class="separator:ae18dd8778a04ff2282987f70fbec8681"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6ca51b71b30de072a781035c4e9023a"><td class="memItemLeft" align="right" valign="top"><a id="af6ca51b71b30de072a781035c4e9023a" name="af6ca51b71b30de072a781035c4e9023a"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>SetFont</b> (const wxFont &amp;font)</td></tr>
+<tr class="memdesc:af6ca51b71b30de072a781035c4e9023a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the font. <br /></td></tr>
+<tr class="separator:af6ca51b71b30de072a781035c4e9023a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4974ee8b624ad5e412891d4516da48d3"><td class="memItemLeft" align="right" valign="top"><a id="a4974ee8b624ad5e412891d4516da48d3" name="a4974ee8b624ad5e412891d4516da48d3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetTextBackground</b> (const wxColour &amp;colour)</td></tr>
+<tr class="memdesc:a4974ee8b624ad5e412891d4516da48d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the text background colour. <br /></td></tr>
+<tr class="separator:a4974ee8b624ad5e412891d4516da48d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16b4975f82bee8adbb7b4c4e41778aec"><td class="memItemLeft" align="right" valign="top"><a id="a16b4975f82bee8adbb7b4c4e41778aec" name="a16b4975f82bee8adbb7b4c4e41778aec"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetTextForeground</b> (const wxColour &amp;colour)</td></tr>
+<tr class="memdesc:a16b4975f82bee8adbb7b4c4e41778aec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the text foreground colour. <br /></td></tr>
+<tr class="separator:a16b4975f82bee8adbb7b4c4e41778aec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a750753307d87b1f9d1b1779a90ae08d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbBase.html#a750753307d87b1f9d1b1779a90ae08d0">DrawRotatedText</a> (const wxString &amp;text, const <a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> &amp;point, double angle)</td></tr>
+<tr class="memdesc:a750753307d87b1f9d1b1779a90ae08d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws rotated text.  <br /></td></tr>
+<tr class="separator:a750753307d87b1f9d1b1779a90ae08d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c5f4972205bf3324a4eb8537455f9d2"><td class="memItemLeft" align="right" valign="top"><a id="a0c5f4972205bf3324a4eb8537455f9d2" name="a0c5f4972205bf3324a4eb8537455f9d2"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>DrawRotatedText</b> (const wxString &amp;text, <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> x, <a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a> y, double angle)</td></tr>
+<tr class="separator:a0c5f4972205bf3324a4eb8537455f9d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classRoaLogic_1_1GUI_1_1cGuiVDBComponent"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classRoaLogic_1_1GUI_1_1cGuiVDBComponent')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classRoaLogic_1_1GUI_1_1cGuiVDBComponent.html">RoaLogic::GUI::cGuiVDBComponent</a></td></tr>
 <tr class="memitem:a4b94379da01f8ed5bdfb389952783523 inherit pub_methods_classRoaLogic_1_1GUI_1_1cGuiVDBComponent"><td class="memItemLeft" align="right" valign="top"><a id="a4b94379da01f8ed5bdfb389952783523" name="a4b94379da01f8ed5bdfb389952783523"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>cGuiVDBComponent</b> (<a class="el" href="classRoaLogic_1_1vdb_1_1cVDBCommon.html">cVDBCommon</a> *myVDBComponent, <a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> myPosition)</td></tr>
@@ -158,20 +256,110 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a30548ba77116d6d596703c53ff6e762f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbBase.html#a30548ba77116d6d596703c53ff6e762f">onEvent</a> (wxCommandEvent &amp;event)</td></tr>
 <tr class="memdesc:a30548ba77116d6d596703c53ff6e762f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle the event.  <br /></td></tr>
 <tr class="separator:a30548ba77116d6d596703c53ff6e762f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
-<tr class="memitem:a20179664f559192418a126497bfcfde6"><td class="memItemLeft" align="right" valign="top"><a id="a20179664f559192418a126497bfcfde6" name="a20179664f559192418a126497bfcfde6"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><b>_information</b></td></tr>
-<tr class="separator:a20179664f559192418a126497bfcfde6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>virtual development board component base class </p>
 <dl class="section author"><dt>Author</dt><dd>Richard Herveille </dd></dl>
 <p>This class is the base for all VDB GUI components </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="ab78333fa8a70857404fc82dfd634c61c" name="ab78333fa8a70857404fc82dfd634c61c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab78333fa8a70857404fc82dfd634c61c">&#9670;&#160;</a></span>GetDefaultSize()</h2>
+<a id="a409e92580c59c0ff9be786b16d80e448" name="a409e92580c59c0ff9be786b16d80e448"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a409e92580c59c0ff9be786b16d80e448">&#9670;&#160;</a></span>DrawRectangle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RoaLogic::GUI::cWXVdbBase::DrawRectangle </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a>&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a>&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a>&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classRoaLogic_1_1dimensions_1_1cDistance.html">cDistance</a>&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Draws a rectangle. </p>
+<p>Draws a rectangle using DrawPolygon to support rotatation </p>
+
+</div>
+</div>
+<a id="a750753307d87b1f9d1b1779a90ae08d0" name="a750753307d87b1f9d1b1779a90ae08d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a750753307d87b1f9d1b1779a90ae08d0">&#9670;&#160;</a></span>DrawRotatedText()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RoaLogic::GUI::cWXVdbBase::DrawRotatedText </td>
+          <td>(</td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> &amp;&#160;</td>
+          <td class="paramname"><em>point</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>angle</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Draws rotated text. </p>
+<p>Draws the text rotated by angle degrees. Positive angles are counterclockwise. The full angle is 360 degrees </p>
+
+</div>
+</div>
+<a id="ad306d9c778a99cf2c0dbcc388442f446" name="ad306d9c778a99cf2c0dbcc388442f446"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad306d9c778a99cf2c0dbcc388442f446">&#9670;&#160;</a></span>GetDefaultSize()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -184,7 +372,7 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><b>_information</b></t
           <td>(</td>
           <td class="paramtype">wxWindow *&#160;</td>
           <td class="paramname"><em>win</em> = <code>NULL</code></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -224,9 +412,37 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><b>_information</b></t
 </div><div class="memdoc">
 
 <p>Component size. </p>
-<p>Returns the size of the LED </p>
+<p>Overload this function to return the size of the component </p>
 
-<p>Reimplemented in <a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbConnector.html#a6689ca1b9c26c0b9a96ec7574a2e4975">RoaLogic::GUI::cWXVdbConnector</a>.</p>
+<p>Reimplemented in <a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbLed.html#adfca276bd267e6786bdc45a0e3bff3aa">RoaLogic::GUI::cWXVdbLed</a>.</p>
+
+</div>
+</div>
+<a id="a53b664cfe916baeb4ad9c9d6747a39de" name="a53b664cfe916baeb4ad9c9d6747a39de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53b664cfe916baeb4ad9c9d6747a39de">&#9670;&#160;</a></span>NewDC()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void RoaLogic::GUI::cWXVdbBase::NewDC </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Create new drawing canvas object. </p>
+<p>Helper Routines for Drawing Canvas Routines </p>
 
 </div>
 </div>
@@ -296,7 +512,7 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><b>_information</b></t
 </div><div class="memdoc">
 
 <p>Handle the event. </p>
-<p>This function handles the wxEVT_LED event </p><dl class="section note"><dt>Note</dt><dd>This function runs in the GUI thread </dd></dl>
+<p>This function handles the events </p><dl class="section note"><dt>Note</dt><dd>This function runs in the GUI thread </dd></dl>
 
 </div>
 </div>
@@ -325,9 +541,38 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><b>_information</b></t
 </div><div class="memdoc">
 
 <p>Paint the widget. </p>
-<p>This function paints the widget. The 'LED' is turned on when _status=TRUE the corresponding bits in @_value are set, otherwise the corresponding LEDs are turned off </p>
+<p>This function paints the widget. </p>
 
-<p>Reimplemented in <a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbConnector.html#a6d7b9faaaa7b9d670cecbf4cae486444">RoaLogic::GUI::cWXVdbConnector</a>.</p>
+<p>Reimplemented in <a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdb7SegmentDisplay.html#a367bfa2d61d220da3dedf6ca0452a740">RoaLogic::GUI::cWXVdb7SegmentDisplay</a>, <a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbConnector.html#a6d7b9faaaa7b9d670cecbf4cae486444">RoaLogic::GUI::cWXVdbConnector</a>, <a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a768ea798575f34c0c0576a997a3fb911">RoaLogic::GUI::cWXVdbIC</a>, and <a class="el" href="classRoaLogic_1_1GUI_1_1cWXVdbLed.html#a45b3043beeb2d7c24efc336d3cfc864a">RoaLogic::GUI::cWXVdbLed</a>.</p>
+
+</div>
+</div>
+<a id="adccec10255849d512bb2488499e14561" name="adccec10255849d512bb2488499e14561"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adccec10255849d512bb2488499e14561">&#9670;&#160;</a></span>SetLogicalOrigin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RoaLogic::GUI::cWXVdbBase::SetLogicalOrigin </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structRoaLogic_1_1dimensions_1_1distancePoint.html">distancePoint</a> &amp;&#160;</td>
+          <td class="paramname"><em>pt</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Change the offset used for translating coordinates. </p>
+<p>Drawing Canvas Routines </p>
 
 </div>
 </div>
