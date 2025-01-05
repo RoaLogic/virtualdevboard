@@ -47,15 +47,6 @@
 #define WX_WIDGETS_IC_HPP
 
 #include "wxWidgetsVdbBase.hpp"
-/*
-#include <wx/wxprec.h>
-#include <wx/wx.h>
-#include "wx/event.h"
-#include <wx/graphics.h>
-
-#include "gui_interface.hpp"
-#include "wxGuiDistance.hpp"
-*/
 
 namespace RoaLogic {
     using namespace observer;
