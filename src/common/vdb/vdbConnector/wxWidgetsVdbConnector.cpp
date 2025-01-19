@@ -52,7 +52,7 @@ namespace GUI {
 
     /**
      * @brief Construct a new wx widgets Connector window
-     * @details This is the constructor for the connect window.
+     * @details This is the constructor for the connector window.
      */
     cWXVdbConnector::cWXVdbConnector(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbConnectorInformation* information, double angle) :
         cWXVdbBase(myVDBComponent, position, windowParent, information, distanceSize(information->width,information->height + 6_mm), angle)
@@ -63,7 +63,7 @@ namespace GUI {
 
     
     /**
-     * @brief Draw the IC
+     * @brief Draw the connector
      * @details Draws an abstract Connector shape based on information
      *          The origin (0,0) is the top-left corner, not pin0
      * 
