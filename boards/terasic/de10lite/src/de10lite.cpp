@@ -57,7 +57,7 @@ using namespace testbench::tasks;
  * @details Creates class and assigns all signals/ports
  */
 cDE10Lite::cDE10Lite(VerilatedContext* context, bool traceActive, cGuiInterface* aGUI) :
-  cTestBench<Vde10lite_verilator_wrapper>(context, traceActive),
+  cTestBench<designName>(context, traceActive),
   key(_core->KEY),
   _myGUI(aGUI)
 {

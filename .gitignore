@@ -4,4 +4,6 @@
 /.vscode
 build/
 log
+docs/html
+docs/latex
 *.vcd

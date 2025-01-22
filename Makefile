@@ -109,6 +109,6 @@ help:
 
 doc:
 	@echo "Building doxygen documentation"
-	if [ ! -d $(DOCDIR) ]; then mkdir $(DOCDIR); fi
-	doxygen doxyfile
+##  if [ ! -d $(DOCDIR) ]; then mkdir $(DOCDIR); fi
+	doxygen ./docs/doxyfile
 

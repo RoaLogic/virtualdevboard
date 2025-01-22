@@ -54,6 +54,50 @@
  * abstracted (e.g. SDRAM memories), or by accessing the host PCs hardware and OS resources directly 
  * (e.g. UART, ethernet, ...).
  * 
+ * @section overview Overview
+ * 
+ * The virtual development board consists out of a few components, the system verilog design, the core
+ * of the virtual development board and virtual development board components. To connect a system verilog
+ * design with the virtual development board components a wrapper file is needed. Depending on the used
+ * components in the system verilog design, the corresponding system verilog components must be created and 
+ * linked in the wrapper file. The virtual development board components are the graphical representation of
+ * the peripherals on the board. These components are shown in the GUI and can be interacted with. 
+ * 
+ * During the verilating step, the system verilog design is converted into a C++ model. This model is then 
+ * created and connected with the virtual development board components. Which is all done in the core of the
+ * virtual development board. The core is the main class that connects the system verilog design with the 
+ * C++ testbench core, which runs the simulation. In the case that the UI is enabled, there also is a GUI
+ * core, which is the main class that connects the virtual development board components with the GUI. Within 
+ * the core the virtual development board components are created and connected with the C++ model. Depending
+ * on the component type, it either uses the system verilog component part of connects directly with the 
+ * C++ model through the testbench core.
+ * 
+ * For more information about the virtual development board components, see @ref vdbComponent_1.
+ * For more information about how the setup of the system verilog design is and how to change the 
+ * design, see @todo: Add link and documentation to the system verilog design.
+ * 
+ * @image html overview.png
+ * 
+ * 
+ * See below for a more detailed description of the core.
+ * 
+ * @section boardLayout Board layout
+ * 
+ * A board is defined as a set of components (peripherals) that are shown in the GUI and connect 
+ * with the Verilated model. The board layout is defined through a *.ini file, which is parsed by the
+ * application. The *.ini file defines the components, their properties, and their connections.
+ * 
+ * Must haves in the INI file:
+ *  - A [board] section, which defines the board with the following properties:
+ *  - name: The name of the board
+ *  - width: The width of the board in mm or inch
+ *  - height: The height of the board in mm or inch
+ * 
+ * 
+ * @section newBoard Creating a new board
+ * 
+ * Every board must have a system verilog wrapper file, which is processed through Verilator. Next to
+ * the wrapper file also a *.ini must be created. 
  */
 
 #include "de10lite.hpp"
@@ -63,12 +107,14 @@
 
 #include "wxWidgetsImplementation.hpp"
 
+#include "iniparser.hpp"
+
 //Setup namespaces
 using namespace RoaLogic;
 using namespace common;
 using namespace testbench;
 using namespace tasks;
-
+using namespace parser;
 
 //Create program options variable
 cProgramOptions programOptions;
@@ -79,15 +125,18 @@ cNoValueOption            optTrace     ("t", "trace",    "Enable waveform dump",
 cValueOption<std::string> optWaveFile  ("",  "wave",     "Waveform file");
 cValueOption<std::string> optLog       ("l", "log",      "Set the path for the log file");
 cValueOption<uint8_t>     optLogLvl    ("",  "level",    "Log level; start loggin from 0=Debug, 1=Log, 2=Info, 3=Warning, 4=Error, 5=Fatal");
+cValueOption<std::string> optUIFile    ("u", "uilayout", "UI layout *.ini file");
 cValueOption<std::string> optInitFile  ("",  "initfile", "Initialisation file for the on-chip RAM");
 cValueOption<uint32_t>    optNoGui     ("",  "nogui",    "Start system without a GUI, possible to add in simulation time in milliseconds");
 
 //type definitions for program options and logger (see bottom of the file)
 int setupProgramOptions(int argc, char** argv);
 void setupLogger(void);
+void setupMemories(void);
 
 cVirtualDemoBoard* demoBoard = nullptr;
 std::thread threadGUI;
+cIniparser iniParser;
 
 //Main routine
 int main(int argc, char** argv)
@@ -96,30 +145,47 @@ int main(int argc, char** argv)
   bool rerun = false;
 
   //first setup the program options
-  if (setupProgramOptions(argc,argv))
+  if (setupProgramOptions(argc,argv)) { return 1; }
+
+  setupLogger(); //next setup the logger  
+  enableTrace = optTrace.isSet(); //Trace enabled?
+
+  std::unique_ptr<VerilatedContext> contextp(new VerilatedContext); //Setup testbench
+  contextp->commandArgs(argc, argv); //parse eventual Verilator options
+
+  // See if we run with a GUI or not
+  if(!optNoGui.isSet() )
   {
-    return 0;
-  }
+    // Process the option file
+    if(optUIFile.isSet())
+    {
+      //parse the INI file
+      iniParser.open(optUIFile.value());
+      iniParser.parse();
+      
+      iniData data = iniParser.data();
 
-  //next setup the logger
-  setupLogger();
+      for( map<string,map<string,string> >::const_iterator ptr = data.begin(); ptr != data.end(); ptr++) 
+      {
+          INFO << "Section: " << ptr->first << "\n";
+          for( map<string,string>::const_iterator eptr = ptr->second.begin(); eptr != ptr->second.end(); eptr++)
+          {
+              APPEND << "key: " << eptr->first << " value: " << eptr->second << "\n";
+          }
+      }
+      
+    }
+    else
+    {
+      ERROR << "Gui selected but no GUI file given!\n";
+      return 1;
+    }
 
-  //Trace enabled?
-  enableTrace = optTrace.isSet();
-
-  //Setup testbench
-  std::unique_ptr<VerilatedContext> contextp(new VerilatedContext);
-
-  //parse Verilator options
-  contextp->commandArgs(argc, argv);
-
-  if(!optNoGui.isSet())
-  {
     // Create GUI and start it on different thread
     demoBoard = new cVirtualDemoBoard;
     threadGUI = std::thread(&cVirtualDemoBoard::init, demoBoard, argc, argv);
     this_thread::sleep_for(chrono::seconds(1));// Give the GUI time to start, it has to be active before we can sent events to it
-  }
+  }  
 
   do
   {
@@ -127,22 +193,7 @@ int main(int argc, char** argv)
     //create testbench
     cDE10Lite* de10lite = new cDE10Lite(contextp.get(), enableTrace, demoBoard);
 
-    //Initialize RAMs
-    if (optInitFile.isSet())
-    {
-      if(optInitFile.value().find(':') != optInitFile.value().npos)
-      {
-        //split string at ':' to get <instance> : <initfile>
-        std::vector<string> init_string = split(optInitFile.value(), ':');
-
-        //initialise altsyncram instance
-        altsyncram_initialize(init_string[0], init_string[1]);
-      }
-      else
-      {
-        WARNING << "Wrong init file passed, missing delimiter\n";
-      }
-    }
+    setupMemories();
 
     //Open waveform dump file if enabled
     if (enableTrace)
@@ -187,8 +238,6 @@ int main(int argc, char** argv)
   return 0;
 }
 
-
-
 /**
  * @brief Function to setup the program options for this main file
  * @details this function sets the program options, parses the given
@@ -208,6 +257,7 @@ int setupProgramOptions(int argc, char** argv)
     programOptions.add(&optLogLvl);
     programOptions.add(&optInitFile);
     programOptions.add(&optNoGui);
+    programOptions.add(&optUIFile);
 
     programOptions.parse(argc, argv);
 
@@ -236,7 +286,7 @@ void setupLogger(void)
 {
     int logLvl = 0;
 
-    if (optLogLvl.isSet())
+    if (optLogLvl.isSet()) 
     {
         logLvl = optLogLvl.value();
     }
@@ -255,4 +305,34 @@ void setupLogger(void)
     }
 
     INFO << "Started log with level: " << logLvl << "\n";
+}
+
+/**
+ * @brief Fucntion to setup the memories of the system
+ * @details This function will setup the memories of the system
+ * It checks the given command line options and initializes the 
+ * memories accordingly.
+ * 
+ * Currently initializes:
+ * - altsyncram
+ * 
+ */
+void setupMemories(void)
+{
+    //Initialize RAMs
+    if (optInitFile.isSet())
+    {
+      if(optInitFile.value().find(':') != optInitFile.value().npos)
+      {
+        //split string at ':' to get <instance> : <initfile>
+        std::vector<string> init_string = split(optInitFile.value(), ':');
+
+        //initialise altsyncram instance
+        altsyncram_initialize(init_string[0], init_string[1]);
+      }
+      else
+      {
+        WARNING << "Wrong init file passed, missing delimiter\n";
+      }
+    }
 }

@@ -55,6 +55,21 @@ namespace RoaLogic {
     using namespace dimensions;
 namespace GUI {
 
+    // wxDistanceSize[eVdbLedType::numLedTypes] = 
+    // {
+    //     {10_mm, 10_mm},         // round10mm
+    //     {5_mm, 5_mm},           // round5mm
+    //     {3_mm, 3_mm},           // round3mm
+    //     {120_mils, 60_mils},    // SMD1206
+    //     {80_mils, 40_mils},     // SMD0805
+    //     {60_mils, 30_mils},     // SMD0603
+    //     {40_mils, 20_mils},     // SMD0402
+    //     {35_mils, 17_mils}      // SMD3520
+    // };
+
+    // // Usage
+    // wxDistanceSize[static_cast<uint8_t>(information->type)];
+
     /**
      * @brief Construct a new wx widgets LED window
      * @details 

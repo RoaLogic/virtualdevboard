@@ -105,7 +105,8 @@ namespace GUI {
         SMD0805,    //!< SMD led size 0805
         SMD0603,    //!< SMD led size 0603
         SMD0402,    //!< SMD led size 0402
-        SMD3520     //!< SMD led size 3.5x2.0mm
+        SMD3520,    //!< SMD led size 3.5x2.0mm
+        numLedTypes
     };
 
     /** @struct sVdbLedInformation
