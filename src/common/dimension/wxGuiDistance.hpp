@@ -73,7 +73,7 @@ class wxDistanceCoord : public cDistance
      * @brief Conversion to wxCoord
      * @details Converts distance to wxCoord assuming horizontal and vertical conversion factor is the same
      */
-    operator wxCoord() const { return window->ToPhys( window->FromDIP( inch() * window->GetDPI().GetWidth() ) ); }
+    operator wxCoord() const { return window->ToPhys( window->FromDIP( std::round(inch() * window->GetDPI().GetWidth()) ) ); }
 };
 
 
@@ -89,10 +89,8 @@ class wxDistanceSize
      */
     wxDistanceSize (const wxWindow* window) : window(window){}
     wxDistanceSize (distanceSize size, const wxWindow* window) : window(window), size(size){}
-    wxDistanceSize (cDistance width, cDistance height, const wxWindow* window) : window(window) {
-      SetWidth(width);
-      SetHeight(height);
-    }
+    wxDistanceSize (cDistance width, cDistance height, const wxWindow* window) : window(window),
+        size(distanceSize(width,height)) {}
 
     /**
      * @brief destructor
@@ -130,8 +128,8 @@ class wxDistanceSize
      */
     operator wxSize() const {
         return window->ToPhys(window->FromDIP(
-                   wxSize( size.width.inch() * window->GetDPI().GetWidth(),
-                           size.height.inch() * window->GetDPI().GetHeight() )
+                   wxSize( std::round(size.width.inch() * window->GetDPI().GetWidth()),
+                           std::round(size.height.inch() * window->GetDPI().GetHeight()) )
                ));
     }
 };
@@ -169,8 +167,8 @@ class wxDistancePoint
      */
     operator wxPoint() const {
         return window->ToPhys(window->FromDIP(
-                   wxPoint( x.inch() * window->GetDPI().GetWidth(),
-                            y.inch() * window->GetDPI().GetHeight() )
+                   wxPoint( std::round(x.inch() * window->GetDPI().GetWidth()),
+                            std::round(y.inch() * window->GetDPI().GetHeight()) )
                ));
       }
 };
