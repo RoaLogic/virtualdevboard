@@ -161,6 +161,40 @@ void cDE10Lite::setupGUI()
                                 new sVdbICInformation(23_mm, 23_mm,"FPGA"));
 
 
+        // Headers
+        // JP1
+        _myGUI->addVdbComponent(eVdbComponentType::vdbHeader,    //
+                                nullptr,                         // No verilated content
+                                distancePoint(20_mm,0_mm),
+                                new sVdbHeaderInformation(eVdbHeaderType::MALE_BOXED,2,20,100_mils));
+        // JP2
+        _myGUI->addVdbComponent(eVdbComponentType::vdbHeader,    //
+                                nullptr,                         // No verilated content
+                                distancePoint(23.5_mm,13_mm),
+                                new sVdbHeaderInformation(eVdbHeaderType::FEMALE,1,10,100_mils));
+        // JP3
+        _myGUI->addVdbComponent(eVdbComponentType::vdbHeader,    //
+                                nullptr,                         // No verilated content
+                                distancePoint(51_mm,13_mm),
+                                new sVdbHeaderInformation(eVdbHeaderType::FEMALE,1,8,100_mils));
+        // JP4
+        _myGUI->addVdbComponent(eVdbComponentType::vdbHeader,    //
+                                nullptr,                         // No verilated content
+                                distancePoint(69_mm,32.8_mm),
+                                new sVdbHeaderInformation(eVdbHeaderType::MALE,2,3,100_mils),
+                                -90);                            // Rotate -90 degrees
+        // JP7
+        _myGUI->addVdbComponent(eVdbComponentType::vdbHeader,    //
+                                nullptr,                         // No verilated content
+                                distancePoint(33_mm,60_mm),
+                                new sVdbHeaderInformation(eVdbHeaderType::FEMALE,1,8,100_mils));
+        // JP8
+        _myGUI->addVdbComponent(eVdbComponentType::vdbHeader,    //
+                                nullptr,                         // No verilated content
+                                distancePoint(56_mm,60_mm),
+                                new sVdbHeaderInformation(eVdbHeaderType::FEMALE,1,6,100_mils));
+
+
         // Create the VGA connector
         _myGUI->addVdbComponent(eVdbComponentType::vdbConnector, // VDB connector component for VGA
                                 nullptr,                         // No verilated content
