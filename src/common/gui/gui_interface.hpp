@@ -83,8 +83,10 @@ namespace GUI {
     {
         //!< Led component, uses the sVdbLedInformation structure to handle its layout
         vdbLed,
-        //!< Connector component (now only VGA), does not yet use any information
+        //!< Connector component (now only DSUB), Uses width/height from information to handle its layout
         vdbConnector,
+        //!< Header component, uses sVdbHeaderInformation structure to handle its layout
+        vdbHeader,
         //!< VGA component, does not use any information
         vdbVGA,
         //!< 7 segment component, uses the sVdb7SegInformation structure to handle its layout
@@ -183,6 +185,42 @@ namespace GUI {
         std::string       label;
     };
 
+
+    /**
+     * @enum eVdbHeaderType
+     * @brief Defines the header types
+     * bit0 = male/female
+     * bit1 = angled/straight
+     * bit2 = boxed/non-boxed
+     */
+    #define HDR_FEMALE 1
+    #define HDR_ANGLED 2
+    #define HDR_BOXED  4
+    enum class eVdbHeaderType
+    {
+        MALE,                //!< Straight male header
+        FEMALE,              //!< Straight female header
+        MALE_ANGLED,         //!< Angled male header
+        FEMALE_ANGLED,       //!< Angled female header
+        MALE_BOXED,          //!< Straight male header with a box
+        FEMALE_BOXED,        //!< Straight female header with a box
+        MALE_ANGLED_BOXED,   //!< Angled male header with a box
+        FEMALE_ANGLED_BOXED  //!< Angled female header with a box
+    };
+
+
+    /**
+     * @struct sVdbHeaderInformation
+     * @brief virtual development board header information
+     * @details This structure is used to design a virtual development board header
+     */
+    struct sVdbHeaderInformation
+    {
+        eVdbHeaderType type;
+        uint32_t       rows;
+        uint32_t       columns;
+        cDistance      pitch;
+    };
 
 
     /**
