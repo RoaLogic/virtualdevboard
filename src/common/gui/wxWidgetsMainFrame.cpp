@@ -51,6 +51,8 @@
 #include "wxWidgetsVdb7SegmentDisplay.hpp"
 #include "wxWidgetsVdbIC.hpp"
 #include "wxWidgetsVdbConnector.hpp"
+#include "wxWidgetsVdbHeader.hpp"
+
 
 wxDEFINE_EVENT(wxEVT_CHANGE_FRAME, wxCommandEvent);
 wxDEFINE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
@@ -268,6 +270,16 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
                                                reinterpret_cast<sVdbICInformation*>(eventData->componentDetails),
                                                eventData->angle);
                 vdbInstances.push_back(newIC);
+                break;
+            }
+            case eVdbComponentType::vdbHeader :
+	    {
+                cWXVdbHeader* newHeader = new cWXVdbHeader(eventData->vdbComponent,
+                                                           eventData->placement,
+                                                           _rightPanel,
+                                                           reinterpret_cast<sVdbHeaderInformation*>(eventData->componentDetails),
+                                                           eventData->angle);
+                vdbInstances.push_back(newHeader);
                 break;
             }
             case eVdbComponentType::vdbVGA :
