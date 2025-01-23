@@ -80,6 +80,7 @@ namespace GUI {
         cDistance pitch = information->pitch;
         int  rows       = information->rows;
         int  columns    = information->columns;
+        bool female     = int(information->type) & HDR_FEMALE;
         bool boxed      = int(information->type) & HDR_BOXED;
 
         wxColour  myColour;
@@ -114,7 +115,7 @@ namespace GUI {
         columnOffset -= sz.width/2;
         rowOffset    -= sz.height/2;
 
-        myColour = colGold;
+        myColour = female ? wxColour(0,0,0) : colGold;
         SetPen(wxPen(wxColour(myColour),1));
         SetBrush(myColour);
         for (int column = 0; column < columns; column++)
