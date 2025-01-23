@@ -1,10 +1,11 @@
 <map id="RoaLogic::GUI::cWXVdbBase" name="RoaLogic::GUI::cWXVdbBase">
-<area shape="rect" id="node1" title="virtual development board component base class" alt="" coords="501,95,708,121"/>
+<area shape="rect" id="node1" title="virtual development board component base class" alt="" coords="501,119,708,145"/>
 <area shape="rect" id="node5" href="$classRoaLogic_1_1GUI_1_1cWXVdb7SegmentDisplay.html" title=" " alt="" coords="756,5,997,45"/>
 <area shape="rect" id="node6" href="$classRoaLogic_1_1GUI_1_1cWXVdbConnector.html" title="virtual development board connector type component" alt="" coords="756,70,997,95"/>
-<area shape="rect" id="node7" href="$classRoaLogic_1_1GUI_1_1cWXVdbIC.html" title="IC virtual development board component." alt="" coords="783,119,971,145"/>
-<area shape="rect" id="node8" href="$classRoaLogic_1_1GUI_1_1cWXVdbLed.html" title="LED virtual development board component." alt="" coords="777,169,976,194"/>
-<area shape="rect" id="node2" href="$classRoaLogic_1_1GUI_1_1cGuiVDBComponent.html" title="GUI virtual development board component." alt="" coords="200,70,453,95"/>
-<area shape="rect" id="node3" href="$classRoaLogic_1_1observer_1_1cObserver.html" title="Observer implementation." alt="" coords="5,63,152,103"/>
-<area shape="rect" id="node4" title=" " alt="" coords="280,119,373,145"/>
+<area shape="rect" id="node7" href="$classRoaLogic_1_1GUI_1_1cWXVdbHeader.html" title="virtual development board header type component" alt="" coords="765,119,988,145"/>
+<area shape="rect" id="node8" href="$classRoaLogic_1_1GUI_1_1cWXVdbIC.html" title="IC virtual development board component." alt="" coords="783,169,971,194"/>
+<area shape="rect" id="node9" href="$classRoaLogic_1_1GUI_1_1cWXVdbLed.html" title="LED virtual development board component." alt="" coords="777,218,976,243"/>
+<area shape="rect" id="node2" href="$classRoaLogic_1_1GUI_1_1cGuiVDBComponent.html" title="GUI virtual development board component." alt="" coords="200,94,453,119"/>
+<area shape="rect" id="node3" href="$classRoaLogic_1_1observer_1_1cObserver.html" title="Observer implementation." alt="" coords="5,87,152,127"/>
+<area shape="rect" id="node4" title=" " alt="" coords="280,143,373,169"/>
 </map>

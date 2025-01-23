@@ -23,8 +23,9 @@ var searchData=
   ['srgbcolor_20',['sRGBColor',['../structRoaLogic_1_1GUI_1_1sRGBColor.html',1,'RoaLogic::GUI']]],
   ['svdb7seginformation_21',['sVdb7SegInformation',['../structRoaLogic_1_1GUI_1_1sVdb7SegInformation.html',1,'RoaLogic::GUI']]],
   ['svdbconnectorinformation_22',['sVdbConnectorInformation',['../structRoaLogic_1_1GUI_1_1sVdbConnectorInformation.html',1,'RoaLogic::GUI']]],
-  ['svdbicinformation_23',['sVdbICInformation',['../structRoaLogic_1_1GUI_1_1sVdbICInformation.html',1,'RoaLogic::GUI']]],
-  ['svdbledinformation_24',['sVdbLedInformation',['../structRoaLogic_1_1GUI_1_1sVdbLedInformation.html',1,'RoaLogic::GUI']]],
-  ['svgadata_25',['sVgaData',['../structRoaLogic_1_1vdb_1_1sVgaData.html',1,'RoaLogic::vdb']]],
-  ['svgatiming_26',['sVGATiming',['../structsVGATiming.html',1,'']]]
+  ['svdbheaderinformation_23',['sVdbHeaderInformation',['../structRoaLogic_1_1GUI_1_1sVdbHeaderInformation.html',1,'RoaLogic::GUI']]],
+  ['svdbicinformation_24',['sVdbICInformation',['../structRoaLogic_1_1GUI_1_1sVdbICInformation.html',1,'RoaLogic::GUI']]],
+  ['svdbledinformation_25',['sVdbLedInformation',['../structRoaLogic_1_1GUI_1_1sVdbLedInformation.html',1,'RoaLogic::GUI']]],
+  ['svgadata_26',['sVgaData',['../structRoaLogic_1_1vdb_1_1sVgaData.html',1,'RoaLogic::vdb']]],
+  ['svgatiming_27',['sVGATiming',['../structsVGATiming.html',1,'']]]
 ];

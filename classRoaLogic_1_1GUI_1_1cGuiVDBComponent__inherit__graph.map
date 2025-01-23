@@ -1,10 +1,11 @@
 <map id="RoaLogic::GUI::cGuiVDBComponent" name="RoaLogic::GUI::cGuiVDBComponent">
-<area shape="rect" id="node1" title="GUI virtual development board component." alt="" coords="200,121,453,146"/>
-<area shape="rect" id="node3" href="$classRoaLogic_1_1GUI_1_1cWXVdbBase.html" title="virtual development board component base class" alt="" coords="525,95,731,121"/>
-<area shape="rect" id="node8" href="$classRoaLogic_1_1GUI_1_1cWXVdbVGAMonitor.html" title=" " alt="" coords="501,145,755,170"/>
-<area shape="rect" id="node2" href="$classRoaLogic_1_1observer_1_1cObserver.html" title="Observer implementation." alt="" coords="5,113,152,153"/>
+<area shape="rect" id="node1" title="GUI virtual development board component." alt="" coords="200,145,453,170"/>
+<area shape="rect" id="node3" href="$classRoaLogic_1_1GUI_1_1cWXVdbBase.html" title="virtual development board component base class" alt="" coords="525,119,731,145"/>
+<area shape="rect" id="node9" href="$classRoaLogic_1_1GUI_1_1cWXVdbVGAMonitor.html" title=" " alt="" coords="501,169,755,194"/>
+<area shape="rect" id="node2" href="$classRoaLogic_1_1observer_1_1cObserver.html" title="Observer implementation." alt="" coords="5,137,152,177"/>
 <area shape="rect" id="node4" href="$classRoaLogic_1_1GUI_1_1cWXVdb7SegmentDisplay.html" title=" " alt="" coords="803,5,1044,45"/>
 <area shape="rect" id="node5" href="$classRoaLogic_1_1GUI_1_1cWXVdbConnector.html" title="virtual development board connector type component" alt="" coords="803,70,1044,95"/>
-<area shape="rect" id="node6" href="$classRoaLogic_1_1GUI_1_1cWXVdbIC.html" title="IC virtual development board component." alt="" coords="829,119,1017,145"/>
-<area shape="rect" id="node7" href="$classRoaLogic_1_1GUI_1_1cWXVdbLed.html" title="LED virtual development board component." alt="" coords="824,169,1023,194"/>
+<area shape="rect" id="node6" href="$classRoaLogic_1_1GUI_1_1cWXVdbHeader.html" title="virtual development board header type component" alt="" coords="812,119,1035,145"/>
+<area shape="rect" id="node7" href="$classRoaLogic_1_1GUI_1_1cWXVdbIC.html" title="IC virtual development board component." alt="" coords="829,169,1017,194"/>
+<area shape="rect" id="node8" href="$classRoaLogic_1_1GUI_1_1cWXVdbLed.html" title="LED virtual development board component." alt="" coords="824,218,1023,243"/>
 </map>

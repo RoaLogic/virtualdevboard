@@ -25,7 +25,8 @@ var searchData=
   ['cwxvdb7segmentdisplay_22',['cWXVdb7SegmentDisplay',['../classRoaLogic_1_1GUI_1_1cWXVdb7SegmentDisplay.html#a2d65d5580d913abf4e3879505803e580',1,'RoaLogic::GUI::cWXVdb7SegmentDisplay']]],
   ['cwxvdbbase_23',['cWXVdbBase',['../classRoaLogic_1_1GUI_1_1cWXVdbBase.html#a1453c65c965e77a320f5fbfa844f2b1d',1,'RoaLogic::GUI::cWXVdbBase']]],
   ['cwxvdbconnector_24',['cWXVdbConnector',['../classRoaLogic_1_1GUI_1_1cWXVdbConnector.html#a387cdde6e5df1af6a2da790a75026c03',1,'RoaLogic::GUI::cWXVdbConnector']]],
-  ['cwxvdbic_25',['cWXVdbIC',['../classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a9dc9742b23e634d2ad064c1fc86b95b7',1,'RoaLogic::GUI::cWXVdbIC']]],
-  ['cwxvdbled_26',['cWXVdbLed',['../classRoaLogic_1_1GUI_1_1cWXVdbLed.html#ae37670089314aaf0117a77a04a47adcb',1,'RoaLogic::GUI::cWXVdbLed']]],
-  ['cwxvdbvgamonitor_27',['cWXVdbVGAMonitor',['../classRoaLogic_1_1GUI_1_1cWXVdbVGAMonitor.html#abf9021fc6bfb770c0e3da2bfadd960d0',1,'RoaLogic::GUI::cWXVdbVGAMonitor']]]
+  ['cwxvdbheader_25',['cWXVdbHeader',['../classRoaLogic_1_1GUI_1_1cWXVdbHeader.html#ab1afaa8ca1551206fe29e3a3fbf97526',1,'RoaLogic::GUI::cWXVdbHeader']]],
+  ['cwxvdbic_26',['cWXVdbIC',['../classRoaLogic_1_1GUI_1_1cWXVdbIC.html#a9dc9742b23e634d2ad064c1fc86b95b7',1,'RoaLogic::GUI::cWXVdbIC']]],
+  ['cwxvdbled_27',['cWXVdbLed',['../classRoaLogic_1_1GUI_1_1cWXVdbLed.html#ae37670089314aaf0117a77a04a47adcb',1,'RoaLogic::GUI::cWXVdbLed']]],
+  ['cwxvdbvgamonitor_28',['cWXVdbVGAMonitor',['../classRoaLogic_1_1GUI_1_1cWXVdbVGAMonitor.html#abf9021fc6bfb770c0e3da2bfadd960d0',1,'RoaLogic::GUI::cWXVdbVGAMonitor']]]
 ];
