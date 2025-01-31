@@ -126,7 +126,12 @@ class cMainFrame : public wxFrame
     std::vector<cGuiVDBComponent*> vdbInstances;
 
     public:
-    cMainFrame(cSubject* aSubject);
+    cMainFrame( cSubject* aSubject, 
+                std::string applicationName, 
+                std::string aboutTitle, 
+                std::string aboutText, 
+                distanceSize minimalScreenSize, 
+                sRGBColor backgroundColor);
     ~cMainFrame();
 
     void onChangeFrame(wxCommandEvent& event);

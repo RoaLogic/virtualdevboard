@@ -67,30 +67,26 @@ bool cVirtualDemoBoard::OnInit()
     //     INFO << "Display " << i << " PPI: " << display.GetPPI().x << "x" << display.GetPPI().y << ", scale factor: " << display.GetScaleFactor() << "\n";
     // }
 
-    _mainFrame = new cMainFrame(this);
+    _mainFrame = new cMainFrame(this, _applicationName, _aboutTitle, _aboutText, _minimalScreenSize, _backgroundColor);
     _mainFrame->Show(true);
 
     return true;
 }
 
-void cVirtualDemoBoard::init(int argc, char** argv)
+void cVirtualDemoBoard::init(   int argc, 
+                                char** argv, 
+                                std::string applicationName, 
+                                std::string aboutTitle, 
+                                std::string aboutText, 
+                                distanceSize minimalScreenSize, 
+                                sRGBColor backgroundColor)
 {
+    _applicationName = applicationName;
+    _aboutTitle = aboutTitle;
+    _aboutText = aboutText;
+    _minimalScreenSize = minimalScreenSize;
+    _backgroundColor = backgroundColor;
     wxEntry(argc, argv);
-}
-
-void cVirtualDemoBoard::setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distanceSize minimalScreenSize, sRGBColor backgroundColor)
-{
-    wxCommandEvent changeFrameEvent{wxEVT_CHANGE_FRAME};
-    sChangeFrameData* const changeFrameData{ new sChangeFrameData};
-
-    changeFrameData->applicationName = applicationName;
-    changeFrameData->aboutTitle = aboutTitle;
-    changeFrameData->aboutText = aboutText;
-    changeFrameData->minimalScreenSize = minimalScreenSize;
-    changeFrameData->backgroundColor = backgroundColor;
-
-    changeFrameEvent.SetClientObject(changeFrameData);
-    wxPostEvent(_mainFrame, changeFrameEvent);
 }
 
 void cVirtualDemoBoard::addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point, void* information)

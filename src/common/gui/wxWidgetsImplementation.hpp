@@ -51,6 +51,7 @@
 #include <wx/splitter.h>
 
 #include "wxWidgetsMainFrame.hpp"
+#include "distance.hpp"
 
 using namespace RoaLogic::observer;
 using namespace RoaLogic::GUI;
@@ -80,13 +81,17 @@ class cVirtualDemoBoard : public wxApp, public cGuiInterface
     private:
     bool OnInit() override;
     cMainFrame* _mainFrame;
+    std::string _applicationName = "Virtual Demo Board";
+    std::string _aboutTitle = "About Virtual Demo Board";
+    std::string _aboutText = "This is a virtual demo board";
+    distanceSize _minimalScreenSize = {800, 600};
+    sRGBColor _backgroundColor = {0, 0, 0};
 
     public:
     cVirtualDemoBoard();
     ~cVirtualDemoBoard();
-    void init(int argc, char** argv);
+    void init(int argc, char** argv, std::string applicationName, std::string aboutTitle, std::string aboutText, distanceSize minimalScreenSize, sRGBColor backgroundColor);
 
-    void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distanceSize minimalScreenSize, sRGBColor backgroundColor);
     void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point, void* information);
 };
 

@@ -102,12 +102,12 @@ void cDE10Lite::setupGUI()
         // First register ourself to the GUI so that we receive all the events from the GUI
         _myGUI->registerObserver(this);
 
-        // Setup the GUI itself
-        _myGUI->setupGui("DE10lite virtual demo board",     // Name of the application
-                    "DE10lite",                             // About title information
-                    "This is a virtual development board for the DE10lite", // About text
-                    distanceSize(boardWidth, boardHeight),  // Size of the board
-                    sRGBColor(0, 75, 128) );                // Background colour of the board
+        // // Setup the GUI itself
+        // _myGUI->setupGui("DE10lite virtual demo board",     // Name of the application
+        //             "DE10lite",                             // About title information
+        //             "This is a virtual development board for the DE10lite", // About text
+        //             distanceSize(boardWidth, boardHeight),  // Size of the board
+        //             sRGBColor(0, 75, 128) );                // Background colour of the board
 
         // LEDs
         for(size_t i = 0; i < _cNumLed; i++)

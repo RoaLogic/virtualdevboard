@@ -54,6 +54,8 @@
 #include <map>
 #include <string>
 
+#define DEBUG_INI_PARSER
+
 namespace RoaLogic
 {
 namespace parser
@@ -132,7 +134,9 @@ namespace parser
 
         bool parse()
         {
+            #ifdef DEBUG_INI_PARSER
             INFO << "Parsing INI file: " << _fileName << "\n";
+            #endif
             bool endOfFile = false;
 
             lexer = new cIniLexer(&_file);

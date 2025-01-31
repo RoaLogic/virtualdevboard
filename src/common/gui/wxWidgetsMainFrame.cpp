@@ -52,13 +52,21 @@
 #include "wxWidgetsVdbIC.hpp"
 #include "wxWidgetsVdbConnector.hpp"
 
-wxDEFINE_EVENT(wxEVT_CHANGE_FRAME, wxCommandEvent);
 wxDEFINE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
 
-cMainFrame::cMainFrame(cSubject* aSubject) :
-    wxFrame(nullptr, wxID_ANY, _myApplicationName.c_str()), //wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX)),
-    _subject(aSubject)
+cMainFrame::cMainFrame( cSubject* aSubject, 
+                        std::string applicationName, 
+                        std::string aboutTitle, 
+                        std::string aboutText, 
+                        distanceSize minimalScreenSize, 
+                        sRGBColor backgroundColor) :
+    wxFrame(nullptr, wxID_ANY, applicationName.c_str()), //wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX)),
+    _subject(aSubject),
+    _myAboutText(aboutText),
+    _myAboutTitle(aboutTitle)
 {
+    this->SetLabel(_myApplicationName);
+
     /**********************************
      * Setup the top menu and the status bar
      *********************************/
@@ -113,9 +121,19 @@ cMainFrame::cMainFrame(cSubject* aSubject) :
     SetSizerAndFit(topSizer);
     Centre();
 
-    Bind(wxEVT_CHANGE_FRAME, &cMainFrame::onChangeFrame, this, wxID_ANY);
     Bind(wxEVT_ADD_VDB, &cMainFrame::onAddVdb, this, wxID_ANY);
     Bind(wxEVT_SIZE, &cMainFrame::onSize, this);
+
+    _rightPanel->SetBackgroundColour(wxColour(backgroundColor.red, 
+                                              backgroundColor.green, 
+                                              backgroundColor.blue));
+
+    wxSize boardSize = wxDistanceSize(minimalScreenSize, this);
+                                      
+    _myBoardWidth  = boardSize.GetWidth() + cLeftPanelWidth;
+    _myBoardHeight = boardSize.GetHeight() + GetMenuBar()->GetSize().GetHeight();
+
+    SetMinSize(wxSize(_myBoardWidth, _myBoardHeight));
 }
 
 cMainFrame::~cMainFrame()
@@ -127,28 +145,6 @@ cMainFrame::~cMainFrame()
         vdb->removeObserver();
         vdb->onClose();
     }
-}
-
-void cMainFrame::onChangeFrame(wxCommandEvent& event)
-{
-    sChangeFrameData* eventData = reinterpret_cast<sChangeFrameData*>(event.GetClientObject());
-
-    _myApplicationName = eventData->applicationName;
-    _myAboutTitle = eventData->aboutTitle;
-    _myAboutText = eventData->aboutText;
-
-    this->SetLabel(_myApplicationName);
-
-    wxSize boardSize = wxDistanceSize(eventData->minimalScreenSize, this);
-
-    _myBoardWidth  = boardSize.GetWidth() + cLeftPanelWidth;
-    _myBoardHeight = boardSize.GetHeight() + GetMenuBar()->GetSize().GetHeight();
-
-    _rightPanel->SetBackgroundColour(wxColour(eventData->backgroundColor.red, 
-                                              eventData->backgroundColor.green, 
-                                              eventData->backgroundColor.blue));
-
-    SetMinSize(wxSize(_myBoardWidth, _myBoardHeight));
 }
 
 void cMainFrame::onSize(wxSizeEvent& event)
@@ -222,10 +218,10 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
 {
     sAddVdbComponent* eventData = reinterpret_cast<sAddVdbComponent*>(event.GetClientObject());
 
-    if (_rightPanel == nullptr)
-    {
-        ERROR << "First call the setupGui method, before adding any VDB component";
-    }
+    // if (_rightPanel == nullptr)
+    // {
+    //     ERROR << "First call the setupGui method, before adding any VDB component";
+    // }
 
     if(eventData)
     {

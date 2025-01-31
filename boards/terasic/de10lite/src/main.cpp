@@ -87,12 +87,21 @@
  * with the Verilated model. The board layout is defined through a *.ini file, which is parsed by the
  * application. The *.ini file defines the components, their properties, and their connections.
  * 
- * Must haves in the INI file:
- *  - A [board] section, which defines the board with the following properties:
- *  - name: The name of the board
- *  - width: The width of the board in mm or inch
- *  - height: The height of the board in mm or inch
+ * All dimensions must be given in mm or inch, the application will convert this accordingly. Each value
+ * shall be given as a string, where after the value a underscore is used followed by the unit. For 
+ * example: 12.5_mm or 6.7_inch.
  * 
+ * Must haves in the INI file:
+ * The INI file must have a [board] section, which defines the board. 
+ * Following properties must be added
+ *  - name:   The name of the board
+ * 
+ * Following properties can be added
+ *  - aboutTitle:      The about title of the board, default "About Virtual Demo Board"
+ *  - aoutText:        The about information of the board, default "This is a virtual demo board"
+ *  - width:           The width of the board in mm or inch, default 800, note that if width is given, height must also be given
+ *  - height:          The height of the board in mm or inch, default 600, note that if height is given, width must also be given
+ *  - background:      The background color of the board, default white
  * 
  * @section newBoard Creating a new board
  * 
@@ -115,6 +124,7 @@ using namespace common;
 using namespace testbench;
 using namespace tasks;
 using namespace parser;
+using namespace dimensions;
 
 //Create program options variable
 cProgramOptions programOptions;
@@ -133,6 +143,7 @@ cValueOption<uint32_t>    optNoGui     ("",  "nogui",    "Start system without a
 int setupProgramOptions(int argc, char** argv);
 void setupLogger(void);
 void setupMemories(void);
+bool setupBoard(int argc, char** argv, map<string,string> &values);
 
 cVirtualDemoBoard* demoBoard = nullptr;
 std::thread threadGUI;
@@ -165,26 +176,27 @@ int main(int argc, char** argv)
       
       iniData data = iniParser.data();
 
-      for( map<string,map<string,string> >::const_iterator ptr = data.begin(); ptr != data.end(); ptr++) 
+      if(data.find("board") != data.end())
       {
-          INFO << "Section: " << ptr->first << "\n";
-          for( map<string,string>::const_iterator eptr = ptr->second.begin(); eptr != ptr->second.end(); eptr++)
+          INFO << "Board section found\n";
+
+          if(!setupBoard(argc, argv, data["board"]))
           {
-              APPEND << "key: " << eptr->first << " value: " << eptr->second << "\n";
+              ERROR << "Error setting up board\n";
+              return 1;
           }
       }
-      
+      else
+      {
+        ERROR << "No board section found\n";
+        return 1;
+      }      
     }
     else
     {
       ERROR << "Gui selected but no GUI file given!\n";
       return 1;
     }
-
-    // Create GUI and start it on different thread
-    demoBoard = new cVirtualDemoBoard;
-    threadGUI = std::thread(&cVirtualDemoBoard::init, demoBoard, argc, argv);
-    this_thread::sleep_for(chrono::seconds(1));// Give the GUI time to start, it has to be active before we can sent events to it
   }  
 
   do
@@ -322,17 +334,84 @@ void setupMemories(void)
     //Initialize RAMs
     if (optInitFile.isSet())
     {
-      if(optInitFile.value().find(':') != optInitFile.value().npos)
-      {
-        //split string at ':' to get <instance> : <initfile>
-        std::vector<string> init_string = split(optInitFile.value(), ':');
+        if(optInitFile.value().find(':') != optInitFile.value().npos)
+        {
+            //split string at ':' to get <instance> : <initfile>
+            std::vector<string> init_string = split(optInitFile.value(), ':');
 
-        //initialise altsyncram instance
-        altsyncram_initialize(init_string[0], init_string[1]);
-      }
-      else
-      {
-        WARNING << "Wrong init file passed, missing delimiter\n";
-      }
+            //initialise altsyncram instance
+            altsyncram_initialize(init_string[0], init_string[1]);
+        }
+        else
+        {
+            WARNING << "Wrong init file passed, missing delimiter\n";
+        }
     }
+}
+
+/**
+ * @brief Create the virtual development board GUI layout
+ * @details This function creates the virtual development board GUI layout.
+ * 
+ * It traverses the given map and searches the corresponding elements for the GUI.
+ * All options that are found are used to setup the screen, all others will use the default values,
+ * check the documentation for the default values.
+ * 
+ * @param[in] values  The map with the values for the board
+ * @return true   Board setup succesfull
+ * @return false  Board setup failed
+ */
+bool setupBoard(int argc, char** argv, map<string,string> &values)
+{
+    std::string applicationName = "Virtual Demo Board";
+    std::string aboutTitle = "About Virtual Demo Board";
+    std::string aboutText = "This is a virtual demo board";
+    distanceSize minimalScreenSize = {800, 600};
+    sRGBColor backgroundColor = {0, 0, 0};
+
+    INFO << "Setup board \n";
+
+    if(values.find("name") != values.end())
+    {
+      applicationName = values["name"] ;
+      INFO << "Found application name: " << applicationName << "\n";
+    } 
+    else return false;
+
+    if(values.find("aboutTitle") != values.end())
+    {
+      aboutTitle = values["aboutTitle"];
+      INFO << "Found about title: " << aboutTitle << "\n";
+    } 
+    if(values.find("aboutText") != values.end())
+    { 
+      aboutText = values["aboutText"];
+      INFO << "Found about text: " << aboutText << "\n";
+    } 
+
+    if(values.find("width") != values.end() && values.find("height") != values.end())
+    {
+        INFO << "Found width: " << values["width"] << "\n";
+        INFO << "Found heigth: " << values["height"] << "\n";
+        minimalScreenSize.width = convertStringToDistance(split(values["width"], '_'));
+        minimalScreenSize.height = convertStringToDistance(split(values["height"], '_'));
+
+        if(minimalScreenSize.width == 0 || minimalScreenSize.height == 0)
+        {
+            ERROR << "Given board size is incorrect! \n";
+            return false;
+        }
+    }
+
+    //if(values.find("background") != values.end()) backgroundColor = sRGBColor(values["background"]->second);
+
+    INFO << "Creating board\n";
+    //!@todo: Add option to use different GUI framework.
+    demoBoard = new cVirtualDemoBoard();
+
+    INFO << "Creating thread\n";
+    // Create GUI and start it on different thread
+    threadGUI = std::thread(&cVirtualDemoBoard::init, demoBoard, argc, argv, applicationName, aboutTitle, aboutText, minimalScreenSize, backgroundColor);
+    this_thread::sleep_for(chrono::milliseconds(1000));// Give the GUI time to start, it has to be active before we can sent events to it
+    return true;
 }

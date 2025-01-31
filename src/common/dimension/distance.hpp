@@ -46,6 +46,9 @@
 #ifndef DIMENSIONS_DISTANCE_HPP
 #define DIMENSIONS_DISTANCE_HPP
 
+#include <string>
+#include <vector>
+
 namespace RoaLogic {
 namespace dimensions {
 
@@ -216,7 +219,28 @@ namespace dimensions {
         cDistance width,height;
     };
 
+    static cDistance convertStringToDistance(std::vector<std::string> data)
+    {
+        if (data.size() == 2)
+        {
+            double val = std::stod(data.at(0));
 
+            if (data.at(1).compare(0, 2, "mm") == 0)
+            {
+                return cDistance(val / 1.0E3 );
+            }
+            else if(data.at(1).compare(0, 4, "inch") == 0)
+            {
+                return cDistance(val * cDistance::mmPerInch / 1000.0);
+            }
+            else
+            {
+                return cDistance(0.0);
+            }
+        }
+
+        return cDistance(0.0);        
+    };
 }}
 
 #endif

@@ -213,7 +213,6 @@ namespace GUI {
     class cGuiInterface : public cSubject
     {
         public:
-        virtual void setupGui(std::string applicationName, std::string aboutTitle, std::string aboutText, distanceSize minimalScreenSize, sRGBColor backgroundColor) = 0;
         virtual void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point, void* information) = 0;
     };
 

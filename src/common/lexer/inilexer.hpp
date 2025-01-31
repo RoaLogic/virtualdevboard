@@ -133,7 +133,9 @@ namespace lexer
                         [[fallthrough]];
                     case ';':
                         iniLine._type = EIniLineType::comment;
+                        #ifdef DEBUG_INI_LEXER
                         INFO << "Ini lexer: Comment: " << line << "\n";
+                        #endif
                         break;
                     case '[':
                         iniLine._type = EIniLineType::section;
@@ -144,31 +146,41 @@ namespace lexer
                         {
                             iniLine._type = EIniLineType::subsection;
                             iniLine._subsection = iniLine._section.substr(0, iniLine._section.find('.') + 1);
+                            #ifdef DEBUG_INI_LEXER
                             INFO << "Ini lexer: Subsection: " << iniLine._subsection << "\n";
+                            #endif
                         }
                         else
                         {
+                            #ifdef DEBUG_INI_LEXER
                             INFO << "Ini lexer: Found section: " << iniLine._section << "\n";
+                            #endif
                         }
                         break;
                     case ' ':
                         [[fallthrough]];
                     case '\n':
                         iniLine._type = EIniLineType::empty;
+                        #ifdef DEBUG_INI_LEXER
                         INFO << "Ini lexer: Empty line: " << line << "\n";
+                        #endif
                         break;
                     default:
                         iniLine._type = EIniLineType::keyvalue;
                         iniLine._key = line.substr(0, line.find('='));
                         iniLine._value = line.substr(line.find('=') + 1);
+                        #ifdef DEBUG_INI_LEXER
                         INFO << "Ini lexer: Key: " << iniLine._key << " value: " << iniLine._value << "\n";
+                        #endif
                         break;
                     }
                 }
                 else
                 {
                     iniLine._type = EIniLineType::empty;
+                    #ifdef DEBUG_INI_LEXER
                     INFO << "Empty line \n";
+                    #endif
                 }
 
                 return iniLine;
