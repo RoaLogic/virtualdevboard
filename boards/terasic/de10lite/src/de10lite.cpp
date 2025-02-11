@@ -94,9 +94,6 @@ cDE10Lite::~cDE10Lite()
 
 void cDE10Lite::setupGUI()
 {
-    const cDistance boardWidth  = 97.54_mm;
-    const cDistance boardHeight = 80.01_mm;
-
     if(_myGUI)
     {
         // First register ourself to the GUI so that we receive all the events from the GUI

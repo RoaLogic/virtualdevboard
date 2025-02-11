@@ -60,7 +60,7 @@ cMainFrame::cMainFrame( cSubject* aSubject,
                         std::string aboutText, 
                         distanceSize minimalScreenSize, 
                         sRGBColor backgroundColor) :
-    wxFrame(nullptr, wxID_ANY, applicationName.c_str()), //wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX)),
+    wxFrame(nullptr, wxID_ANY, applicationName.c_str(), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX)),
     _subject(aSubject),
     _myAboutText(aboutText),
     _myAboutTitle(aboutTitle)

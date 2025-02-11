@@ -78,7 +78,6 @@
  * 
  * @image html overview.png
  * 
- * 
  * See below for a more detailed description of the core.
  * 
  * @section boardLayout Board layout
@@ -99,24 +98,42 @@
  * Following properties can be added
  *  - aboutTitle:      The about title of the board, default "About Virtual Demo Board"
  *  - aoutText:        The about information of the board, default "This is a virtual demo board"
- *  - width:           The width of the board in mm or inch, default 800, note that if width is given, height must also be given
- *  - height:          The height of the board in mm or inch, default 600, note that if height is given, width must also be given
- *  - background:      The background color of the board, default white
+ *  - width:           The width of the board in mm or inch <value>_<mm or inch>, default 800 mm, note that if width is given, height must also be given
+ *  - height:          The height of the board in mm or inch <value>_<mm or inch>, default 600 mm, note that if height is given, width must also be given
+ *  - background:      The background color of the board in R,G,B, default is {0,0,0}
+ * 
+ * @subsection examples
+ * name=DE10lite
+ * description=DE10lite virtual demo board
+ * aboutTitle=DE10lite about
+ * aboutText=This is a virtual development board for the DE10lite
+ * width=97.54_mm
+ * height=80.01_mm
+ * background=0,75,128
+ * 
  * 
  * @section newBoard Creating a new board
  * 
  * Every board must have a system verilog wrapper file, which is processed through Verilator. Next to
  * the wrapper file also a *.ini must be created. 
+ * 
+ * 
+ * @section programOptions Program options
+ * 
+ * @todo: Add description of program options
+ * 
+ * 
+ * 
  */
 
 #include "de10lite.hpp"
+#include "testbench.hpp"
+#include "board.hpp"
 
 #include <noValueOption.hpp>
 #include <valueOption.hpp>
 
 #include "wxWidgetsImplementation.hpp"
-
-#include "iniparser.hpp"
 
 //Setup namespaces
 using namespace RoaLogic;
@@ -143,11 +160,10 @@ cValueOption<uint32_t>    optNoGui     ("",  "nogui",    "Start system without a
 int setupProgramOptions(int argc, char** argv);
 void setupLogger(void);
 void setupMemories(void);
-bool setupBoard(int argc, char** argv, map<string,string> &values);
 
-cVirtualDemoBoard* demoBoard = nullptr;
-std::thread threadGUI;
-cIniparser iniParser;
+
+
+cGuiBoard* guiBoard = nullptr;
 
 //Main routine
 int main(int argc, char** argv)
@@ -155,76 +171,44 @@ int main(int argc, char** argv)
   bool enableTrace = false;
   bool rerun = false;
 
-  //first setup the program options
-  if (setupProgramOptions(argc,argv)) { return 1; }
+  //first setup the program options, when it fails return 1
+  if (setupProgramOptions(argc,argv)) {return 1; }
 
-  setupLogger(); //next setup the logger  
-  enableTrace = optTrace.isSet(); //Trace enabled?
+  setupLogger(); //next setup the logger, which needs the program options to be set
 
   std::unique_ptr<VerilatedContext> contextp(new VerilatedContext); //Setup testbench
   contextp->commandArgs(argc, argv); //parse eventual Verilator options
 
-  // See if we run with a GUI or not
+  // See if we run with a GUI or not, in case we run with the GUI, create it
   if(!optNoGui.isSet() )
   {
     // Process the option file
     if(optUIFile.isSet())
     {
-      //parse the INI file
-      iniParser.open(optUIFile.value());
-      iniParser.parse();
-      
-      iniData data = iniParser.data();
-
-      if(data.find("board") != data.end())
-      {
-          INFO << "Board section found\n";
-
-          if(!setupBoard(argc, argv, data["board"]))
-          {
-              ERROR << "Error setting up board\n";
-              return 1;
-          }
-      }
-      else
-      {
-        ERROR << "No board section found\n";
-        return 1;
-      }      
+        // Create the GUI board and setup all the components according to the *.ini file
+        guiBoard = new cGuiBoard(argc, argv, optUIFile.value());
+        guiBoard->initialize();
     }
-    else
-    {
-      ERROR << "Gui selected but no GUI file given!\n";
-      return 1;
-    }
+    else {ERROR << "Gui selected but no GUI file given!\n"; return 1;}
   }  
 
   do
   {
     rerun = false;
     //create testbench
-    cDE10Lite* de10lite = new cDE10Lite(contextp.get(), enableTrace, demoBoard);
+    cDE10Lite* de10lite = new cDE10Lite(contextp.get(), optTrace.isSet(), demoBoard);
 
     setupMemories();
 
     //Open waveform dump file if enabled
-    if (enableTrace)
+    if (optTrace.isSet())
     {
-      if (optWaveFile.isSet())
-      {
-        de10lite->opentrace(optWaveFile.value());
-      }
-      else
-      {
-        de10lite->opentrace("waves.vcd");
-      }
+      if (optWaveFile.isSet()) de10lite->opentrace(optWaveFile.value());
+      else de10lite->opentrace("waves.vcd");
     }
 
     //Run the testbench
-    if(optNoGui.isSet())
-    {
-      de10lite->run(optNoGui.value());
-    }
+    if(optNoGui.isSet()) de10lite->run(optNoGui.value());
     else
     {
       if(de10lite->run() == eRunState::restart)
@@ -237,11 +221,8 @@ int main(int argc, char** argv)
     delete de10lite;
   } while (rerun);
   
-  // Close GUI
-  if(threadGUI.joinable())
-  {
-    threadGUI.join();
-  }
+  // If we have a gui board and thread, delete it
+  if(guiBoard != nullptr) delete guiBoard;
 
   //close log
   cLog::getInstance()->close();
@@ -347,71 +328,4 @@ void setupMemories(void)
             WARNING << "Wrong init file passed, missing delimiter\n";
         }
     }
-}
-
-/**
- * @brief Create the virtual development board GUI layout
- * @details This function creates the virtual development board GUI layout.
- * 
- * It traverses the given map and searches the corresponding elements for the GUI.
- * All options that are found are used to setup the screen, all others will use the default values,
- * check the documentation for the default values.
- * 
- * @param[in] values  The map with the values for the board
- * @return true   Board setup succesfull
- * @return false  Board setup failed
- */
-bool setupBoard(int argc, char** argv, map<string,string> &values)
-{
-    std::string applicationName = "Virtual Demo Board";
-    std::string aboutTitle = "About Virtual Demo Board";
-    std::string aboutText = "This is a virtual demo board";
-    distanceSize minimalScreenSize = {800, 600};
-    sRGBColor backgroundColor = {0, 0, 0};
-
-    INFO << "Setup board \n";
-
-    if(values.find("name") != values.end())
-    {
-      applicationName = values["name"] ;
-      INFO << "Found application name: " << applicationName << "\n";
-    } 
-    else return false;
-
-    if(values.find("aboutTitle") != values.end())
-    {
-      aboutTitle = values["aboutTitle"];
-      INFO << "Found about title: " << aboutTitle << "\n";
-    } 
-    if(values.find("aboutText") != values.end())
-    { 
-      aboutText = values["aboutText"];
-      INFO << "Found about text: " << aboutText << "\n";
-    } 
-
-    if(values.find("width") != values.end() && values.find("height") != values.end())
-    {
-        INFO << "Found width: " << values["width"] << "\n";
-        INFO << "Found heigth: " << values["height"] << "\n";
-        minimalScreenSize.width = convertStringToDistance(split(values["width"], '_'));
-        minimalScreenSize.height = convertStringToDistance(split(values["height"], '_'));
-
-        if(minimalScreenSize.width == 0 || minimalScreenSize.height == 0)
-        {
-            ERROR << "Given board size is incorrect! \n";
-            return false;
-        }
-    }
-
-    //if(values.find("background") != values.end()) backgroundColor = sRGBColor(values["background"]->second);
-
-    INFO << "Creating board\n";
-    //!@todo: Add option to use different GUI framework.
-    demoBoard = new cVirtualDemoBoard();
-
-    INFO << "Creating thread\n";
-    // Create GUI and start it on different thread
-    threadGUI = std::thread(&cVirtualDemoBoard::init, demoBoard, argc, argv, applicationName, aboutTitle, aboutText, minimalScreenSize, backgroundColor);
-    this_thread::sleep_for(chrono::milliseconds(1000));// Give the GUI time to start, it has to be active before we can sent events to it
-    return true;
 }
