@@ -48,7 +48,8 @@ SAVE_CWD:=$(CWD)
 CWD     :=$(dir $(lastword $(MAKEFILE_LIST)))
 
 #TODO: automate this
-TB_CXX  +=$(CWD)submodules/Verilator-simulation/common/uniqueid.cpp				\
+TB_CXX  +=$(CWD)app/board.cpp									\
+	  $(CWD)submodules/Verilator-simulation/common/uniqueid.cpp				\
           $(CWD)submodules/Verilator-simulation/common/log.cpp					\
           $(CWD)submodules/Verilator-simulation/common/programOptions/programOptions.cpp	\
 	  $(CWD)observer/subject.cpp 								\
@@ -64,7 +65,8 @@ TB_CXX  +=$(CWD)submodules/Verilator-simulation/common/uniqueid.cpp				\
 	  $(CWD)vdb/vdbIC/wxWidgetsVdbIC.cpp							\
 	  $(CWD)vdb/vdbConnector/wxWidgetsVdbConnector.cpp
 
-INCDIRS +=$(CWD)lexer										\
+INCDIRS +=$(CWD)app										\
+	  $(CWD)lexer										\
           $(CWD)parser										\
 	  $(CWD)observer 									\
 	  $(CWD)gui										\
