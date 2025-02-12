@@ -66,7 +66,7 @@ boards=$(filter-out boards common $(vendors),$(notdir $(boards_list)))
 #####################################################################
 .PHONY: $(boards) clean distclean
 
-#Call the makefile in the <vendor>/<board>/<build> directory
+#Call the <vendor>/<board> makefile in the <build> directory
 $(boards):
 	if [ ! -d $(BUILDDIR) ]; then mkdir $(BUILDDIR); fi
 	$(MAKE) -C $(BUILDDIR) -f "$(filter %/$@, $(boards_list))/Makefile" $@ 	\
@@ -98,7 +98,7 @@ help:
 	@echo "boards:"
 	$(foreach board,$(boards),@echo "- $(board)")
 	@echo "filelist points to a .f file with the design's verilog RTL files"
-	@echo "make <board>_clean  : clean <board> build directory"
+	@echo "make clean          : clean build directory"
 	@echo "make help           : this help message"
 
 
