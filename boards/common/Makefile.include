@@ -98,6 +98,3 @@ get_penultimate = $(wordlist $(words $1),$(words $1), __x__ $1)
 # @brief get the board
 get_board = $(call get_penultimate,$(subst /, ,$(CURDIR)))
 
-INCDIRS += $(CURRENT_DIR)
-
-TB_CXX += $(CURRENT_DIR)/board.cpp
