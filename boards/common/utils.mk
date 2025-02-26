@@ -5,7 +5,7 @@
 ##   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    ##
 ##   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    ##
 ##                                             `---'               ##
-##    Build Makefile for virtual development board                 ##
+##    Routines for use in Makefiles                                ##
 ##                                                                 ##
 #####################################################################
 ##                                                                 ##
@@ -43,72 +43,56 @@
 ##                                                                 ##
 #####################################################################
 
-default: help
+##
+# List of directories
+#
+list_directories = $(abspath $(wildcard $1/*/.))
+
+##
+# Filelist support
+#
+
+# @brief Checks if a file exists
+# @details Check if a file exists, otherwise prints file not found error
+# @usage $(call file_exists, <filename>)
+file_exists = $(if $(wildcard $1),$(or $(info Reading $1),1),$(error File not found: $1))
+
+# @brief removes comments
+# @details $(filterout ...) returns $1 if it does not start with '//', "" otherwise
+_filelist_remove_comment = $(filter-out //%,$1)
+
+# @brief returns include file
+# @details $(filter ...) returns $1 if it starts with +include+, "" otherwise
+#          the $(subst ...) then removes the +include+ part
+_filelist_include = $(subst +include+,,$(filter +include+%,$1))
+
+# @brief Read filelist
+# @details Open <file> and return its contents
+# @usage myvar=$(call read_filelist, <file>)
+_filelist_readfile = $(foreach line,$(file < $1),	\
+    $(if $(call _filelist_include,$(line)),$(call load_filelist,$(dir $1)$(call _filelist_include,$(line))),$(dir $1)$(line))							\
+)
+
+# @brief Load filelist
+# @details Open <filelist>, and return its contents
+# @usage myvar=$(call load_filelist, <file>)
+#load_filelist = $(if $(call file_exists,$1),$(addprefix $(dir $1),$(file < $1)))
+load_filelist = $(if $(call file_exists,$1),$(call _filelist_readfile,$1))
 
 
-CWD:=$(dir $(lastword $(MAKEFILE_LIST)))
-BUILDDIR=build
-DOCDIR=doc
-BOARDS_DIR=$(CWD)boards
+#TODO:
+#+incdir+
+#+define+
+#// (comment)
 
-include $(CWD)boards/common/utils.mk
+##
+# Get the board
+#
+# This assumes the command is called from the <...>/<board> directory
 
-#get the vendors
-list_vendors=$(filter-out $1 common, $(notdir $(call list_directories,$1)))
-vendors=$(call list_vendors,$(BOARDS_DIR))
+# @brief get second-to-last entry in list
+get_penultimate = $(wordlist $(words $1),$(words $1), __x__ $1)
 
-#get boards per vendor
-boards_list=$(foreach vendor,$(vendors),$(call list_directories,$(BOARDS_DIR)/$(vendor)))
-boards=$(filter-out boards common $(vendors),$(notdir $(boards_list)))
-
-#####################################################################
-## Boards                
-#####################################################################
-.PHONY: $(boards) clean distclean
-
-#Call the makefile in the <vendor>/<board>/<build> directory
-$(boards):
-	if [ ! -d $(BUILDDIR) ]; then mkdir $(BUILDDIR); fi
-	$(MAKE) -C $(BUILDDIR) -f "$(filter %/$@, $(boards_list))/Makefile" $@ 	\
-		board=$@ filelist=$(filelist)
-
-clean:
-	$(MAKE) -C $(BUILDDIR) -f $(abspath $(CWD)/boards/common/build.mk) clean
-
-distclean:
-	rm -rf $(BUILDDIR)/*
-
-#####################################################################
-## Demo
-#####################################################################
-.PHONY: demo
-
-demo:
-	echo "Building demo"
-	$(MAKE) de10lite filelist=$(abspath demo/filelist.f)
-
-
-#####################################################################
-## Help
-#####################################################################
-.PHONY: help
-
-help:
-	@echo "usage: make <board> filelist=<filelist.f>"
-	@echo "boards:"
-	$(foreach board,$(boards),@echo "- $(board)")
-	@echo "filelist points to a .f file with the design's verilog RTL files"
-	@echo "make <board>_clean  : clean <board> build directory"
-	@echo "make help           : this help message"
-
-
-#####################################################################
-## Doc
-#####################################################################
-.PHONY: doc
-
-doc:
-	@echo "Building doxygen documentation"
-	if [ ! -d $(DOCDIR) ]; then mkdir $(DOCDIR); fi
-	doxygen doxyfile
+# @brief get the board
+get_board = $(call get_penultimate,$(subst /, ,$(CURDIR)))
 
