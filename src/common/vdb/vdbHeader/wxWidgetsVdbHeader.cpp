@@ -86,10 +86,20 @@ namespace GUI {
         wxColour  myColour;
 
         //Draw the header base
-        myColour = wxColour(50,50,50);    //black
+        myColour = wxColour(50,50,50); //black
         SetPen(wxPen(wxColour(0,0,0),1));
         SetBrush(myColour);
         DrawRectangle(0,0,size.width,size.height);
+
+        cDistance quarter_pitch = pitch/4;
+
+        //draw inside of the box (dark black)
+        if (boxed) {
+            myColour = wxColour(0,0,0);
+            SetPen(wxPen(myColour,1));
+            SetBrush(myColour);
+            DrawRectangle(quarter_pitch,quarter_pitch,size.width-quarter_pitch,size.height-quarter_pitch);
+        }
 
         //Draw the contacts
         cDistance rowOffset;
@@ -99,8 +109,8 @@ namespace GUI {
 
 
         //Draw Connectors
-        sz.width  = pitch /4;
-        sz.height = pitch /4;
+        sz.width  = quarter_pitch;
+        sz.height = quarter_pitch;
 
         if (boxed)
         {
@@ -116,7 +126,7 @@ namespace GUI {
         rowOffset    -= sz.height/2;
 
         myColour = female ? wxColour(0,0,0) : colGold;
-        SetPen(wxPen(wxColour(myColour),1));
+        SetPen(wxPen(myColour,1));
         SetBrush(myColour);
         for (int column = 0; column < columns; column++)
         for (int row    = 0; row    < rows;    row++  )
