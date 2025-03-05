@@ -46,29 +46,11 @@
 #include "altsyncram.hpp"
 #include "mifparser.hpp"
 
+#include "stringHelper.hpp"
 
 using namespace RoaLogic;
+using namespace common;
 using namespace parser;
-
-//TODO: move into 'common' library file
-/**
- * @brief Split string based on delimiter
- * @details Split string str based on delimiter delim
- *
- * @return split string as a std::vector<std:string> 
- */
-std::vector<std::string> split(const std::string& str, const char delim)
-{
-    std::stringstream input_stream { str };
-    std::vector<std::string> string_list;
-    std::string current_string;
-
-    while( std::getline( input_stream, current_string, delim ) )
-            string_list.emplace_back( std::move( current_string ) );
-
-    return string_list;
-}
-
 
 /**
  * @brief altsyncram DPI-C callback

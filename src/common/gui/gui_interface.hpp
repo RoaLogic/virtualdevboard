@@ -56,18 +56,6 @@ namespace RoaLogic {
     using namespace dimensions;
 namespace GUI {
 
-    /** @struct sRGBColor
-     *  @brief RGB colour structure
-     *  @details This structure can be used to
-     * determine the colour according to the RGB value.
-     */
-    struct sRGBColor
-    {
-        uint8_t red;        //!< Red value of RGB
-        uint8_t green;      //!< Green value of RGB
-        uint8_t blue;       //!< Blue value of RGB
-    };
-
     /** @enum eVdbComponentType
      *  @brief Enum which defines all the different 
      * virtual development board components.
@@ -81,72 +69,30 @@ namespace GUI {
      */
     enum class eVdbComponentType
     {
-        //!< Led component, uses the sVdbLedInformation structure to handle its layout
-        vdbLed,
-        //!< Connector component (now only VGA), does not yet use any information
-        vdbConnector,
-        //!< VGA component, does not use any information
-        vdbVGA,
-        //!< 7 segment component, uses the sVdb7SegInformation structure to handle its layout
-        vdb7SegmentDisplay,
-	//!< IC component, uses the sVdbICInformation structure to handle its layout
-	vdbIC
+        vdbNone,                //!< No component
+        vdbLed,                 //!< LED component, uses the sVdbLedInformation structure to handle its layout
+        vdbConnector,           //!< Connector component (now only VGA), does not yet use any information
+        vdbVGA,                 //!< VGA component, does not use any information
+        vdb7SegmentDisplay,     //!< 7 segment component, uses the sVdb7SegInformation structure to handle its layout
+	    vdbIC,                  //!< IC component, uses the sVdbICInformation structure to handle its layout
     };
 
-    /** @enum eVdbLedType
-     *  @brief Define the LED type
-     */
-    enum class eVdbLedType
+    struct sVdbComponentTypeLookUp
     {
-        round10mm,  //!< Round through hole 10 mm led
-        round5mm,   //!< Round through hole 5 mm led
-        round3mm,   //!< Round through hole 3mm led
-        SMD1206,    //!< SMD led size 1206
-        SMD0805,    //!< SMD led size 0805
-        SMD0603,    //!< SMD led size 0603
-        SMD0402,    //!< SMD led size 0402
-        SMD3520,    //!< SMD led size 3.5x2.0mm
-        numLedTypes
+        eVdbComponentType type;
+        std::string typeName;
     };
 
-    /** @struct sVdbLedInformation
-     *  @brief virtual development board led information
-     *  @details This structure is used to design a
-     * virtual development board led.
-     * 
-     * The type of led is defined through the eVdbLedType 
-     * enumeration. Colour of the LED can be passed in as 
-     * RGB color through the red, green and blue values.
-     */
-    struct sVdbLedInformation
+    static const sVdbComponentTypeLookUp cVdbComponentTypeLookUp[] = 
     {
-        eVdbLedType type;   //!< The type of the LED
-        sRGBColor colour;   //!< Colour of the LED
+        {eVdbComponentType::vdbNone,            "None"},
+        {eVdbComponentType::vdbLed,             "LED"},
+        {eVdbComponentType::vdbConnector,       "Connector"},
+        {eVdbComponentType::vdbVGA,             "VGA"},
+        {eVdbComponentType::vdb7SegmentDisplay, "7SEG"},
+        {eVdbComponentType::vdbIC,              "IC"},
     };
-
-    /** @enum eVdb7SegType
-     *  @brief Define the 7 segment types
-     */
-    enum class eVdb7SegType
-    {
-        commonAnode,   //!< 7 Segment display which uses a common anode
-        commonCathode, //!< 7 Segment display which uses a common cathode
-    };
-
-    /** @struct sVdb7SegInformation
-     *  @brief virtual development board 7 segment information
-     *  @details This structure is used to design a
-     * virtual development board 7 segment display.
-     * 
-     * The type of 7segment is defined through the eVdb7SegType 
-     * enumeration. Color of the 7 segment can be passed in as 
-     * RGB color through the red, green and blue values.
-     */
-    struct sVdb7SegInformation
-    {
-        eVdb7SegType type;
-        sRGBColor colour;
-    };
+    static const size_t cVdbComponentTypeLookUpSize = sizeof(cVdbComponentTypeLookUp) / sizeof(cVdbComponentTypeLookUp[0]);
 
     /** @struct sVdbICInformation
      *  @brief virtual development board IC information

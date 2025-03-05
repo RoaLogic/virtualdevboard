@@ -53,8 +53,14 @@
 
 #include <map>
 #include <string>
+#include <fstream>
 
 #define DEBUG_INI_PARSER
+
+#ifdef DEBUG_INI_PARSER
+#include "log.hpp"
+using namespace RoaLogic::common;
+#endif
 
 namespace RoaLogic
 {

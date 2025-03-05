@@ -46,7 +46,37 @@
 /**
  * @section vdbComponentLED Virtual development LED component
  *
- * LED text
+ * The LED component is a virtual representation of a LED on the development board.
+ * It shall be controlled by the verilated model and can be used to show the state of a signal.
+ * 
+ * The following led types are supported:
+ * - Round 10mm through hole led (Round10)
+ * - Round 5mm through hole led (Round5)
+ * - Round 3mm through hole led (Round3)
+ * - SMD 1206 led (SMD1206)
+ * - SMD 0805 led (SMD0805)
+ * - SMD 0603 led (SMD0603)
+ * - SMD 0402 led (SMD0402)
+ * - SMD 3520 led (SMD3520)
+ * 
+ * 
+ * Ini file properties:
+ * | Property name | property type | Mandatory | Description | Default value |
+ * |---------------|---------------|-------------|---------------|--------------|
+ * | ledType | String | no | The type of LED | ledType=SMD3520 |
+ * | ledColour | Color | no | The colour of the LED | ledColour=255,0,0  |
+ * 
+ * 
+ * Example ini file:
+ * [LED1]
+ * type=LED
+ * scope="TOP.de10lite_verilator_wrapper.gen_vdbLED[0].LED_inst"
+ * id=1
+ * xoffset=48mm
+ * yoffset=66mm
+ * ledType=SMD3520
+ * ledColour=255,0,0 
+ * 
  */
 
 #ifndef VDB_LED_HPP
@@ -58,6 +88,62 @@ namespace RoaLogic
 {
 namespace vdb
 {
+    /** @enum eVdbLedType
+     *  @brief Define the LED type
+     */
+    enum class eVdbLedType
+    {
+        unknownLedType, //!< Unknown LED type
+        round10mm,      //!< Round through hole 10 mm led
+        round5mm,       //!< Round through hole 5 mm led
+        round3mm,       //!< Round through hole 3mm led
+        SMD1206,        //!< SMD led size 1206
+        SMD0805,        //!< SMD led size 0805
+        SMD0603,        //!< SMD led size 0603
+        SMD0402,        //!< SMD led size 0402
+        SMD3520,        //!< SMD led size 3.5x2.0mm
+    };
+
+    /**
+     * @brief Structure for LED type lookup
+     * 
+     */
+    struct sVdbLedTypeLookup
+    {
+        eVdbLedType type;
+        std::string typeName;
+    };
+
+    /**
+     * @brief Lookup table for LED types
+     */
+    static const sVdbLedTypeLookup cVdbLedTypeLookup[] = 
+    {
+        {eVdbLedType::round10mm,     "Round10"},
+        {eVdbLedType::round5mm,      "Round5"},
+        {eVdbLedType::round3mm,      "Round3"},
+        {eVdbLedType::SMD1206,       "SMD1206"},
+        {eVdbLedType::SMD0805,       "SMD0805"},
+        {eVdbLedType::SMD0603,       "SMD0603"},
+        {eVdbLedType::SMD0402,       "SMD0402"},
+        {eVdbLedType::SMD3520,       "SMD3520"},
+    };
+    static const size_t cVdbLedTypeLookupLookUpSize = sizeof(cVdbLedTypeLookup) / sizeof(cVdbLedTypeLookup[0]);
+
+    /** @struct sVdbLedInformation
+     *  @brief virtual development board led information
+     *  @details This structure is used to design a
+     * virtual development board led.
+     * 
+     * The type of led is defined through the eVdbLedType 
+     * enumeration. Colour of the LED can be passed in as 
+     * RGB color through the red, green and blue values.
+     */
+    struct sVdbLedInformation
+    {
+        eVdbLedType type;   //!< The type of the LED
+        sRGBColor colour;   //!< Colour of the LED
+    };
 
     /**
      * @class cVdbLed
@@ -78,6 +164,9 @@ namespace vdb
     class cVdbLed : public cVDBCommon
     {
         public:
+        static constexpr std::string _cLedType = "ledType";
+        static constexpr std::string _cLedColourName = "ledColour";
+
         enum class eVdbLedEvent
         {
             ledOn,
@@ -90,6 +179,19 @@ namespace vdb
         public:
         cVdbLed(std::string scopeName, uint8_t id);
         ~cVdbLed();
+
+        static eVdbLedType getLedType(std::string type)
+        {
+            for(size_t i = 0; i < cVdbLedTypeLookupLookUpSize; i++)
+            {
+                if(cVdbLedTypeLookup[i].typeName == type)
+                {
+                    return cVdbLedTypeLookup[i].type;
+                }
+            }
+
+            return eVdbLedType::SMD3520;
+        }
     };
 }
 }

@@ -47,7 +47,6 @@
 SAVE_CWD    := $(CWD)
 CWD         := $(dir $(lastword $(MAKEFILE_LIST)))
 
-TB_CXX      += $(CWD)de10lite.cpp
 TB_CXX      += $(CWD)main.cpp
 
 RTL_VERILOG += $(CWD)de10lite_verilator_wrapper.sv

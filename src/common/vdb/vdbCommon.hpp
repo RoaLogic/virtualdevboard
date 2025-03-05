@@ -44,9 +44,9 @@
 /////////////////////////////////////////////////////////////////////
 
 /**
- * @section vdbComponent_1 Virtual development board components
+ * @section vdbComponent_1 Virtual development board peripherals
  * 
- * Virtual development board components are components which have a specific
+ * Virtual development board peripherals are components which have a specific
  * system functionality, for example a LED. Meaning that there is a output
  * of the system that connects with a LED, that LED is then shown on the GUI 
  * to the user. To set this up there are two different base designs, one basic 
@@ -57,7 +57,7 @@
  * without having to change each component, this also helps with the two 
  * different threads for the verilated design and the GUI.
  * 
- * All vdb components shall be placed in the vdb directory and have there own
+ * All vdb peripherals shall be placed in the vdb directory and have there own
  * submap named vdb<component name>. All design files shall be added
  * in this subdirectory, where the classes that connect with the verilated 
  * design are called vdb<component name>. Classes that show something on 
@@ -67,6 +67,9 @@
  * design in vdbLED.sv and the C++ sources that connect with the verilated design,
  * vdbLED.hpp and vdbLED.cpp. The LED implementation for wxWidgets is placed in the
  * wxWidgetsVdbLED.hpp and wxWidgetVdbLED.cpp.
+ * 
+ * @note To show a component on the GUI, it must be added in the ini file. See the
+ * @ref guiBoard section for more information.
  * 
  * @section vdbComponent_2 virtual development board component basic module
  * 
@@ -284,7 +287,7 @@
  *     }
  * 
  * }}
- * @endcode
+ * @endcode 
  * 
  */
 
@@ -303,6 +306,19 @@ namespace RoaLogic
     using namespace observer;
 namespace vdb
 {
+    /** @struct sRGBColor
+     *  @brief RGB colour structure
+     *  @details This structure can be used to
+     * determine the colour according to the RGB value. 
+     * Which is used throughout all vdb components
+     */
+    struct sRGBColor
+    {
+        uint8_t red;        //!< Red value of RGB
+        uint8_t green;      //!< Green value of RGB
+        uint8_t blue;       //!< Blue value of RGB
+    };
+
     /**
      * @class cVDBCommon
      * @author Bjorn Schouteten

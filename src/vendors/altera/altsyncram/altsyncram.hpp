@@ -49,14 +49,7 @@
 //include logger functions
 #include "log.hpp"
 
-//include std::vector
-#include <vector>
-
 #include <filesystem>
-
-//Split string. Move this to a common library file
-std::vector<std::string> split(const std::string& str, const char delim);
-
 
 //function declarations
 int altsyncram_initialize(std::string instance, std::string fileName);

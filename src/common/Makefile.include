@@ -49,6 +49,7 @@ CWD     :=$(dir $(lastword $(MAKEFILE_LIST)))
 
 #TODO: automate this
 TB_CXX  +=$(CWD)app/board.cpp									\
+	  $(CWD)app/testbenchVirtualDevBoard.cpp 				 	\
 	  $(CWD)submodules/Verilator-simulation/common/uniqueid.cpp				\
           $(CWD)submodules/Verilator-simulation/common/log.cpp					\
           $(CWD)submodules/Verilator-simulation/common/programOptions/programOptions.cpp	\

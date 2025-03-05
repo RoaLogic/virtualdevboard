@@ -125,18 +125,18 @@ void cDE10Lite::setupGUI()
         // 7-Segment Displays
         for(size_t i = 0; i < _cNum7Seg; i++)
         {
-            // Create a new 7 segment instance and map it through the scope with the verilated component
-            _7segInstances[i] = new cVdb7SegmentDisplay("TOP.de10lite_verilator_wrapper.gen_vdb7SegmentDisplay[" + 
-                                                std::to_string(i) + 
-                                                "].hex_inst", i);
+            // // Create a new 7 segment instance and map it through the scope with the verilated component
+            // _7segInstances[i] = new cVdb7SegmentDisplay("TOP.de10lite_verilator_wrapper.gen_vdb7SegmentDisplay[" + 
+            //                                     std::to_string(i) + 
+            //                                     "].hex_inst", i);
 
-            // Map the 7 segment instance to a 7 segment on the virtual board. The type of 7 segment is a commonAnode, with a RGB colour of pure RED.
-            // The placement on the board is determined through the distancePoint.
-            _myGUI->addVdbComponent(eVdbComponentType::vdb7SegmentDisplay,          // VDB component type 7 segment
-                                    _7segInstances[i],                              // Verilated linked component
-                                    distancePoint((1_mm + 300_mils*i), boardHeight - (1_mm + 500_mils)),  // Placement on the board
-                                    // 7 segment specific information, in this case a common anode 7 segment, with a full red colour
-                                    new sVdb7SegInformation(eVdb7SegType::commonAnode, {255, 0, 0}));
+            // // Map the 7 segment instance to a 7 segment on the virtual board. The type of 7 segment is a commonAnode, with a RGB colour of pure RED.
+            // // The placement on the board is determined through the distancePoint.
+            // _myGUI->addVdbComponent(eVdbComponentType::vdb7SegmentDisplay,          // VDB component type 7 segment
+            //                         _7segInstances[i],                              // Verilated linked component
+            //                         distancePoint((1_mm + 300_mils*i), boardHeight - (1_mm + 500_mils)),  // Placement on the board
+            //                         // 7 segment specific information, in this case a common anode 7 segment, with a full red colour
+            //                         new sVdb7SegInformation(eVdb7SegType::commonAnode, {255, 0, 0}));
         }
 
         // SDRAM

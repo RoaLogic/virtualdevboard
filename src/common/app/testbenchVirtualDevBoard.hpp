@@ -45,16 +45,28 @@
 
 //for std::unique_ptr
 #include <memory>
+//for assertions
+#include <cassert>
 
-#include "vdbVGAMonitor.hpp"
-#include "vdbLED.hpp"
-#include "vdb7SegmentDisplay.hpp"
+//testbench class
+#include <testbench.hpp>
+
+#include "observer.hpp"
+
+#include "vdb__Dpi.h"
+
+#include "eventDefinition.hpp"
 
 #ifndef TESTBENCH_CONTROL_HPP
 #define TESTBENCH_CONTROL_HPP
 
 namespace RoaLogic
 {
+    using namespace testbench;
+    using namespace tasks;
+    using namespace clock;
+    using namespace observer;
+
     enum class eRunState
     {
         completed,
@@ -64,12 +76,32 @@ namespace RoaLogic
     class cTestBenchVirtualDevBoard : public cTestBench<designName>, public cObserver
     {
         private:
-        cGuiInterface* _myGUI = nullptr;
+        //DE10-Lite ports. Standard ports are of type uint8_t
+        cClock* clk_50;
+        cClock* clk2_50;
+        cClock* clk_adc_10;
+        cClock* clk_vga;
+        uint8_t& key;
+
+        std::atomic<eRunState> _returnState = eRunState::completed;
+        std::atomic<eSystemState> _myState = eSystemState::idle;
+        atomic_bool doReset = false;
+
+        protected:
+
+        sCoRoutineHandler<bool> Reset();
+        void notify(eEvent aEvent, void* data);
 
         public:
-        cTestBenchControl(VerilatedContext* context, bool traceActive, cGuiInterface* aGUI);
-        ~cTestBenchControl();
-    }
+        cTestBenchVirtualDevBoard(VerilatedContext* context, bool traceActive);
+        ~cTestBenchVirtualDevBoard();
+
+        inline void bitSet8(uint8_t& signal, uint8_t bit){ signal |=  (1 << bit); }
+        inline void bitClr8(uint8_t& signal, uint8_t bit){ signal &= ~(1 << bit); }
+
+        eRunState run();
+        eRunState run(uint32_t numMilliSeconds);
+    };
 }
 
 #endif

@@ -46,7 +46,31 @@
 /**
  * @section vdbComponent7Seg Virtual development 7 segment component
  *
- * 7 segment text
+ * The 7 Segment component is a virtual representation of a 7 segment display on the development board.
+ * It shall be controlled by the verilated model and can be used to give an indication to the user.
+ * 
+ * The following 7 segment types are supported:
+ * - commonAnode (anode)
+ * - commonCathode (cathode)
+ * 
+ * 
+ * Ini file properties:
+ * | Property name | property type | Mandatory | Description | Default value |
+ * |---------------|---------------|-------------|---------------|--------------|
+ * | 7segType | String | no | The type of 7segment | 7segType=anode |
+ * | 7segColour | Color | no | The colour of the 7segment | ledColour=255,0,0  |
+ * 
+ * 
+ * Example ini file:
+ * [LED1]
+ * type=7SEG
+ * scope=TOP.de10lite_verilator_wrapper.gen_vdb7SegmentDisplay[0].hex_inst
+ * id=1
+ * xoffset=1_mm
+ * yoffset=79_mm
+ * 7segColour=255,0,0
+ * 7segType=commonAnode
+ * 
  */
 
 #ifndef VDB_7SEGMENT_HPP
@@ -58,6 +82,52 @@ namespace RoaLogic
 {
 namespace vdb
 {
+    
+    /** @enum eVdb7SegType
+     *  @brief Define the 7 segment types
+     */
+    enum class eVdb7SegType
+    {
+        commonAnode,   //!< 7 Segment display which uses a common anode
+        commonCathode, //!< 7 Segment display which uses a common cathode
+    };
+
+    /**
+     * @brief Structure for LED type lookup
+     * 
+     */
+    struct sVdb7SegTypeLookup
+    {
+        eVdb7SegType type;
+        std::string typeName;
+    };
+
+    /**
+     * @brief Lookup table for LED types
+     */
+    static const sVdb7SegTypeLookup cVdb7SegTypeLookup[] = 
+    {
+        {eVdb7SegType::commonAnode,   "anode"},
+        {eVdb7SegType::commonCathode, "cathode"},
+    };
+    static const size_t cVdb7SegTypeLookupLookUpSize = sizeof(cVdb7SegTypeLookup) / sizeof(cVdb7SegTypeLookup[0]);
+
+
+
+    /** @struct sVdb7SegInformation
+     *  @brief virtual development board 7 segment information
+     *  @details This structure is used to design a
+     * virtual development board 7 segment display.
+     * 
+     * The type of 7segment is defined through the eVdb7SegType 
+     * enumeration. Color of the 7 segment can be passed in as 
+     * RGB color through the red, green and blue values.
+     */
+    struct sVdb7SegInformation
+    {
+        eVdb7SegType type;
+        sRGBColor colour;
+    };
 
     /**
      * @class cVdb7SegmentDisplay
@@ -80,8 +150,24 @@ namespace vdb
         void verilatorCallback(uint32_t event);
 
         public:
+        static constexpr std::string _c7SegType = "7segType";
+        static constexpr std::string _c7SegColourName = "7segColour";
+        
         cVdb7SegmentDisplay(std::string scopeName, uint8_t id);
         ~cVdb7SegmentDisplay();
+
+        static eVdb7SegType get7SegType(std::string type)
+        {
+            for(size_t i = 0; i < cVdb7SegTypeLookupLookUpSize; i++)
+            {
+                if(cVdb7SegTypeLookup[i].typeName == type)
+                {
+                    return cVdb7SegTypeLookup[i].type;
+                }
+            }
+
+            return eVdb7SegType::commonAnode;
+        }
     };
 }
 }

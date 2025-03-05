@@ -46,6 +46,9 @@
 
 #ifndef ROA_LEXER
 #define ROA_LEXER
+
+#include <iostream>
+
 namespace RoaLogic
 {
 namespace lexer

@@ -72,51 +72,23 @@
  * on the component type, it either uses the system verilog component part of connects directly with the 
  * C++ model through the testbench core.
  * 
- * For more information about the virtual development board components, see @ref vdbComponent_1.
+ * For more information about the virtual development board GUI setup, see @ref guiBoard.
  * For more information about how the setup of the system verilog design is and how to change the 
  * design, see @todo: Add link and documentation to the system verilog design.
  * 
  * @image html overview.png
  * 
+ * 
+ * @todo: Add section about the testbench core
+ * 
  * See below for a more detailed description of the core.
  * 
  * @section boardLayout Board layout
  * 
- * A board is defined as a set of components (peripherals) that are shown in the GUI and connect 
- * with the Verilated model. The board layout is defined through a *.ini file, which is parsed by the
- * application. The *.ini file defines the components, their properties, and their connections.
- * 
- * All dimensions must be given in mm or inch, the application will convert this accordingly. Each value
- * shall be given as a string, where after the value a underscore is used followed by the unit. For 
- * example: 12.5_mm or 6.7_inch.
- * 
- * Must haves in the INI file:
- * The INI file must have a [board] section, which defines the board. 
- * Following properties must be added
- *  - name:   The name of the board
- * 
- * Following properties can be added
- *  - aboutTitle:      The about title of the board, default "About Virtual Demo Board"
- *  - aoutText:        The about information of the board, default "This is a virtual demo board"
- *  - width:           The width of the board in mm or inch <value>_<mm or inch>, default 800 mm, note that if width is given, height must also be given
- *  - height:          The height of the board in mm or inch <value>_<mm or inch>, default 600 mm, note that if height is given, width must also be given
- *  - background:      The background color of the board in R,G,B, default is {0,0,0}
- * 
- * @subsection examples
- * name=DE10lite
- * description=DE10lite virtual demo board
- * aboutTitle=DE10lite about
- * aboutText=This is a virtual development board for the DE10lite
- * width=97.54_mm
- * height=80.01_mm
- * background=0,75,128
- * 
- * 
- * @section newBoard Creating a new board
+ * @subsection newBoard Creating a new board
  * 
  * Every board must have a system verilog wrapper file, which is processed through Verilator. Next to
- * the wrapper file also a *.ini must be created. 
- * 
+ * the wrapper file also a *.ini must be created.
  * 
  * @section programOptions Program options
  * 
@@ -126,14 +98,16 @@
  * 
  */
 
-#include "de10lite.hpp"
-#include "testbench.hpp"
+#include "testbenchVirtualDevBoard.hpp"
 #include "board.hpp"
 
 #include <noValueOption.hpp>
 #include <valueOption.hpp>
 
-#include "wxWidgetsImplementation.hpp"
+//#include "wxWidgetsImplementation.hpp"
+#include "stringHelper.hpp"
+
+#include "altsyncram.hpp"
 
 //Setup namespaces
 using namespace RoaLogic;
@@ -161,8 +135,6 @@ int setupProgramOptions(int argc, char** argv);
 void setupLogger(void);
 void setupMemories(void);
 
-
-
 cGuiBoard* guiBoard = nullptr;
 
 //Main routine
@@ -178,6 +150,7 @@ int main(int argc, char** argv)
 
   std::unique_ptr<VerilatedContext> contextp(new VerilatedContext); //Setup testbench
   contextp->commandArgs(argc, argv); //parse eventual Verilator options
+  cTestBenchVirtualDevBoard* testbench = new cTestBenchVirtualDevBoard(contextp.get(), optTrace.isSet());
 
   // See if we run with a GUI or not, in case we run with the GUI, create it
   if(!optNoGui.isSet() )
@@ -188,37 +161,36 @@ int main(int argc, char** argv)
         // Create the GUI board and setup all the components according to the *.ini file
         guiBoard = new cGuiBoard(argc, argv, optUIFile.value());
         guiBoard->initialize();
+        guiBoard->registerObserver(testbench);
     }
-    else {ERROR << "Gui selected but no GUI file given!\n"; return 1;}
-  }  
+    else {FATAL << "Gui selected but no GUI file given!\n"; return 1;}
+  }
 
   do
   {
     rerun = false;
-    //create testbench
-    cDE10Lite* de10lite = new cDE10Lite(contextp.get(), optTrace.isSet(), demoBoard);
 
     setupMemories();
 
     //Open waveform dump file if enabled
     if (optTrace.isSet())
     {
-      if (optWaveFile.isSet()) de10lite->opentrace(optWaveFile.value());
-      else de10lite->opentrace("waves.vcd");
+      if (optWaveFile.isSet()) testbench->opentrace(optWaveFile.value());
+      else testbench->opentrace("waves.vcd");
     }
 
     //Run the testbench
-    if(optNoGui.isSet()) de10lite->run(optNoGui.value());
+    if(optNoGui.isSet()) testbench->run(optNoGui.value());
     else
     {
-      if(de10lite->run() == eRunState::restart)
+      if(testbench->run() == eRunState::restart)
       {
         rerun = true;
       }
     }
 
     //close testbench
-    delete de10lite;
+    delete testbench;
   } while (rerun);
   
   // If we have a gui board and thread, delete it
