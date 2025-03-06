@@ -51,6 +51,8 @@
 #include "wxWidgetsVdb7SegmentDisplay.hpp"
 #include "wxWidgetsVdbIC.hpp"
 #include "wxWidgetsVdbConnector.hpp"
+#include "wxWidgetsVdbHeader.hpp"
+
 
 wxDEFINE_EVENT(wxEVT_ADD_VDB, wxCommandEvent);
 
@@ -232,7 +234,8 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
                 cWXVdbLed* newLED = new cWXVdbLed(eventData->vdbComponent, 
                                                   eventData->placement, 
                                                   _rightPanel, 
-                                                  reinterpret_cast<sVdbLedInformation*>(eventData->componentDetails));
+                                                  reinterpret_cast<sVdbLedInformation*>(eventData->componentDetails),
+                                                  eventData->angle);
                 vdbInstances.push_back(newLED);
                 break;
             }
@@ -241,7 +244,8 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
                 cWXVdb7SegmentDisplay* new7SegmentDisplay = new cWXVdb7SegmentDisplay(eventData->vdbComponent, 
                                                                                       eventData->placement, 
                                                                                       _rightPanel, 
-                                                                            reinterpret_cast<sVdb7SegInformation*>(eventData->componentDetails));
+                                                                                      reinterpret_cast<sVdb7SegInformation*>(eventData->componentDetails),
+                                                                                      eventData->angle);
                 vdbInstances.push_back(new7SegmentDisplay);
                 break;
             }
@@ -250,7 +254,8 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
                 cWXVdbConnector* newConnector = new cWXVdbConnector(eventData->vdbComponent,
                                                                     eventData->placement,
                                                                     _rightPanel,
-                                                                    reinterpret_cast<sVdbConnectorInformation*>(eventData->componentDetails));
+                                                                    reinterpret_cast<sVdbConnectorInformation*>(eventData->componentDetails),
+                                                                    eventData->angle);
                 break;
             }
             case eVdbComponentType::vdbIC  :
@@ -258,13 +263,24 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
                 cWXVdbIC* newIC = new cWXVdbIC(eventData->vdbComponent,
                                                eventData->placement,
                                                _rightPanel,
-                                               reinterpret_cast<sVdbICInformation*>(eventData->componentDetails));
+                                               reinterpret_cast<sVdbICInformation*>(eventData->componentDetails),
+                                               eventData->angle);
                 vdbInstances.push_back(newIC);
+                break;
+            }
+            case eVdbComponentType::vdbHeader :
+	    {
+                cWXVdbHeader* newHeader = new cWXVdbHeader(eventData->vdbComponent,
+                                                           eventData->placement,
+                                                           _rightPanel,
+                                                           reinterpret_cast<sVdbHeaderInformation*>(eventData->componentDetails),
+                                                           eventData->angle);
+                vdbInstances.push_back(newHeader);
                 break;
             }
             case eVdbComponentType::vdbVGA :
             {
-                cWXVdbVGAMonitor* newVGA = new cWXVdbVGAMonitor(eventData->vdbComponent, eventData->placement, this);
+                cWXVdbVGAMonitor* newVGA = new cWXVdbVGAMonitor(eventData->vdbComponent, eventData->placement, this/*, eventData->angle*/);
                 vdbInstances.push_back(newVGA);
                 break;
             }

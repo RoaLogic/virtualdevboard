@@ -55,14 +55,14 @@ using namespace RoaLogic::dimensions;
 class wxDistanceCoord : public cDistance
 {
     private:
-    wxWindow* window;
+    const wxWindow* window;
 
     public:
     /**
      * @brief constructor
      */
-    wxDistanceCoord (wxWindow* window) : window(window), cDistance(){}
-    wxDistanceCoord (long double val, wxWindow* window) : window(window), cDistance(val){}
+    wxDistanceCoord (const wxWindow* window) : window(window), cDistance(){}
+    wxDistanceCoord (long double val, const wxWindow* window) : window(window), cDistance(val){}
 
     /**
      * @brief destructor
@@ -73,26 +73,24 @@ class wxDistanceCoord : public cDistance
      * @brief Conversion to wxCoord
      * @details Converts distance to wxCoord assuming horizontal and vertical conversion factor is the same
      */
-    operator wxCoord() const { return window->ToPhys( window->FromDIP( inch() * window->GetDPI().GetWidth() ) ); }
+    operator wxCoord() const { return window->ToPhys( window->FromDIP( std::round(inch() * window->GetDPI().GetWidth()) ) ); }
 };
 
 
 class wxDistanceSize
 {
     private:
-    wxWindow *window;
+    const wxWindow *window;
     distanceSize size;
 
     public:
     /**
      * @brief constructor
      */
-    wxDistanceSize (wxWindow* window) : window(window){}
-    wxDistanceSize (distanceSize size, wxWindow* window) : window(window), size(size){}
-    wxDistanceSize (cDistance width, cDistance height, wxWindow* window) : window(window) {
-      SetWidth(width);
-      SetHeight(height);
-    }
+    wxDistanceSize (const wxWindow* window) : window(window){}
+    wxDistanceSize (distanceSize size, const wxWindow* window) : window(window), size(size){}
+    wxDistanceSize (cDistance width, cDistance height, const wxWindow* window) : window(window),
+        size(distanceSize(width,height)) {}
 
     /**
      * @brief destructor
@@ -130,8 +128,8 @@ class wxDistanceSize
      */
     operator wxSize() const {
         return window->ToPhys(window->FromDIP(
-                   wxSize( size.width.inch() * window->GetDPI().GetWidth(),
-                           size.height.inch() * window->GetDPI().GetHeight() )
+                   wxSize( std::round(size.width.inch() * window->GetDPI().GetWidth()),
+                           std::round(size.height.inch() * window->GetDPI().GetHeight()) )
                ));
     }
 };
@@ -140,7 +138,7 @@ class wxDistanceSize
 class wxDistancePoint
 {
     private:
-    wxWindow *window;
+    const wxWindow *window;
 
     public:
     cDistance x;
@@ -149,9 +147,9 @@ class wxDistancePoint
     /**
      * @brief constructor
      */
-    wxDistancePoint (wxWindow* window) : window(window){}
-    wxDistancePoint (distancePoint point, wxWindow* window) : window(window), x(point.x), y(point.y){}
-    wxDistancePoint (cDistance x, cDistance y, wxWindow* window) : window(window), x(x), y(y) {}
+    wxDistancePoint (const wxWindow* window) : window(window){}
+    wxDistancePoint (distancePoint point, const wxWindow* window) : window(window), x(point.x), y(point.y){}
+    wxDistancePoint (cDistance x, cDistance y, const wxWindow* window) : window(window), x(x), y(y) {}
 
     /**
      * @brief destructor
@@ -169,8 +167,8 @@ class wxDistancePoint
      */
     operator wxPoint() const {
         return window->ToPhys(window->FromDIP(
-                   wxPoint( x.inch() * window->GetDPI().GetWidth(),
-                            y.inch() * window->GetDPI().GetHeight() )
+                   wxPoint( std::round(x.inch() * window->GetDPI().GetWidth()),
+                            std::round(y.inch() * window->GetDPI().GetHeight()) )
                ));
       }
 };

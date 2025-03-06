@@ -46,13 +46,7 @@
 #ifndef WX_WIDGETS_VDB_LED_HPP
 #define WX_WIDGETS_VDB_LED_HPP
 
-#include <wx/wxprec.h>
-#include <wx/wx.h>
-#include "wx/event.h"
-#include <wx/graphics.h>
-
-#include "gui_interface.hpp"
-#include "wxGuiDistance.hpp"
+#include "wxWidgetsVdbBase.hpp"
 #include "vdbLED.hpp"
 
 wxDECLARE_EVENT(wxEVT_LED, wxCommandEvent);
@@ -78,10 +72,9 @@ namespace GUI {
      * 
      * @todo: Adjust the LED layout
      */
-    class cWXVdbLed : public cGuiVDBComponent, public wxWindow
+    class cWXVdbLed : public cWXVdbBase
     {
         private:
-        sVdbLedInformation* _myInformation;
         bool _status = false;
 
         /**
@@ -102,7 +95,7 @@ namespace GUI {
 	/**
 	 * @brief Constructor
 	 */
-        cWXVdbLed(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbLedInformation* ledInformation);
+        cWXVdbLed(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbLedInformation* ledInformation, double angle=0);
 
 	/**
 	 * @brief Destructor
@@ -113,20 +106,8 @@ namespace GUI {
          * @brief LED size
          * @details Returns the size of the LED
          */
-        distanceSize GetDeviceSize();
-
-        /**
-         * @brief Default component size
-         * @details Returns the default size for the component.
-	 *
-            The optional @a win argument is new since wxWidgets 3.1.3 and allows to
-            get a per-monitor DPI specific size.
-         */
-        wxSize GetDefaultSize(wxWindow* win = NULL)
-        {
-            if (win == NULL) { win = this; }
-            return wxDistanceSize(GetDeviceSize(), win);
-        }
+        virtual distanceSize GetDeviceSize() const;
+        virtual distanceSize GetDeviceSize(sVdbLedInformation* information) const;
 
         /**
 	 * @brief Paint the widget

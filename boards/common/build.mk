@@ -49,7 +49,7 @@ BOARDS_DIR:=$(CWD)../
 SRC_DIR:=$(CWD)../../src/
 CWD:=$(SAVE_CWD)
 
-include $(BOARDS_DIR)common/Makefile.include
+include $(BOARDS_DIR)common/utils.mk
 
 board:=$(call get_board)
 wrapper:=$(board)_verilator_wrapper

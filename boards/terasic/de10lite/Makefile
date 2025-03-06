@@ -47,7 +47,7 @@ CWD:=$(dir $(lastword $(MAKEFILE_LIST)))
 VDBDIR:=$(CWD)../../../
 
 #include common Virtual Devboard rules
-include $(VDBDIR)boards/common/Makefile.build
+include $(VDBDIR)boards/common/build.mk
 
 #include de10lite specific rules
 include $(CWD)src/Makefile.include

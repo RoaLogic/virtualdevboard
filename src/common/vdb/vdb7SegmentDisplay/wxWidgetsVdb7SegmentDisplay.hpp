@@ -46,13 +46,7 @@
 #ifndef WX_WIDGETS_VDB_7SEGMENT_HPP
 #define WX_WIDGETS_VDB_7SEGMENT_HPP
 
-#include <wx/wxprec.h>
-#include <wx/wx.h>
-#include "wx/event.h"
-#include <wx/graphics.h>
-
-#include "gui_interface.hpp"
-#include "wxGuiDistance.hpp"
+#include "wxWidgetsVdbBase.hpp"
 #include "vdb7SegmentDisplay.hpp"
 
 wxDECLARE_EVENT(wxEVT_7Segment, wxCommandEvent);
@@ -77,10 +71,9 @@ namespace GUI {
      * The 7-Segment Display is drawn in the OnPaint function, which also defines
      *  what the 7-Segment Display looks like
      */
-    class cWXVdb7SegmentDisplay : public cGuiVDBComponent, public wxWindow
+    class cWXVdb7SegmentDisplay : public cWXVdbBase
     {
         private:
-        sVdb7SegInformation* _myInformation;
         uint8_t _value;
 
         static inline wxColour  colBackground = wxColour(138,150,168);            //Grey-blue
@@ -100,19 +93,6 @@ namespace GUI {
         bool bitSet (int bit)  const { return (_value >> bit) & 1; }
 
         /**
-         * @brief Default widget size
-         * @details Returns the default size for the widget.
-
-            The optional @a win argument is new since wxWidgets 3.1.3 and allows to
-            get a per-monitor DPI specific size.
-        */
-        wxSize GetDefaultSize(wxWindow* win = NULL)
-        {
-            if (win==NULL) { win = this; }
-            return wxDistanceSize(deviceWidth, deviceHeight, win);
-        }
-
-        /**
          * @brief notify function from the vdb component
          * @details This function receives events from the component it is registered to.
          * @note this function runs in the verilated context.
@@ -130,12 +110,12 @@ namespace GUI {
 	/**
 	 * @brief Constructor
 	 */
-        cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdb7SegInformation* information);
+        cWXVdb7SegmentDisplay(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdb7SegInformation* information, double angle=0);
 
 	/**
 	 * @brief Destructor
 	 */
-        ~cWXVdb7SegmentDisplay();
+        ~cWXVdb7SegmentDisplay() {}
 
         /**
 	 * @brief Paint the widget

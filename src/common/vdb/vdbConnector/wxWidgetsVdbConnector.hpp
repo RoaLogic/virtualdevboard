@@ -68,22 +68,12 @@ namespace GUI {
 	/**
 	 * @brief Constructor
 	 */
-        cWXVdbConnector(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbConnectorInformation* information);
+        cWXVdbConnector(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbConnectorInformation* information, double angle=0);
 
 	/**
 	 * @brief Destructor
 	 */
         ~cWXVdbConnector() {}
-
-        /**
-         * @brief Component size
-         * @details Returns the size of the LED
-         */
-        distanceSize GetDeviceSize() const {
-          sVdbConnectorInformation* myInformation = reinterpret_cast<sVdbConnectorInformation*>(_information);
-
-          return distanceSize(myInformation->width,myInformation->height + 6_mm);
-        }
 
         /**
 	 * @brief Paint the widget

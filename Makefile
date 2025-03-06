@@ -51,7 +51,7 @@ BUILDDIR=build
 DOCDIR=doc
 BOARDS_DIR=$(CWD)boards
 
-include $(CWD)boards/common/Makefile.include
+include $(CWD)boards/common/utils.mk
 
 #get the vendors
 list_vendors=$(filter-out $1 common, $(notdir $(call list_directories,$1)))
@@ -73,7 +73,7 @@ $(boards):
 		board=$@ filelist=$(filelist)
 
 clean:
-	$(MAKE) -C $(BUILDDIR) -f $(abspath $(CWD)/boards/common/Makefile.build) clean
+	$(MAKE) -C $(BUILDDIR) -f $(abspath $(CWD)/boards/common/build.mk) clean
 
 distclean:
 	rm -rf $(BUILDDIR)/*

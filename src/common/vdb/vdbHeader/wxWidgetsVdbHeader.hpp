@@ -5,12 +5,12 @@
 //   |  |\  \ ' '-' '\ '-'  |    |  '--.' '-' ' '-' ||  |\ `--.    //
 //   `--' '--' `---'  `--`--'    `-----' `---' `-   /`--' `---'    //
 //                                             `---'               //
-//    WX widgets GUI implementation                                //
+//    WX widgets virtual Devboard Header C++ header file           //
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 //                                                                 //
-//    Copyright (C) 2024 Roa Logic BV - www.roalogic.com           //
-//    Copyright (C) 2024 richard.herveille@roalogic.com            //
+//    Copyright (C) 2025 Roa Logic BV - www.roalogic.com           //
+//    Copyright (C) 2025 richard.herveille@roalogic.com            //
 //                                                                 //
 //     Redistribution and use in source and binary forms, with     //
 //   or without modification, are permitted provided that the      //
@@ -43,63 +43,54 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
-#include "wxWidgetsImplementation.hpp"
-#include "wx/display.h"
+#ifndef WX_WIDGETS_VDB_HEADER_HPP
+#define WX_WIDGETS_VDB_HEADER_HPP
 
-DECLARE_APP(cVirtualDemoBoard)
-IMPLEMENT_APP_NO_MAIN(cVirtualDemoBoard)
+#include "wxWidgetsVdbBase.hpp"
 
-cVirtualDemoBoard::cVirtualDemoBoard()
-{
-    wxApp::SetInstance(this);
-}
+namespace RoaLogic {
+    using namespace observer;
+    using namespace vdb;
+namespace GUI {
 
-cVirtualDemoBoard::~cVirtualDemoBoard()
-{
-    notifyObserver(eEvent::close);
-}
+    /**
+     * @class cWXVdbHeader
+     * @author Richard Herveille
+     * @brief virtual development board header type component
+     * 
+     * @details
+     * This class draws an abstract header. If event handling is required, then that must be
+     * handled in a derived class.
+     */
+    class cWXVdbHeader : public cWXVdbBase
+    {
+        private:
+        static inline wxColour colGold = wxColour(255,215,0);
 
-bool cVirtualDemoBoard::OnInit()
-{
-    // for ( unsigned int i = 0; i < wxDisplay::GetCount(); ++i )
-    // {
-    //     const wxDisplay display(i);
-    //     INFO << "Display " << i << " PPI: " << display.GetPPI().x << "x" << display.GetPPI().y << ", scale factor: " << display.GetScaleFactor() << "\n";
-    // }
+        public:
+	/**
+	 * @brief Constructor
+	 */
+        cWXVdbHeader(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbHeaderInformation* information, double angle=0);
 
-    _mainFrame = new cMainFrame(this, _applicationName, _aboutTitle, _aboutText, _minimalScreenSize, _backgroundColor);
-    _mainFrame->Show(true);
+	/**
+	 * @brief Destructor
+	 */
+        ~cWXVdbHeader() {}
 
-    return true;
-}
+        /**
+         * @brief Header size
+         * @details Returns the size of the header
+         */
+        virtual distanceSize GetDeviceSize() const;
+        virtual distanceSize GetDeviceSize(sVdbHeaderInformation* information) const;
 
-void cVirtualDemoBoard::init(   int argc, 
-                                char** argv, 
-                                std::string applicationName, 
-                                std::string aboutTitle, 
-                                std::string aboutText, 
-                                distanceSize minimalScreenSize, 
-                                sRGBColor backgroundColor)
-{
-    _applicationName = applicationName;
-    _aboutTitle = aboutTitle;
-    _aboutText = aboutText;
-    _minimalScreenSize = minimalScreenSize;
-    _backgroundColor = backgroundColor;
-    wxEntry(argc, argv);
-}
+        /**
+	 * @brief Paint the widget
+	 * @details This function paints the widget. 
+	 */
+        void OnPaint(wxPaintEvent& event);
+    };
+}}
 
-void cVirtualDemoBoard::addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point, void* information, double angle)
-{
-    wxCommandEvent statusEvent{wxEVT_ADD_VDB};
-    sAddVdbComponent* const eventData{ new sAddVdbComponent};
-
-    eventData->type = type;
-    eventData->vdbComponent = vdbComponent;
-    eventData->placement = point;
-    eventData->componentDetails = information;
-    eventData->angle = angle;
-
-    statusEvent.SetClientObject(eventData);
-    wxPostEvent(_mainFrame, statusEvent);
-}
+#endif

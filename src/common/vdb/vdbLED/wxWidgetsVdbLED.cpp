@@ -62,13 +62,9 @@ namespace GUI {
      * onLedEvent function with the ID to a wxEVT_LED event.
      * 
      */
-    cWXVdbLed::cWXVdbLed(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbLedInformation* ledInformation) :
-        cGuiVDBComponent(myVDBComponent, position),
-        wxWindow(windowParent, wxID_ANY, wxDistancePoint(position, windowParent), wxDefaultSize, wxTRANSPARENT_WINDOW),
-        _myInformation(ledInformation)
+    cWXVdbLed::cWXVdbLed(cVDBCommon* myVDBComponent, distancePoint position, wxWindow* windowParent, sVdbLedInformation* information, double angle) :
+        cWXVdbBase(myVDBComponent, position, windowParent, information, GetDeviceSize(information), angle)
     {
-        SetInitialSize(GetDefaultSize());
-
         Connect(wxEVT_PAINT, wxPaintEventHandler(cWXVdbLed::OnPaint));
 
         // Use a specific Bind due to bug inside of wxWidgets, see 
@@ -121,27 +117,31 @@ namespace GUI {
      */
     void cWXVdbLed::OnPaint(wxPaintEvent& event)
     {
-        const wxSize size = GetDefaultSize();
+        const distanceSize size = GetDeviceSize();
 
-        wxPaintDC dc(this);
-        wxColour ledColour = _status ? wxColour(_myInformation->colour.red,
-                                                _myInformation->colour.green,
-                                                _myInformation->colour.blue)
+        //Create new Drawing Canvas
+        NewDC();
+
+        sVdbLedInformation* myInformation = reinterpret_cast<sVdbLedInformation*>(GetInformation());
+
+        wxColour ledColour = _status ? wxColour(myInformation->colour.red,
+                                                myInformation->colour.green,
+                                                myInformation->colour.blue)
                                      : wxColour(255,223,223);
 
-        dc.SetPen(wxPen(wxColour(0,0,0),1));
-        dc.SetBrush(ledColour);
+        SetPen(wxPen(wxColour(0,0,0),1));
+        SetBrush(ledColour);
 
-	switch (_myInformation->type)
+	switch (myInformation->type)
         {
             case eVdbLedType::round10mm:
-                  dc.DrawCircle (size.x/2, size.y/2, wxCoord(wxDistanceCoord(10_mm, this))/2);
+                  DrawCircle (size.width/2, size.height/2, 10_mm/2);
                 break;
             case eVdbLedType::round5mm :
-                dc.DrawCircle (size.x/2, size.y/2, wxCoord(wxDistanceCoord(5_mm, this))/2);
+                DrawCircle (size.width/2, size.height/2, 5_mm/2);
                 break;
             case eVdbLedType::round3mm :
-                dc.DrawCircle (size.x/2, size.y/2, wxCoord(wxDistanceCoord(3_mm, this))/2);
+                DrawCircle (size.width/2, size.height/2, 3_mm/2);
                 break;
             case eVdbLedType::SMD1206  :
             case eVdbLedType::SMD0805  :
@@ -149,8 +149,11 @@ namespace GUI {
             case eVdbLedType::SMD0402  :
             case eVdbLedType::SMD3520  :
             default                    :
-                dc.DrawRectangle(0,0,size.x,size.y);
+                DrawRectangle(0,0,size.width,size.height);
 	}
+
+        //Destroy Drawing Canvas
+        DeleteDC();
     }
 
 
@@ -158,9 +161,14 @@ namespace GUI {
      * @brief Return size of the LED
      *        Returns a ridiculously large number to indicate an unknown type without breaking functionality
      */
-    distanceSize cWXVdbLed::GetDeviceSize()
+    distanceSize cWXVdbLed::GetDeviceSize() const
     {
-        switch (_myInformation->type)
+        return GetDeviceSize( reinterpret_cast<sVdbLedInformation*>(GetInformation()) );
+    }
+
+    distanceSize cWXVdbLed::GetDeviceSize(sVdbLedInformation* information) const
+    {
+        switch (information->type)
 	{
             case eVdbLedType::round10mm: return distanceSize(10_mm,10_mm);
             case eVdbLedType::round5mm : return distanceSize(5_mm, 5_mm);
