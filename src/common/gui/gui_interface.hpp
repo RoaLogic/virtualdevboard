@@ -72,6 +72,7 @@ namespace GUI {
         vdbNone,                //!< No component
         vdbLed,                 //!< LED component, uses the sVdbLedInformation structure to handle its layout
         vdbConnector,           //!< Connector component (now only VGA), does not yet use any information
+        vdbHeader,              //!< Header component, uses the sVdbHeaderInformation structure to handle its layout
         vdbVGA,                 //!< VGA component, does not use any information
         vdb7SegmentDisplay,     //!< 7 segment component, uses the sVdb7SegInformation structure to handle its layout
 	    vdbIC,                  //!< IC component, uses the sVdbICInformation structure to handle its layout
@@ -88,6 +89,7 @@ namespace GUI {
         {eVdbComponentType::vdbNone,            "None"},
         {eVdbComponentType::vdbLed,             "LED"},
         {eVdbComponentType::vdbConnector,       "Connector"},
+        {eVdbComponentType::vdbHeader,          "Header"},
         {eVdbComponentType::vdbVGA,             "VGA"},
         {eVdbComponentType::vdb7SegmentDisplay, "7SEG"},
         {eVdbComponentType::vdbIC,              "IC"},
@@ -146,7 +148,7 @@ namespace GUI {
     class cGuiInterface : public cSubject
     {
         public:
-        virtual void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point, void* information) = 0;
+        virtual void addVdbComponent(eVdbComponentType type, cVDBCommon* vdbComponent, distancePoint point, void* information, double angle=0) = 0;
     };
 
     /**

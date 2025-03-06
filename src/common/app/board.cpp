@@ -296,6 +296,19 @@ namespace GUI
                                                     values[cWXVdbIC::cICLabel]));
                     break;
                 }
+                case eVdbComponentType::vdbHeader:
+                {
+                    _demoBoard->addVdbComponent(componentType,
+                                                nullptr,
+                                                parseOffset(values),
+                                                new sVdbHeaderInformation(
+                                                    cWXVdbHeader::getHeaderType(values[cWXVdbHeader::cHeaderTypeText]),
+                                                    stoi(values[cWXVdbHeader::cHeaderRowsText]),
+                                                    stoi(values[cWXVdbHeader::cHeaderColumsText]),
+                                                    convertStringToDistance(split(values[cWXVdbHeader::cHeaderPitchText], '_'))));
+
+                    break;
+                }
                 case eVdbComponentType::vdbNone:
                     [[fallthrough]];
                 default:

@@ -269,7 +269,7 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
                 break;
             }
             case eVdbComponentType::vdbHeader :
-	    {
+	        {
                 cWXVdbHeader* newHeader = new cWXVdbHeader(eventData->vdbComponent,
                                                            eventData->placement,
                                                            _rightPanel,

@@ -80,8 +80,8 @@ namespace GUI {
         cDistance pitch = information->pitch;
         int  rows       = information->rows;
         int  columns    = information->columns;
-        bool female     = int(information->type) & HDR_FEMALE;
-        bool boxed      = int(information->type) & HDR_BOXED;
+        bool female     = int(information->type) & cFemaleBitValue;
+        bool boxed      = int(information->type) & cBoxedBitValue;
 
         wxColour  myColour;
 
@@ -155,7 +155,7 @@ namespace GUI {
         cDistance pitch = information->pitch;
         int  rows       = information->rows;
         int  columns    = information->columns;
-        bool boxed      = int(information->type) & HDR_BOXED;
+        bool boxed      = int(information->type) & cBoxedBitValue;
 
         distanceSize size;
 

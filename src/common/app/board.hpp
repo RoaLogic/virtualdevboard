@@ -147,6 +147,7 @@
 #include "vdbLED.hpp"
 #include "vdb7SegmentDisplay.hpp"
 #include "wxWidgetsVdbIC.hpp" //!@TODO: Adjust the file structure to have a seperate vdbIC file
+#include "wxWidgetsVdbHeader.hpp" //!@TODO: Adjust the file structure to have a seperate vdbIC file
 
 // Include all different GUI types
 #include "wxWidgetsImplementation.hpp"
