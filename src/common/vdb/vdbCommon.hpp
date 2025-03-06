@@ -141,6 +141,7 @@
  * * LED: see @ref vdbComponentLED
  * * 7Segment display: see @ref vdbComponent7Seg
  * * VGA: see @ref vdbComponentVGA
+ * * IC: see @ref vdbComponentIC
  * 
  * @section vdbComponent_5 virtual development board component creating a new one
  * 

@@ -62,7 +62,7 @@
  * 
  * 
  * Example ini file:
- * [LED1]
+ * [7SEG]
  * type=7SEG
  * scope=TOP.de10lite_verilator_wrapper.gen_vdb7SegmentDisplay[0].hex_inst
  * id=1

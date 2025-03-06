@@ -94,19 +94,6 @@ namespace GUI {
     };
     static const size_t cVdbComponentTypeLookUpSize = sizeof(cVdbComponentTypeLookUp) / sizeof(cVdbComponentTypeLookUp[0]);
 
-    /** @struct sVdbICInformation
-     *  @brief virtual development board IC information
-     *  @details This structure is used to design a virtual development board IC.
-     *           The IC is drawn as a simple rectangle of distanceSize dimension,
-     *           with text @label in the center
-     */
-    struct sVdbICInformation
-    {
-        cDistance width;
-        cDistance height;
-        std::string label;
-    };
-
     /** @enum eVdbConnectorType
      *  @brief Defines the connector types
      */

@@ -282,6 +282,18 @@ namespace GUI
                         _demoBoard->addVdbComponent(componentType, seg7, parseOffset(values), new sVdb7SegInformation(ledType, ledColour));
                     }
                     break;
+                }
+                case eVdbComponentType::vdbIC:
+                {
+                    // At this moment the IC's don't support any communication with the verilated model, so there is no need to
+                    // create this. Same counts for the pointer, there is no need to store this.
+                    _demoBoard->addVdbComponent(componentType, 
+                                                nullptr, 
+                                                parseOffset(values), 
+                                                new sVdbICInformation(
+                                                    convertStringToDistance(split(values[cWXVdbIC::cICWidth], '_')), 
+                                                    convertStringToDistance(split(values[cWXVdbIC::cICHeight], '_')),
+                                                    values[cWXVdbIC::cICLabel]));
                     break;
                 }
                 case eVdbComponentType::vdbNone:

@@ -43,6 +43,31 @@
 //                                                                 //
 /////////////////////////////////////////////////////////////////////
 
+/**
+ * @section vdbComponentIC Virtual development IC component
+ *
+ * The IC component is a virtual representation of a IC on the development board.
+ * At this moment it does not control anything with the verilated context
+ * 
+ * Ini file properties:
+ * | Property name | property type | Mandatory | Description | Default value |
+ * |---------------|---------------|-------------|---------------|--------------|
+ * | ICHeight | Dimension | no | The height of the IC | 0_mm|
+ * | ICWidth | Dimension | no | The width of the IC | 0_mm  |
+ * | ICLabel | string | no | The text on the component| "" |
+ * 
+ * 
+ * Example ini file:
+ * [FPGA]
+ * type=IC
+ * xoffset=39_mm
+ * yoffset=26.5_mm
+ * ICHeight=23_mm
+ * ICWidth=23_mm
+ * ICLabel=FPGA
+ * 
+ */
+
 #ifndef WX_WIDGETS_IC_HPP
 #define WX_WIDGETS_IC_HPP
 
@@ -59,10 +84,25 @@ namespace RoaLogic {
     using namespace vdb;
 namespace GUI {
 
+    /** @struct sVdbICInformation
+     *  @brief virtual development board IC information
+     *  @details This structure is used to design a virtual development board IC.
+     *           The IC is drawn as a simple rectangle of distanceSize dimension,
+     *           with text @label in the center
+     */
+    struct sVdbICInformation
+    {
+        cDistance width;
+        cDistance height;
+        std::string label;
+    };
+
     /**
      * @class cWXVdbIC
      * @author Richard Herveille
      * @brief IC virtual development board component
+     * 
+     * @TODO: Adjust the file structure to have a seperate vdbIC file, this for a similar structure
      * 
      * @details
      * This class draws an abstract IC. If event handling is required, then that must be
@@ -70,6 +110,11 @@ namespace GUI {
      */
     class cWXVdbIC : public cGuiVDBComponent, public wxWindow
     {
+        public:
+        static constexpr std::string cICHeight = "ICHeight";
+        static constexpr std::string cICWidth = "ICWidth";
+        static constexpr std::string cICLabel = "ICLabel";
+
         private:
         sVdbICInformation* _myInformation;
 
