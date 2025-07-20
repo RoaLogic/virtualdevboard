@@ -120,6 +120,7 @@
  * | id | Integer | yes* | The id of the component |id= 0 |
  * | xoffset | Dimension | yes | The x offset from the origin in mm or inch | xoffset=25_mm |
  * | yoffset | Dimension | yes | The y offset from the origin in mm or inch | yoffset=48_mm |
+ * | angle | Dimension | no | The angle of the component in degrees | angle=0 |
  *
  * * The scope and ID is only mandatory for peripherals that communicate with the verilated design.
  * 
@@ -181,10 +182,11 @@ namespace GUI
 
         std::vector<cVdbLed*> _ledInstances;
         std::vector<cVdb7SegmentDisplay*> _7segInstances;
-        //std::vector<cVdbVGAMonitor*> _vgaController;
+        std::vector<cVdbVGAMonitor*> _vgaInstances;
 
         distancePoint parseOffset(map<string,string>& values);
         sRGBColor parseColor(std::string valueName, map<string,string>& values);
+        double parseAngle(map<string,string>& values);
 
         std::string parseScope(map<string,string>& values);
         int parseId(map<string,string>& values);
@@ -195,6 +197,7 @@ namespace GUI
 
         cVdbLed* createLed(map<string,string>& values);
         cVdb7SegmentDisplay* create7Seg(map<string,string>& values);
+        cVdbVGAMonitor* createVGA(map<string,string>& values);
 
         public:
         cGuiBoard(int argc, char** argv, std::string fileName);

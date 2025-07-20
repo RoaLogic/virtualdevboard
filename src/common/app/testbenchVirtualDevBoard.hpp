@@ -87,6 +87,9 @@ namespace RoaLogic
         std::atomic<eSystemState> _myState = eSystemState::idle;
         atomic_bool doReset = false;
 
+        static uint8_t dummySignal;
+        static uint8_t& getSignal(std::string signalName, designName* core);
+
         protected:
 
         sCoRoutineHandler<bool> Reset();

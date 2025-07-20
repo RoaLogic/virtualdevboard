@@ -76,15 +76,11 @@ namespace GUI
     cGuiBoard::~cGuiBoard()
     {
         // Close GUI
-        if(_guiThread.joinable())
-        {
-            _guiThread.join();
-        }
+        if(_guiThread.joinable()) _guiThread.join();
 
-        for(auto& led : _ledInstances)
-        {
-            delete led;
-        }
+        for(auto& led : _ledInstances) delete led;
+        for (auto&  seg7 : _7segInstances) delete seg7;
+        for (auto&  vga : _vgaInstances) delete vga;
     }
 
     /**
@@ -251,10 +247,6 @@ namespace GUI
 
             switch (componentType)
             {
-                case eVdbComponentType::vdbVGA:
-                {
-                    break;
-                }
                 case eVdbComponentType::vdbLed:
                 {
                     cVdbLed* led = createLed(values);
@@ -281,6 +273,21 @@ namespace GUI
 
                         _demoBoard->addVdbComponent(componentType, seg7, parseOffset(values), new sVdb7SegInformation(ledType, ledColour));
                     }
+                    break;
+                }
+                case eVdbComponentType::vdbVGA:
+                {
+                    cVdbVGAMonitor* vga = createVGA(values);
+                    if(vga != nullptr)
+                    {
+                        _vgaInstances.push_back(vga);
+
+                        _demoBoard->addVdbComponent(eVdbComponentType::vdbConnector, nullptr, parseOffset(values), 
+                                                    new sVdbConnectorInformation(eVdbConnectorType::DSUB, 30.8_mm, 16.2_mm,"VGA"), parseAngle(values));
+
+                        _demoBoard->addVdbComponent(eVdbComponentType::vdbVGA, vga, distancePoint(50.0_mm, 100.0_mm), nullptr);
+                    }
+
                     break;
                 }
                 case eVdbComponentType::vdbIC:
@@ -349,6 +356,22 @@ namespace GUI
         }
 
         WARNING << "No scope or id found for 7 segment\n";
+        return nullptr;
+    }
+
+    cVdbVGAMonitor* cGuiBoard::createVGA(map<string,string>& values)
+    {
+        std::string scope = parseScope(values);
+
+        if(scope.size() != 0)
+        {
+            // time interface, coming from the testbench
+            // Clock instance, coming from the testbench
+            // Framebuffer, belonging to the VGA instance
+            //return new cVdbVGAMonitor(scope, testbench, clock, framebuffer);
+        }
+
+        WARNING << "No scope or id found for VGA\n";
         return nullptr;
     }
 
@@ -448,6 +471,18 @@ namespace GUI
         }
 
         return offset;
+    }
+
+    double cGuiBoard::parseAngle(map<string,string>& values)
+    {
+        static constexpr std::string _cAngleName = "angle";
+
+        if(values.find(_cAngleName) != values.end())
+        {
+            return std::stod(values[_cAngleName]);
+        }
+
+        return 0;
     }
 
 }}

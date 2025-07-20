@@ -46,7 +46,13 @@
 /**
  * @section vdbComponentVGA Virtual development VGA component
  *
- * VGA monitor text
+ * The VGA component is a virtual representation of a VGA connector on the development board. 
+ * At the moment the users clicks on the VGA connector, a different window will open and show the
+ * VGA data. The shown data is from the verilated model and is passed through the event system.
+ * 
+ * Ini file properties:
+ * | Property name | property type | Mandatory | Description | Default value |
+ * |---------------|---------------|-------------|---------------|--------------|
  */
 
 

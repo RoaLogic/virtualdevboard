@@ -51,6 +51,31 @@ namespace RoaLogic{
     using namespace testbench::clock::units;
     using namespace testbench::tasks;
 
+    uint8_t cTestBenchVirtualDevBoard::dummySignal = 0;
+
+    uint8_t& cTestBenchVirtualDevBoard::getSignal(std::string signalName, designName* core)
+    {
+        static std::map<std::string, uint8_t&> _signalMap
+        {
+            {"CLK_50", core->CLK_50},
+            {"CLK2_50", core->CLK2_50},
+            {"KEY", core->KEY},
+            {"CLOCK_ADC_10", core->CLOCK_ADC_10},
+            {"pixel_clk", core->de10lite_verilator_wrapper->vgaMonitor_inst->pixel_clk}
+        };
+
+        for (auto const& [key, value] : _signalMap)
+        {
+            if (key == signalName)
+            {
+                return value;
+            }
+        }
+
+        WARNING << "Signal: " << signalName << " not found\n";
+        return dummySignal;
+    }
+
     /**
      * @brief Constructor
      * @details Creates class and assigns all signals/ports
@@ -62,7 +87,7 @@ namespace RoaLogic{
         /*
         define clocks
         */
-        clk_50  = addClock(_core->CLK_50, 20.0_ns);
+        clk_50  = addClock(getSignal("CLK_50", _core), 20.0_ns);
         clk2_50 = addClock(_core->CLK2_50, 20.0_ns);
         clk_adc_10 = addClock(_core->CLOCK_ADC_10, 100.0_ns);
         clk_vga = addClock(_core->de10lite_verilator_wrapper->vgaMonitor_inst->pixel_clk, 100.0_ns, false);

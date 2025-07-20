@@ -186,10 +186,10 @@ void cDE10Lite::setupGUI()
         //                         distancePoint(33_mm,60_mm),
         //                         new sVdbHeaderInformation(eVdbHeaderType::FEMALE,1,8,100_mils));
         // JP8
-        _myGUI->addVdbComponent(eVdbComponentType::vdbHeader,    //
-                                nullptr,                         // No verilated content
-                                distancePoint(56_mm,60_mm),
-                                new sVdbHeaderInformation(eVdbHeaderType::FEMALE,1,6,100_mils));
+        // _myGUI->addVdbComponent(eVdbComponentType::vdbHeader,    //
+        //                         nullptr,                         // No verilated content
+        //                         distancePoint(56_mm,60_mm),
+        //                         new sVdbHeaderInformation(eVdbHeaderType::FEMALE,1,6,100_mils));
 
 
         // Create the VGA connector
