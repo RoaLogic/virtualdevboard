@@ -314,6 +314,29 @@ namespace GUI {
        }
 
        /**
+        * @brief Draws a rounded rectangle
+        * @details Draws a rounded rectangle using DrawPolygon to support rotatation
+        */
+       void DrawRoundedRectangle(cDistance x, cDistance y, cDistance width, cDistance height)
+       {
+           assert(_dc != nullptr);
+           wxPointList *points = new wxPointList();
+           wxPoint *pt1 = new wxPoint( wxRotate(distancePoint(x      ,y       )) );
+           wxPoint *pt2 = new wxPoint( wxRotate(distancePoint(x+width,y       )) );
+           wxPoint *pt3 = new wxPoint( wxRotate(distancePoint(x+width,y+height)) );
+           wxPoint *pt4 = new wxPoint( wxRotate(distancePoint(x      ,y+height)) );
+           points->Append(pt1);
+           points->Append(pt2);
+           points->Append(pt3);
+           points->Append(pt4);
+           _dc->DrawPolygon(points);
+       }
+       void DrawRoundedRectangle(const distancePoint& pt, const distanceSize& sz)
+       {
+           DrawRectangle(pt.x, pt.y, sz.width, sz.height);
+       }
+
+       /**
         * @brief Draws a circle
         */
        void DrawCircle(const distancePoint& pt, cDistance radius)
