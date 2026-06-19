@@ -58,7 +58,8 @@ namespace GUI
      * @param[in] argv          Program parameters, where specific GUI parameters can be given
      * @param[in] fileName      Name of the *.ini file to use
      */
-    cGuiBoard::cGuiBoard(int argc, char** argv, std::string fileName) :
+    cGuiBoard::cGuiBoard(cTestBenchVirtualDevBoard* testbench, int argc, char** argv, std::string fileName) :
+        _testbench(testbench),
         _argc(argc),
         _argv(argv),
         _iniParser(fileName)
@@ -368,7 +369,7 @@ namespace GUI
             // time interface, coming from the testbench
             // Clock instance, coming from the testbench
             // Framebuffer, belonging to the VGA instance
-            //return new cVdbVGAMonitor(scope, testbench, clock, framebuffer);
+            return new cVdbVGAMonitor(scope, _testbench, _testbench->getVGAClock(), _testbench->getVGAFrameBuffer());
         }
 
         WARNING << "No scope or id found for VGA\n";

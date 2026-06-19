@@ -150,7 +150,8 @@ int main(int argc, char** argv)
 
   std::unique_ptr<VerilatedContext> contextp(new VerilatedContext); //Setup testbench
   contextp->commandArgs(argc, argv); //parse eventual Verilator options
-  cTestBenchVirtualDevBoard* testbench = new cTestBenchVirtualDevBoard(contextp.get(), optTrace.isSet());
+
+  std::unique_ptr<cTestBenchVirtualDevBoard> testbench = std::make_unique<cTestBenchVirtualDevBoard>(contextp.get(), optTrace.isSet());
 
   // See if we run with a GUI or not, in case we run with the GUI, create it
   if(!optNoGui.isSet() )
@@ -159,11 +160,15 @@ int main(int argc, char** argv)
     if(optUIFile.isSet())
     {
         // Create the GUI board and setup all the components according to the *.ini file
-        guiBoard = new cGuiBoard(argc, argv, optUIFile.value());
+        guiBoard = new cGuiBoard(testbench.get(), argc, argv, optUIFile.value());
         guiBoard->initialize();
-        guiBoard->registerObserver(testbench);
+        guiBoard->registerObserver(testbench.get());
     }
-    else {FATAL << "Gui selected but no GUI file given!\n"; return 1;}
+    else 
+    {
+        FATAL << "Gui selected but no GUI file given!\n"; 
+        return 1;
+    }
   }
 
   do
@@ -190,7 +195,7 @@ int main(int argc, char** argv)
     }
 
     //close testbench
-    delete testbench;
+    //delete testbench;
   } while (rerun);
   
   // If we have a gui board and thread, delete it

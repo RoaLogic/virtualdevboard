@@ -143,6 +143,8 @@
 #include "subject.hpp"
 #include "observer.hpp"
 
+#include "testbenchVirtualDevBoard.hpp"
+
 // Include all different components
 #include "vdbVGAMonitor.hpp"
 #include "vdbLED.hpp"
@@ -176,6 +178,7 @@ namespace GUI
         cIniparser _iniParser;
         std::thread _guiThread;
         cVirtualDemoBoard* _demoBoard = nullptr;
+        cTestBenchVirtualDevBoard* _testbench = nullptr;
 
         int _argc;
         char** _argv;
@@ -200,7 +203,7 @@ namespace GUI
         cVdbVGAMonitor* createVGA(map<string,string>& values);
 
         public:
-        cGuiBoard(int argc, char** argv, std::string fileName);
+        cGuiBoard(cTestBenchVirtualDevBoard* _core, int argc, char** argv, std::string fileName);
         ~cGuiBoard();
 
         bool initialize();
