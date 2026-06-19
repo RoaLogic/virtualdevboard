@@ -62,8 +62,9 @@ cMainFrame::cMainFrame( cSubject* aSubject,
                         std::string aboutText, 
                         distanceSize minimalScreenSize, 
                         sRGBColor backgroundColor) :
-    wxFrame(nullptr, wxID_ANY, applicationName.c_str(), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX)),
+    wxFrame(nullptr, wxID_ANY, applicationName.c_str(), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE),
     _subject(aSubject),
+    _myApplicationName(applicationName),
     _myAboutText(aboutText),
     _myAboutTitle(aboutTitle)
 {
@@ -133,9 +134,11 @@ cMainFrame::cMainFrame( cSubject* aSubject,
     wxSize boardSize = wxDistanceSize(minimalScreenSize, this);
                                       
     _myBoardWidth  = boardSize.GetWidth() + cLeftPanelWidth;
-    _myBoardHeight = boardSize.GetHeight() + GetMenuBar()->GetSize().GetHeight();
+    _myBoardHeight = boardSize.GetHeight();
 
-    SetMinSize(wxSize(_myBoardWidth, _myBoardHeight));
+    SetMinClientSize(wxSize(_myBoardWidth, _myBoardHeight));
+    SetClientSize(wxSize(_myBoardWidth, _myBoardHeight));
+    SetSizeHints(_myBoardWidth, _myBoardHeight);
 }
 
 cMainFrame::~cMainFrame()
@@ -201,6 +204,8 @@ void cMainFrame::onButtonStop(wxCommandEvent& event)
 {
     _startButton->SetLabel("Start");
 
+    _subject->notifyObserver(eEvent::stop);
+
     for(cGuiVDBComponent* vdb : vdbInstances)
     {
         // Remove observer at this point, so we don't receive any events anymore
@@ -212,8 +217,6 @@ void cMainFrame::onButtonStop(wxCommandEvent& event)
     _rightPanel->DestroyChildren();
 
     vdbInstances.erase(vdbInstances.begin(), vdbInstances.end());
-
-    _subject->notifyObserver(eEvent::stop);
 }
 
 void cMainFrame::onAddVdb(wxCommandEvent& event)
@@ -280,7 +283,7 @@ void cMainFrame::onAddVdb(wxCommandEvent& event)
             }
             case eVdbComponentType::vdbVGA :
             {
-                cWXVdbVGAMonitor* newVGA = new cWXVdbVGAMonitor(eventData->vdbComponent, eventData->placement, this/*, eventData->angle*/);
+                cWXVdbVGAMonitor* newVGA = new cWXVdbVGAMonitor(eventData->vdbComponent, eventData->placement);
                 vdbInstances.push_back(newVGA);
                 break;
             }
