@@ -121,8 +121,8 @@ void wxMediaButton::EnterWindow(wxMouseEvent &evt)
 
     //repaint widget
     scale = 1.0;
-    wxClientDC dc(this);
-    Draw(dc);
+    Refresh(false);
+    Update();
 
     //call postHandler
     EnterWindowPostHandle(evt);
@@ -140,8 +140,8 @@ void wxMediaButton::LeaveWindow(wxMouseEvent &evt)
 
     //repaint widget
     scale = 0.8;
-    wxClientDC dc(this);
-    Draw(dc);
+    Refresh(false);
+    Update();
 
     //call postHandle
     LeaveWindowPostHandle(evt);
@@ -158,8 +158,8 @@ void wxMediaButton::MouseLeftUp(wxMouseEvent &evt)
     MouseLeftUpPreHandle(evt);
 
     //repaint widget
-    wxClientDC dc(this);
-    Draw(dc);
+    Refresh(false);
+    Update();
 
     //call postHandle
     MouseLeftUpPostHandle(evt);
@@ -192,14 +192,14 @@ bool wxMediaButton::SendClickEvent()
 wxMediaPlayPauseButton::wxMediaPlayPauseButton(wxWindow* parent, wxWindowID id,
     const wxString& label, const wxPoint& pos, const wxSize& size,
     long style, const wxValidator& validator, const wxString& name) :
-  wxMediaButton(parent, id, GetLabel(), pos, GetDefaultSize(), style, validator, name)
+  wxMediaButton(parent, id, label, pos, size, style, validator, name)
 {
-    //Determine button phase
-    if (label.IsSameAs("pause"),false)
+    // Determine button phase
+    if (label.CmpNoCase("pause") == 0)
     {
       phase = PAUSE;
     }
-    else 
+    else
     {
       phase = PLAY;
     }
@@ -223,8 +223,8 @@ wxString wxMediaPlayPauseButton::GetLabel() const
  */
 void wxMediaPlayPauseButton::SetLabel(const wxString& label)
 {
-    //Determine button phase
-    if (label.IsSameAs("pause"),false)
+    // Determine button phase
+    if (label.CmpNoCase("pause") == 0)
     {
       phase = PAUSE;
     }
@@ -233,9 +233,9 @@ void wxMediaPlayPauseButton::SetLabel(const wxString& label)
       phase = PLAY;
     }
 
-    //redraw button
-    wxClientDC dc(this);
-    Draw(dc);
+    // request redraw
+    Refresh(false);
+    Update();
 }
 
 
