@@ -84,6 +84,7 @@ namespace observer {
 
         if(aObserver)
         {
+            std::lock_guard<std::mutex> lock(_observerMutex);
             if(_observers.size() < _cMaxObservers)
             {
                 for(auto observer : _observers)
@@ -91,6 +92,7 @@ namespace observer {
                     if(aObserver == observer)
                     {
                         found = true;
+                        break;
                     }
                 }
 
@@ -99,7 +101,7 @@ namespace observer {
                     _observers.push_back(aObserver);
                     result = true;
                 }
-            }            
+            }
         }
 
         return result;
@@ -124,6 +126,7 @@ namespace observer {
 
         if(aObserver)
         {
+            std::unique_lock<std::mutex> lock(_observerMutex);
             for(auto observer : _observers)
             {
                 if(aObserver == observer)
@@ -136,6 +139,9 @@ namespace observer {
 
                 iterator++;
             }
+
+            // Wait for any in-flight notifyObserver calls to complete so the observer can be safely destroyed.
+            _notifyCv.wait(lock, [this](){ return _activeNotifications == 0; });
         }  
         
         return result;
@@ -152,10 +158,23 @@ namespace observer {
      */
     void cSubject::notifyObserver(eEvent aEvent, void* data)
     {
-        for(auto observer : _observers)
+        std::vector<cObserver*> observersCopy;
+        {
+            std::lock_guard<std::mutex> lock(_observerMutex);
+            observersCopy = _observers;
+            ++_activeNotifications;
+        }
+
+        for(auto observer : observersCopy)
         {
             observer->notify(aEvent, data);
         }
+
+        {
+            std::lock_guard<std::mutex> lock(_observerMutex);
+            --_activeNotifications;
+        }
+        _notifyCv.notify_all();
     }
 
 }}

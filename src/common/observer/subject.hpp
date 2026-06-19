@@ -49,6 +49,8 @@
 #include "observer.hpp"
 #include <vector>
 #include <cstdint>
+#include <mutex>
+#include <condition_variable>
 
 namespace RoaLogic {
 namespace observer {
@@ -74,6 +76,9 @@ namespace observer {
     {
         protected:
         std::vector<cObserver*> _observers;
+        mutable std::mutex _observerMutex;
+        std::condition_variable _notifyCv;
+        uint32_t _activeNotifications = 0;
         
         public:
         static const uint8_t _cMaxObservers = 10;
